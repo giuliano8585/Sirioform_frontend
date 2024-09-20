@@ -46,6 +46,8 @@ const CenterList = () => {
       await axios.post('http://localhost:5000/api/centers/assign-sanitario', {
         centerId: selectedCenter,
         sanitarioId: sanitarioToAdd,
+      },{
+        'x-auth-token': localStorage.getItem('token'),
       });
       alert('Sanitario assegnato con successo!');
       setSanitarioToAdd('');

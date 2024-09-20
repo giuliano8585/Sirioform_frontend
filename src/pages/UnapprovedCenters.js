@@ -24,7 +24,7 @@ const UnapprovedCenters = () => {
 
   const approveCenter = async (id) => {
     try {
-      await axios.put(`http://localhost:5000/api/centers/approve/${id}`, {
+      await axios.put(`http://localhost:5000/api/centers/approve/${id}`,{}, {
         headers: {
           'x-auth-token': token,
         }
