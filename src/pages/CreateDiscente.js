@@ -141,7 +141,7 @@ function CreateDiscente() {
           />
         </div>
         <button type="submit" className="btn btn-primary">Aggiungi</button>
-        <button type="button" className="btn btn-secondary ms-2" onClick={() => navigate('/dashboard')}>
+        <button type="button" className="btn btn-secondary ms-2" onClick={() => navigate(-1)}>
           Torna alla Dashboard
         </button>
       </form>

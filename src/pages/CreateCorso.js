@@ -212,7 +212,7 @@ function CreateCorso() {
         </button>
 
         <button type="submit" className="btn btn-primary">Crea Corso</button>
-        <button type="button" className="btn btn-secondary ms-3" onClick={() => navigate('/dashboard')}>
+        <button type="button" className="btn btn-secondary ms-3" onClick={() => navigate(-1)}>
           Torna alla Dashboard
         </button>
       </form>
