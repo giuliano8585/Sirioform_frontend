@@ -60,7 +60,7 @@ function ListaDiscentiPage() {
       </table>
 
       {/* Bottone per tornare alla dashboard */}
-      <button className="btn btn-secondary mt-4" onClick={() => navigate('/dashboard')}>
+      <button className="btn btn-secondary mt-4" onClick={() => navigate(-1)}>
         Torna alla Dashboard
       </button>
     </div>

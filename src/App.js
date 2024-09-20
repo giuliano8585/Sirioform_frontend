@@ -45,11 +45,11 @@ const App = () => {
         <Route path="/register-instructor" element={<RegisterInstructor />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/center-dashboard" element={<CenterDashboard />} />
+        <Route path="/instructor-dashboard" element={<InstructorDashboard />} />
         <Route path="/user-dashboard" element={<ProtectedComponent />} />
         <Route path="/centers-list" element={<CentersList />} />
         <Route path="/instructors-list" element={<InstructorsList />} />
-        <Route path="/instructor-dashboard" element={<InstructorDashboard />} />
-        <Route path="/center-dashboard" element={<CenterDashboard />} />
         <Route path="/create-kit" element={<CreateKit />} />
         <Route path="/view-kits" element={<ViewKits />} />
         <Route path="/unapproved-centers" element={<UnapprovedCenters />} />
@@ -59,12 +59,12 @@ const App = () => {
         <Route path="/center-sanitarios" element={<CenterSanitarios />} />
         <Route path="/view-sanitarios" element={<ViewSanitarios />} />
         <Route path="/view-instructor-sanitarios" element={<ViewInstructorSanitarios />} />
-        <Route path="/center/view-instructors" element={<ViewInstructors />} /> {/* Aggiunta della nuova rotta */}
+        <Route path="/center/view-instructors" element={<ViewInstructors />} /> 
         <Route path="/instructor/view-sanitarios" element={<ViewSanitarios />} />
 
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/payment" element={<Checkout />} />
+        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> */}
+        <Route path="/payment" element={<Checkout />} />
         <Route path="/admin/products" element={<ProductManagement />} />
         <Route path="/admin/orders" element={<OrderManagement />} />
         <Route path="/admin/create-product" element={<CreateProduct />} />
