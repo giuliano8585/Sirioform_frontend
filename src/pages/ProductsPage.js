@@ -10,7 +10,7 @@ function ProductsPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/products', {
+        const res = await axios.get('http://localhost:5000/api/kits', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setProducts(res.data);
@@ -37,11 +37,11 @@ function ProductsPage() {
 
   const calculatePrice = (product, quantity) => {
     if (quantity <= 10) {
-      return product.price1;
+      return product.cost1;
     } else if (quantity <= 20) {
-      return product.price2;
+      return product.cost2;
     } else {
-      return product.price3;
+      return product.cost3;
     }
   };
 
