@@ -34,7 +34,7 @@ const CenterSanitarios = () => {
   return (
     <div className="container mt-4">
       <h1 className="mb-4">Sanitari Associati</h1>
-      <ul className="list-group">
+      {/* <ul className="list-group">
         {sanitarios.map(sanitario => (
           <li key={sanitario._id} className="list-group-item">
             <p>Nome: {sanitario.firstName}</p>
@@ -47,7 +47,38 @@ const CenterSanitarios = () => {
             <p>Telefono: {sanitario.phone}</p>
           </li>
         ))}
-      </ul>
+      </ul> */}
+              <div className="table-responsive">
+        <table className="table table-striped table-bordered">
+          <thead className="thead-dark">
+            <tr>
+              {/* <th>Numero Brevetto</th> */}
+              <th>Nome</th>
+              <th>Cognome</th>
+              <th>Codice Fiscale</th>
+              <th>Indirizzo</th>
+              <th>Città</th>
+              <th>Regione</th>
+              <th>Email</th>
+              <th>Telefono</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sanitarios?.map((instructor) => (
+              <tr key={instructor._id}>
+                <td>{instructor.firstName}</td>
+                <td>{instructor.lastName}</td>
+                <td>{instructor.fiscalCode}</td>
+                <td>{instructor.address}</td>
+                <td>{instructor.city}</td>
+                <td>{instructor.region}</td>
+                <td>{instructor.email}</td>
+                <td>{instructor.phone}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <button className="btn btn-secondary mt-4" onClick={goBack}>Indietro</button>
     </div>
   );

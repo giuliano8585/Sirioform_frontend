@@ -51,7 +51,8 @@ const App = () => {
         <Route path="/centers-list" element={<CentersList />} />
         <Route path="/instructors-list" element={<InstructorsList />} />
         <Route path="/create-kit" element={<CreateKit />} />
-        <Route path="/view-kits" element={<ViewKits />} />
+        {/* <Route path="/view-kits" element={<ViewKits />} /> */}
+        <Route path="/view-kits" element={<ProductsPage />} />
         <Route path="/unapproved-centers" element={<UnapprovedCenters />} />
         <Route path="/unapproved-instructors" element={<UnapprovedInstructors />} />
         <Route path="/create-sanitario" element={<CreateSanitario />} />
@@ -70,7 +71,6 @@ const App = () => {
         <Route path="/admin/create-product" element={<CreateProduct />} />
         <Route path="/admin/all-orders" element={<AdminOrders />} />
         <Route path="/create-discente" element={<CreateDiscente />} />
-        <Route path="/products" element={<ProductsPage />} />
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/lista-discenti" element={<ListaDiscentiPage />} />
         <Route path="/create-corso" element={<CreateCorso />} />
