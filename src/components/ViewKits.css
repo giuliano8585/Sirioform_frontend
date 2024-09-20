@@ -1,0 +1,47 @@
+/* ViewKits.css */
+
+/* Aggiungi margine tra le card */
+.card {
+    margin-bottom: 20px;
+  }
+  
+  /* Stile per l'immagine della card */
+  .card-img-top {
+    width: 100%;
+    height: auto;
+  }
+  
+  /* Stile per il titolo della card */
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  /* Stile per il sottotitolo della card */
+  .card-subtitle {
+    font-size: 1rem;
+    color: #6c757d;
+  }
+  
+  /* Stile per il testo della card */
+  .card-text {
+    font-size: 0.9rem;
+  }
+  
+  /* Stile per il bottone della card */
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+  }
+  
+  /* Aggiungi un padding intorno al container principale */
+  .container {
+    padding: 20px;
+  }
+  

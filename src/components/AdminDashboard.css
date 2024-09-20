@@ -1,0 +1,12 @@
+.btn {
+    font-size: 1.25rem;
+  }
+  
+  .btn:hover {
+    color: white !important;
+  }
+  
+  .sidebar-sticky h4 {
+    margin-bottom: 1rem;
+  }
+  
