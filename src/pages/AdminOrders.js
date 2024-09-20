@@ -42,7 +42,7 @@ function AdminOrders() {
     <div className='container mt-5'>
       <h2 className='text-center mb-4'>All Orders</h2>
       <div className='mb-4'>
-        <Link to='/admin/dashboard' className='btn btn-secondary'>
+        <Link to='/admin-dashboard' className='btn btn-secondary'>
           Back to Dashboard
         </Link>
       </div>
