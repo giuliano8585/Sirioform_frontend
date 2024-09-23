@@ -53,7 +53,15 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
       );
       alert('Order placed successfully!')
       onOrderSuccess(res.data);
-      navigate('/dashboard');
+      navigate('/center-dashboard');
+      //we can redirect to center dashbor, if I login with center role, instructor dashboard if I login with instructor
+      // you can give route over here. what's root? when order is ok, and payment is ok we can redirect on home dashboard,yeah, just put the page name over here
+      // it will redict after order and payment completion, payment and order is now ok
+      //yes but currently we dont have any role becouse both are comming from diffrent schemas,
+      // we will do that functionality when we do it to one schema (user). ok. can you start to work for that tomorrow?yaeh tomorrow we will do a meeting and discuss these things. ok thanks. 
+      //tomorrow send me 30$ request also
+      //no worries, thank you. thanks
+      //my pleasure, Bye see. bye. good night, good night
     } catch (err) {
       alert("Error placing the order");
     }
