@@ -15,9 +15,13 @@ const Checkout = () => {
         <p>
           <strong>{location?.state?.quantity}</strong>
         </p>
+        <h4>Shipping Cost : </h4>
+        <p>
+          <strong>10</strong>
+        </p>
         <h4>Total Price : </h4>
         <p>
-          <strong>{Number(location?.state?.totalPrice)*Number(location?.state?.quantity)}</strong>
+          <strong>{Number(location?.state?.totalPrice)*Number(location?.state?.quantity)+10}</strong>
         </p>
       </div>
       <div className=''>
