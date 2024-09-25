@@ -8,33 +8,33 @@ const InstructorDashboard = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const token = localStorage.getItem('token');
-  //       const res = await axios.get('http://localhost:5000/api/auth/instructors/me', {
-  //         headers: {
-  //           'x-auth-token': token
-  //         }
-  //       });
-  //       setData(res.data);
-  //       setLoading(false);
-  //     } catch (err) {
-  //       setError(err.response.data.error || 'An error occurred');
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get('http://localhost:5000/api/auth/instructors/me', {
+          headers: {
+            'x-auth-token': token
+          }
+        });
+        setData(res.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.response.data.error || 'An error occurred');
+        setLoading(false);
+      }
+    };
 
-  //   fetchData();
-  // }, []);
+    fetchData();
+  }, []);
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  // if (error) {
-  //   return <div>{error}</div>;
-  // }
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   const goToViewKits = () => {
     navigate('/view-kits');
@@ -75,14 +75,6 @@ const InstructorDashboard = () => {
                   onClick={goToViewSanitarios}
                 >
                   Visualizza Sanitari
-                </button>
-              </li>
-              <li className='nav-item mb-2'>
-                <button
-                  className='btn btn-primary w-100'
-                  onClick={() => navigate('/products')}
-                >
-                  Acquista Kit
                 </button>
               </li>
               {/* Bottone per visualizzare gli ordini */}

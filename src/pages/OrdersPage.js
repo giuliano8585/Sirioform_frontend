@@ -54,7 +54,7 @@ function OrdersPage() {
                 <td>{order._id}</td>
                 <td>
                   {order.orderItems.map((item) => (
-                    <span key={item._id}>{item.productId?.title}</span>
+                    <span key={item._id}>{item.productId?.type}</span>
                   ))}
                 </td>
                 <td>

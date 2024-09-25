@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { Modal, Button } from 'react-bootstrap';
 
 const RegisterInstructor = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +10,7 @@ const RegisterInstructor = () => {
     lastName: '',
     fiscalCode: '',
     brevetNumber: '',
-    qualifications: '',
+    qualifications: [{ name: '', expirationDate: '' }], // Updated to include an array of qualifications
     piva: '',
     address: '',
     city: '',
@@ -22,12 +23,37 @@ const RegisterInstructor = () => {
   });
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [message, setMessage] = useState('');
+  const [showModal, setShowModal] = useState(false); // State to control modal visibility
 
-  const handleChange = (e) => {
+  const handleChange = (e, index, field) => {
+    if (field === 'qualifications') {
+      const newQualifications = [...formData.qualifications];
+      newQualifications[index][e.target.name] = e.target.value;
+      setFormData({ ...formData, qualifications: newQualifications });
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value
+      });
+    }
+  };
+
+  const handleQualificationChange = (index, e) => {
+    const newQualifications = [...formData.qualifications];
+    newQualifications[index][e.target.name] = e.target.value;
+    setFormData({ ...formData, qualifications: newQualifications });
+  };
+
+  const handleAddQualification = () => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      qualifications: [...formData.qualifications, { name: '', expirationDate: '' }]
     });
+  };
+
+  const handleRemoveQualification = (index) => {
+    const newQualifications = formData.qualifications.filter((_, i) => i !== index);
+    setFormData({ ...formData, qualifications: newQualifications });
   };
 
   const handleSubmit = async (e) => {
@@ -76,10 +102,61 @@ const RegisterInstructor = () => {
             <label htmlFor="brevetNumber" className="form-label">Brevet Number</label>
             <input type="text" className="form-control" id="brevetNumber" name="brevetNumber" value={formData.brevetNumber} onChange={handleChange} placeholder="Brevet Number" required />
           </div>
-          <div className="col-md-6 mb-3">
-            <label htmlFor="qualifications" className="form-label">Qualifications</label>
-            <input type="text" className="form-control" id="qualifications" name="qualifications" value={formData.qualifications} onChange={handleChange} placeholder="Qualifications" required />
+
+          {/* Qualification Fields */}
+          {formData.qualifications.map((qualification, index) => (
+            <>
+            <div key={index} className="col-md-12 mb-3">
+              <div className="row">
+                <div className="col-md-5">
+                  <label htmlFor={`qualification-name-${index}`} className="form-label">Qualification</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id={`qualification-name-${index}`}
+                    name="name"
+                    value={qualification.name}
+                    onChange={(e) => handleQualificationChange(index, e)}
+                    placeholder="Qualification"
+                    required
+                  />
+                </div>
+                <div className="col-md-5">
+                  <label htmlFor={`expirationDate-${index}`} className="form-label">Expiration Date</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    id={`expirationDate-${index}`}
+                    name="expirationDate"
+                    value={qualification.expirationDate}
+                    onChange={(e) => handleQualificationChange(index, e)}
+                    required
+                  />
+                </div>
+                <div className="col-md-2 d-flex align-items-end">
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={() => handleRemoveQualification(index)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+            </>
+          ))}
+
+          <div className="col-md-12 mb-3 text-end">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleAddQualification}
+            >
+              Add Qualification
+            </button>
           </div>
+
           <div className="col-md-6 mb-3">
             <label htmlFor="piva" className="form-label">PIVA</label>
             <input type="text" className="form-control" id="piva" name="piva" value={formData.piva} onChange={handleChange} placeholder="PIVA" required />
@@ -116,20 +193,15 @@ const RegisterInstructor = () => {
             <label htmlFor="repeatPassword" className="form-label">Repeat Password</label>
             <input type="password" className="form-control" id="repeatPassword" name="repeatPassword" value={formData.repeatPassword} onChange={handleChange} placeholder="Repeat Password" required />
           </div>
-          <div className="col-md-12 mb-3">
-            <ReCAPTCHA
-              sitekey="6LfhQhcqAAAAAHPx5jGmeyWyQLJIwLZwmbIk9iHp"  // Sostituisci con la tua Site Key
-              onChange={handleRecaptcha}
-            />
-          </div>
-          <div className="col-md-12 text-center">
-            <button type="submit" className="btn btn-primary">Register</button>
-          </div>
         </div>
+        <ReCAPTCHA
+          sitekey="6LfhQhcqAAAAAHPx5jGmeyWyQLJIwLZwmbIk9iHp"
+          onChange={handleRecaptcha}
+        />
+        <button type="submit" className="btn btn-primary mt-4">Register</button>
       </form>
     </div>
   );
 };
 
 export default RegisterInstructor;
-
