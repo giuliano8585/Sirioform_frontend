@@ -20,7 +20,6 @@ import CenterSanitarios from './pages/CenterSanitarios';
 import ViewSanitarios from './components/ViewSanitarios';
 import ViewInstructorSanitarios from './components/ViewInstructorSanitarios';
 import ViewInstructors from './pages/ViewInstructors'; // Assicurati di importare la nuova pagina
-import Dashboard from './pages/Dashboard';
 import Checkout from './pages/Checkout';
 import Home from './pages/Home';
 import ProductManagement from './pages/ProductManagement'
@@ -63,8 +62,6 @@ const App = () => {
         <Route path="/center/view-instructors" element={<ViewInstructors />} /> 
         <Route path="/instructor/view-sanitarios" element={<ViewSanitarios />} />
 
-        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-        {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> */}
         <Route path="/payment" element={<Checkout />} />
         <Route path="/admin/products" element={<ProductManagement />} />
         <Route path="/admin/orders" element={<OrderManagement />} />

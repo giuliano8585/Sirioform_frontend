@@ -66,7 +66,8 @@ function ProductsPage() {
             <div key={product._id} className="col-md-4 mb-4">
               <div className="card h-100">
                 <div className="card-body d-flex flex-column">
-                  <h5 className="card-title">{product.title}</h5>
+                  <h5 className="card-title">{product.code}</h5>
+                  <h5 className="card-title">{product.type}</h5>
                   <p className="card-text">{product.description}</p>
                   <p className="card-text">
                     <strong>
@@ -86,7 +87,7 @@ function ProductsPage() {
                     className="form-control mb-3"
                   />
                   <button
-                    onClick={() => handlePurchase(product?._id,product?.title)}
+                    onClick={() => handlePurchase(product?._id,product?.type)}
                     className="btn btn-primary mt-auto"
                   >
                     Acquista
