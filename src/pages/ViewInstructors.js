@@ -88,7 +88,8 @@ const ViewInstructors = () => {
               <th>Cognome</th>
               <th>E-Mail</th>
               <th>Telefono</th>
-              <th>Qualifiche</th>
+              <th>Qualifiche Type</th>
+              <th>Qualifiche Exp</th>
               <th>Numero Brevetto</th>
               <th>Codice Fiscale</th>
               <th>Partita IVA</th>
@@ -102,7 +103,12 @@ const ViewInstructors = () => {
                 <td>{instructor.lastName}</td>
                 <td>{instructor.email}</td>
                 <td>{instructor.phone}</td>
-                <td>{instructor.qualifications}</td>
+                {instructor.qualifications?.map(()=>(
+                  <>
+                  <td></td>
+                  <td></td>
+                  </>
+                ))}
                 <td>{instructor.brevetNumber}</td>
                 <td>{instructor.piva}</td>
                 <td>{instructor.fiscalCode}</td>
