@@ -33,6 +33,7 @@ import OrdersPage from './pages/OrdersPage'
 import Store from './pages/Store'
 import StoreDetails from './pages/StoreDetails'
 import CreateCorso from './pages/CreateCorso'
+import ViewProfile from './pages/ViewProfile';
 
 
 const App = () => {
@@ -61,6 +62,8 @@ const App = () => {
         <Route path="/view-instructor-sanitarios" element={<ViewInstructorSanitarios />} />
         <Route path="/center/view-instructors" element={<ViewInstructors />} /> 
         <Route path="/instructor/view-sanitarios" element={<ViewSanitarios />} />
+        <Route path="/instructor/view-profile" element={<ViewProfile />} />
+        <Route path="/center/view-profile" element={<ViewProfile />} />
 
         <Route path="/payment" element={<Checkout />} />
         <Route path="/admin/products" element={<ProductManagement />} />

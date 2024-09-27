@@ -62,7 +62,8 @@ const CenterDashboard = () => {
               <li className='nav-item mb-2'>
                 <button
                   className='btn btn-primary w-100'
-                  onClick={() => alert(JSON.stringify(data, null, 2))}
+                  // onClick={() => alert(JSON.stringify(data, null, 2))}
+                  onClick={()=>navigate('/center/view-profile',{state:{isCenter:true}})}
                 >
                   Anagrafica
                 </button>
