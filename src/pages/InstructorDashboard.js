@@ -40,6 +40,10 @@ const InstructorDashboard = () => {
     navigate('/view-kits');
   };
 
+  const goToViewProfile = () => {
+    navigate('/instructor/view-profile');
+  };
+
   const goToViewSanitarios = () => {
     navigate('/instructor/view-sanitarios', {
       state: { instructorId: data?._id },
@@ -56,7 +60,8 @@ const InstructorDashboard = () => {
               <li className='nav-item mb-2'>
                 <button
                   className='btn btn-primary w-100'
-                  onClick={() => alert(JSON.stringify(data, null, 2))}
+                  // onClick={() => alert(JSON.stringify(data, null, 2))}
+                  onClick={goToViewProfile}
                 >
                   Anagrafica
                 </button>

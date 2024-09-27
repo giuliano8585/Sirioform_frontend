@@ -8,12 +8,53 @@ const CenterList = () => {
   const [instructors, setInstructors] = useState([]);
   const [allSanitarios, setAllSanitarios] = useState([]);
   const [allInstructors, setAllInstructors] = useState([]);
-  const [sanitarioToAdd, setSanitarioToAdd] = useState('');
-  const [instructorToAdd, setInstructorToAdd] = useState('');
   const [showSanitarioModal, setShowSanitarioModal] = useState(false);
   const [showInstructorModal, setShowInstructorModal] = useState(false);
-  const [showAssignedSanitariosModal, setShowAssignedSanitariosModal] = useState(false);
-  const [showAssignedInstructorsModal, setShowAssignedInstructorsModal] = useState(false);
+  const [showDeleteCenterModal, setShowDeleteCenterModal] = useState(false);
+  const [showAssignedSanitariosModal, setShowAssignedSanitariosModal] =
+    useState(false);
+  const [showAssignedInstructorsModal, setShowAssignedInstructorsModal] =
+    useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredSanitarios, setFilteredSanitarios] = useState(allSanitarios);
+  const [filteredInstructors, setFilteredInstructors] =
+    useState(allInstructors);
+  const [filteredSanitariosData, setFilteredSanitariosData] =
+    useState(sanitarios);
+
+  useEffect(() => {
+    const query = searchQuery.toLowerCase();
+    setFilteredInstructors(
+      allInstructors.filter(
+        (sanitarios) =>
+          sanitarios?.firstName?.toLowerCase()?.includes(query) ||
+          sanitarios?.lastName?.toLowerCase()?.includes(query) ||
+          sanitarios?.username?.toLowerCase()?.includes(query)
+      )
+    );
+  }, [searchQuery, allInstructors]);
+
+  useEffect(() => {
+    const query = searchQuery.toLowerCase();
+    setFilteredSanitarios(
+      allSanitarios?.filter(
+        (sanitarios) =>
+          sanitarios?.firstName?.toLowerCase().includes(query) ||
+          sanitarios?.lastName?.toLowerCase().includes(query)
+      )
+    );
+  }, [searchQuery, allSanitarios]);
+
+  useEffect(() => {
+    const query = searchQuery.toLowerCase();
+    setFilteredSanitariosData(
+      sanitarios?.filter(
+        (sanitarios) =>
+          sanitarios?.firstName?.toLowerCase().includes(query) ||
+          sanitarios?.lastName?.toLowerCase().includes(query)
+      )
+    );
+  }, [searchQuery, sanitarios]);
 
   useEffect(() => {
     const fetchCenters = async () => {
@@ -39,18 +80,22 @@ const CenterList = () => {
     }
   };
 
-  const handleAddSanitario = async () => {
-    if (!sanitarioToAdd) return;
-
+  const handleAddSanitario = async (sanitarioId) => {
+    console.log('selectedCenter: ', selectedCenter);
+    if (!sanitarioId) return;
     try {
-      await axios.post('http://localhost:5000/api/centers/assign-sanitario', {
-        centerId: selectedCenter,
-        sanitarioId: sanitarioToAdd,
-      },{
-        'x-auth-token': localStorage.getItem('token'),
-      });
+      await axios.post(
+        'http://localhost:5000/api/centers/assign-sanitario',
+        {
+          centerId: selectedCenter,
+          sanitarioId: sanitarioId,
+        },
+        {
+          'x-auth-token': localStorage.getItem('token'),
+        }
+      );
       alert('Sanitario assegnato con successo!');
-      setSanitarioToAdd('');
+      // setSanitarioToAdd('');
       setShowSanitarioModal(false);
     } catch (err) {
       console.error('Error assigning sanitario:', err);
@@ -60,12 +105,18 @@ const CenterList = () => {
   const handleViewSanitarios = async (centerId) => {
     setSelectedCenter(centerId);
     try {
-      const res = await axios.get(`http://localhost:5000/api/centers/${centerId}/sanitarios`);
+      const res = await axios.get(
+        `http://localhost:5000/api/centers/${centerId}/sanitarios`
+      );
       setSanitarios(res.data);
       setShowAssignedSanitariosModal(true);
     } catch (err) {
       console.error('Error fetching assigned sanitarios:', err);
     }
+  };
+
+  const handleDeleteCenter = async () => {
+
   };
 
   const handleRemoveSanitario = async (sanitarioId) => {
@@ -91,16 +142,15 @@ const CenterList = () => {
     }
   };
 
-  const handleAddInstructor = async () => {
-    if (!instructorToAdd) return;
+  const handleAddInstructor = async (instructorId) => {
+    if (!instructorId) return;
 
     try {
       await axios.post('http://localhost:5000/api/centers/assign-instructor', {
         centerId: selectedCenter,
-        instructorId: instructorToAdd,
+        instructorId: instructorId,
       });
       alert('Istruttore assegnato con successo!');
-      setInstructorToAdd('');
       setShowInstructorModal(false);
     } catch (err) {
       console.error('Error assigning instructor:', err);
@@ -110,7 +160,9 @@ const CenterList = () => {
   const handleViewInstructors = async (centerId) => {
     setSelectedCenter(centerId);
     try {
-      const res = await axios.get(`http://localhost:5000/api/centers/${centerId}/instructors`);
+      const res = await axios.get(
+        `http://localhost:5000/api/centers/${centerId}/instructors`
+      );
       setInstructors(res.data);
       setShowAssignedInstructorsModal(true);
     } catch (err) {
@@ -131,11 +183,11 @@ const CenterList = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h1 className="mb-4">Lista Centri</h1>
-      <div className="table-responsive">
-        <table className="table table-striped table-bordered">
-          <thead className="thead-dark">
+    <div className='container mt-4'>
+      <h1 className='mb-4'>Lista Centri</h1>
+      <div className='table-responsive'>
+        <table className='table table-striped table-bordered'>
+          <thead className='thead-dark'>
             <tr>
               <th>Codice Univoco</th>
               <th>Denominazione</th>
@@ -161,27 +213,34 @@ const CenterList = () => {
                 <td>{center.email}</td>
                 <td>
                   <button
-                    className="btn btn-primary mb-2"
+                    className='btn btn-primary mb-2'
                     onClick={() => handleAssignSanitario(center._id)}
                   >
                     Assegna Sanitario
                   </button>
                   <button
-                    className="btn btn-primary mb-2"
+                    className='btn btn-primary mb-2'
                     onClick={() => handleViewInstructors(center._id)}
                   >
                     Istruttori
                   </button>
                   <button
-                    className="btn btn-primary mb-2"
+                    className='btn btn-primary mb-2'
                     onClick={() => handleAssignInstructor(center._id)}
                   >
                     Assegna Istruttori
                   </button>
-                  <button className="btn btn-primary mb-2">Abilita</button>
-                  <button className="btn btn-danger mb-2">Elimina</button>
+                  <button className='btn btn-primary mb-2'>Abilita</button>
                   <button
-                    className="btn btn-info"
+                    className='btn btn-danger mb-2'
+                    onClick={() =>
+                      setShowDeleteCenterModal(!showDeleteCenterModal)
+                    }
+                  >
+                    Elimina
+                  </button>
+                  <button
+                    className='btn btn-info'
                     onClick={() => handleViewSanitarios(center._id)}
                   >
                     Lista Sanitari
@@ -192,39 +251,70 @@ const CenterList = () => {
           </tbody>
         </table>
       </div>
-      <button className="btn btn-secondary" onClick={() => window.history.back()}>Indietro</button>
+      <button
+        className='btn btn-secondary'
+        onClick={() => window.history.back()}
+      >
+        Indietro
+      </button>
 
       {/* Modal per Assegnare Sanitario */}
       {showSanitarioModal && (
-        <div className="modal show d-block" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Assegna Sanitario</h5>
+        <div className='modal modal-xl show d-block' tabIndex='-1'>
+          <div className='modal-dialog'>
+            <div className='modal-content'>
+              <div className='modal-header'>
+                <h5 className='modal-title'>Assegna Sanitario</h5>
                 <button
-                  type="button"
-                  className="close"
+                  type='button'
+                  className='close'
                   onClick={() => setShowSanitarioModal(false)}
                 >
                   <span>&times;</span>
                 </button>
               </div>
-              <div className="modal-body">
-                <select
-                  className="form-control mb-3"
-                  value={sanitarioToAdd}
-                  onChange={(e) => setSanitarioToAdd(e.target.value)}
-                >
-                  <option value="">Seleziona Sanitario</option>
-                  {allSanitarios.map((sanitario) => (
-                    <option key={sanitario._id} value={sanitario._id}>
-                      {sanitario.firstName} {sanitario.lastName}
-                    </option>
-                  ))}
-                </select>
-                <button className="btn btn-primary" onClick={handleAddSanitario}>
-                  Assegna
-                </button>
+              <div className='modal-body'>
+                <input
+                  className='form-control mb-3'
+                  placeholder='search sanitario'
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <div className='table-responsive'>
+                  <table className='table table-striped table-bordered'>
+                    <thead className='thead-dark'>
+                      <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>E-Mail</th>
+                        <th>Indirizzo</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredSanitarios.map((sanitarios) => (
+                        <tr key={sanitarios._id}>
+                          <td>{sanitarios.firstName}</td>
+                          <td>{sanitarios.lastName}</td>
+                          <td>{sanitarios.email}</td>
+                          <td>
+                            {sanitarios.address}, {sanitarios.city},{' '}
+                            {sanitarios.region}
+                          </td>
+                          <td>
+                            <button
+                              type='button'
+                              className='btn btn-primary'
+                              onClick={() => handleAddSanitario(sanitarios._id)}
+                            >
+                              Assign
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -233,35 +323,63 @@ const CenterList = () => {
 
       {/* Modal per Assegnare Istruttore */}
       {showInstructorModal && (
-        <div className="modal show d-block" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Assegna Istruttore</h5>
+        <div className='modal modal-xl show d-block' tabIndex='-1'>
+          <div className='modal-dialog'>
+            <div className='modal-content'>
+              <div className='modal-header'>
+                <h5 className='modal-title'>Assegna Istruttore</h5>
                 <button
-                  type="button"
-                  className="close"
+                  type='button'
+                  className='close'
                   onClick={() => setShowInstructorModal(false)}
                 >
                   <span>&times;</span>
                 </button>
               </div>
-              <div className="modal-body">
-                <select
-                  className="form-control mb-3"
-                  value={instructorToAdd}
-                  onChange={(e) => setInstructorToAdd(e.target.value)}
-                >
-                  <option value="">Seleziona Istruttore</option>
-                  {allInstructors.map((instructor) => (
-                    <option key={instructor._id} value={instructor._id}>
-                      {instructor.firstName} {instructor.lastName}
-                    </option>
-                  ))}
-                </select>
-                <button className="btn btn-primary" onClick={handleAddInstructor}>
-                  Assegna
-                </button>
+              <div className='modal-body'>
+                <input
+                  className='form-control mb-3'
+                  placeholder='search sanitario'
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <div className='table-responsive'>
+                  <table className='table table-striped table-bordered'>
+                    <thead className='thead-dark'>
+                      <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>E-Mail</th>
+                        <th>Indirizzo</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredInstructors.map((instructor) => (
+                        <tr key={instructor._id}>
+                          <td>{instructor.firstName}</td>
+                          <td>{instructor.lastName}</td>
+                          <td>{instructor.email}</td>
+                          <td>
+                            {instructor.address}, {instructor.city},{' '}
+                            {instructor.region}
+                          </td>
+                          <td>
+                            <button
+                              type='button'
+                              className='btn btn-primary'
+                              onClick={() =>
+                                handleAddInstructor(instructor._id)
+                              }
+                            >
+                              Assegna
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -270,33 +388,101 @@ const CenterList = () => {
 
       {/* Modal per Visualizzare Sanitari */}
       {showAssignedSanitariosModal && (
-        <div className="modal show d-block" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Sanitari Associati</h5>
+        <div className='modal modal-xl show d-block' tabIndex='-1'>
+          <div className='modal-dialog'>
+            <div className='modal-content'>
+              <div className='modal-header'>
+                <h5 className='modal-title'>Sanitari Associati</h5>
                 <button
-                  type="button"
-                  className="close"
+                  type='button'
+                  className='close'
                   onClick={() => setShowAssignedSanitariosModal(false)}
                 >
                   <span>&times;</span>
                 </button>
               </div>
-              <div className="modal-body">
-                <ul className="list-group">
-                  {sanitarios.map((sanitario) => (
-                    <li key={sanitario._id} className="list-group-item d-flex justify-content-between align-items-center">
-                      {sanitario.firstName} {sanitario.lastName}
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => handleRemoveSanitario(sanitario._id)}
-                      >
-                        Elimina
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+              <div className='modal-body'>
+                <input
+                  className='form-control mb-3'
+                  placeholder='search sanitario'
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <div className='table-responsive'>
+                  <table className='table table-striped table-bordered'>
+                    <thead className='thead-dark'>
+                      <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>E-Mail</th>
+                        <th>Indirizzo</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredSanitariosData?.map((sanitarios) => (
+                        <tr key={sanitarios._id}>
+                          <td>{sanitarios.firstName}</td>
+                          <td>{sanitarios.lastName}</td>
+                          <td>{sanitarios.email}</td>
+                          <td>
+                            {sanitarios.address}, {sanitarios.city},{' '}
+                            {sanitarios.region}
+                          </td>
+                          <td>
+                            <button
+                              type='button'
+                              className='btn  btn-danger'
+                              onClick={() =>
+                                handleRemoveSanitario(sanitarios._id)
+                              }
+                            >
+                              Elimina
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDeleteCenterModal && (
+        <div className='modal show d-block' tabIndex='-1'>
+          <div className='modal-dialog'>
+            <div className='modal-content'>
+              <div className='modal-header'>
+                <h5 className='modal-title'>Delete Center</h5>
+                <button
+                  type='button'
+                  className='close'
+                  onClick={() => setShowDeleteCenterModal(false)}
+                >
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className='modal-body mx-auto '>
+                <h5 className='modal-title py-3'>Are you sure want to Delete</h5>
+                <div className='d-flex align-items-center gap-3 mx-auto'>
+                  <button
+                    type='button'
+                    className='close  btn-primary'
+                    onClick={() => setShowDeleteCenterModal(false)}
+                  >
+                    <span>Close</span>
+                  </button>
+                  <button
+                    type='button'
+                    className='close  btn-danger'
+                    onClick={() => handleDeleteCenter(false)}
+                  >
+                    <span>Delete</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -305,33 +491,65 @@ const CenterList = () => {
 
       {/* Modal per Visualizzare Istruttori */}
       {showAssignedInstructorsModal && (
-        <div className="modal show d-block" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Istruttori Associati</h5>
+        <div className='modal modal-xl show d-block' tabIndex='-1'>
+          <div className='modal-dialog'>
+            <div className='modal-content'>
+              <div className='modal-header'>
+                <h5 className='modal-title'>Istruttori Associati</h5>
                 <button
-                  type="button"
-                  className="close"
+                  type='button'
+                  className='close'
                   onClick={() => setShowAssignedInstructorsModal(false)}
                 >
                   <span>&times;</span>
                 </button>
               </div>
-              <div className="modal-body">
-                <ul className="list-group">
-                  {instructors.map((instructor) => (
-                    <li key={instructor._id} className="list-group-item d-flex justify-content-between align-items-center">
-                      {instructor.firstName} {instructor.lastName}
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => handleRemoveInstructor(instructor._id)}
-                      >
-                        Elimina
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+              <div className='modal-body'>
+                <div className='table-responsive'>
+                  <table className='table table-striped table-bordered'>
+                    <thead className='thead-dark'>
+                      <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>E-Mail</th>
+                        <th>Telefono</th>
+                        <th>Numero Brevetto</th>
+                        <th>Codice Fiscale</th>
+                        <th>Partita IVA</th>
+                        <th>Indirizzo</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {instructors.map((instructor) => (
+                        <tr key={instructor._id}>
+                          <td>{instructor.firstName}</td>
+                          <td>{instructor.lastName}</td>
+                          <td>{instructor.email}</td>
+                          <td>{instructor.phone}</td>
+                          <td>{instructor.brevetNumber}</td>
+                          <td>{instructor.piva}</td>
+                          <td>{instructor.fiscalCode}</td>
+                          <td>
+                            {instructor.address},{instructor.city},
+                            {instructor.region}
+                          </td>
+                          <td>
+                            <button
+                              type='button'
+                              className='btn btn-danger btn-sm'
+                              onClick={() =>
+                                handleRemoveInstructor(instructor._id)
+                              }
+                            >
+                              Elimina
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

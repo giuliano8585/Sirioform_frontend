@@ -60,7 +60,7 @@ function Store() {
       )}
       <button
         className="btn btn-secondary mt-3"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/center-dashboard')}
       >
         Torna alla Dashboard
       </button>
