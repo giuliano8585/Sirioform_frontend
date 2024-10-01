@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 const CenterDashboard = () => {
   const [data, setData] = useState(null);
-  console.log('data: ', data);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();

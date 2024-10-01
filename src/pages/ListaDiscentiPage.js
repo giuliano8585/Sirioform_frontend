@@ -35,6 +35,7 @@ function ListaDiscentiPage() {
             <th>Regione</th>
             <th>Email</th>
             <th>Telefono</th>
+            <th>Num. Brevetto</th>
           </tr>
         </thead>
         <tbody>
@@ -49,6 +50,7 @@ function ListaDiscentiPage() {
                 <td>{discente.regione}</td>
                 <td>{discente.email}</td>
                 <td>{discente.telefono}</td>
+                <td>{discente.patentNumber}</td>
               </tr>
             ))
           ) : (

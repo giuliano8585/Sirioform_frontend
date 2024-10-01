@@ -3,8 +3,12 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function CreateCorso() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [tipologiaProdotti, setTipologiaProdotti] = useState([]); // Per il menu a tendina
   const [giornate, setGiornate] = useState([{ dataInizio: '', dataFine: '', oraInizio: '', oraFine: '' }]);
+  
   const [corso, setCorso] = useState({
     tipologia: '',
     città: '',
@@ -16,6 +20,29 @@ function CreateCorso() {
   const [availableKits, setAvailableKits] = useState(0);  // Numero massimo di kit disponibili
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(
+          'http://localhost:5000/api/auth/centers/me',
+          {
+            headers: {
+              'x-auth-token': token,
+            },
+          }
+        );
+        setData(res.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.response.data.error || 'An error occurred');
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     // Recupera i prodotti acquistati dall'utente per popolare il menu a tendina
@@ -51,7 +78,17 @@ function CreateCorso() {
     setGiornate(updatedGiornate);
   };
 
+//  const addGiornata = () => {
+ //   setGiornate([...giornate, { dataInizio: '', dataFine: '', oraInizio: '', oraFine: '' }]);
+ // };
   const addGiornata = () => {
+    const lastGiornata = giornate[giornate.length - 1]; // Get the last giornata added
+    if (lastGiornata && lastGiornata.dataFine === '') {
+      alert('Errore: Completa i campi della giornata precedente prima di aggiungerne una nuova.');
+      return;
+    }
+  
+    // Add a new giornata only if previous fields are complete
     setGiornate([...giornate, { dataInizio: '', dataFine: '', oraInizio: '', oraFine: '' }]);
   };
 
@@ -64,6 +101,28 @@ function CreateCorso() {
       return;
     }
 
+    for (let i = 0; i < giornate.length; i++) {
+      const { dataInizio, dataFine, oraInizio, oraFine } = giornate[i];
+  
+      // Date validation
+      if (new Date(dataInizio) > new Date(dataFine)) {
+        alert(`Errore: la data di inizio non può essere successiva alla data di fine nella giornata ${i + 1}.`);
+        return;
+      }
+  
+      // Time validation
+      if (oraInizio >= oraFine) {
+        alert(`Errore: L'ora di inizio non può essere uguale o successiva all'ora di fine nella giornata ${i + 1}.`);
+        return;
+      }
+  
+      // Ensure that the start date of the next section is after the end date of the previous section
+      if (i > 0 && new Date(dataInizio) <= new Date(giornate[i - 1].dataFine)) {
+        alert(`Errore: La data di inizio della giornata ${i + 1} deve essere successiva alla data di fine della giornata ${i}.`);
+        return;
+      }
+    }
+
     try {
       const res = await axios.post('http://localhost:5000/api/corsi', {
         ...corso,
@@ -72,12 +131,21 @@ function CreateCorso() {
         headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
       });
       alert('Corso creato con successo!');
-      navigate('/dashboard');
+      navigate('/center-dashboard');
     } catch (err) {
       console.error(err);
       alert('Errore durante la creazione del corso');
     }
   };
+
+  
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="container mt-4">
@@ -136,25 +204,38 @@ function CreateCorso() {
           </div>
           <div className="col-md-6 mb-3">
             <label>Istruttore:</label>
-            <input
-              type="text"
+                        <select
               className="form-control"
               name="istruttore"
               value={corso.istruttore}
               onChange={handleInputChange}
               required
-            />
+            >
+              <option value="">Seleziona una Instructor</option>
+              {data?.instructors?.map((prodotto) => (
+                <option key={prodotto._id} value={prodotto._id}>
+                  {prodotto?.firstName +" "+ prodotto?.lastName} 
+                </option>
+              ))}
+            </select>
           </div>
           <div className="col-md-6 mb-3">
             <label>Direttore Corso:</label>
-            <input
-              type="text"
+            
+                                    <select
               className="form-control"
               name="direttoreCorso"
               value={corso.direttoreCorso}
               onChange={handleInputChange}
               required
-            />
+            >
+              <option value="">Seleziona una direttoreCorso</option>
+              {data?.sanitarios?.map((prodotto) => (
+                <option key={prodotto._id} value={prodotto._id}>
+                  {prodotto?.firstName +" "+ prodotto?.lastName} 
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

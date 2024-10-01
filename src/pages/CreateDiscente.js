@@ -12,6 +12,7 @@ function CreateDiscente() {
     regione: '',
     email: '',
     telefono: '',
+     patentNumber: ''
   });
 
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ function CreateDiscente() {
         regione: '',
         email: '',
         telefono: '',
+        patentNumber: ''
       });
     } catch (err) {
       console.error(err);
@@ -138,6 +140,16 @@ function CreateDiscente() {
             value={discente.telefono}
             onChange={handleInputChange}
             required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Patent Number (optional):</label>
+          <input
+            type="text"
+            name="patentNumber"
+            className="form-control"
+            value={discente.patentNumber}
+            onChange={handleInputChange}
           />
         </div>
         <button type="submit" className="btn btn-primary">Aggiungi</button>
