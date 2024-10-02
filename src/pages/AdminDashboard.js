@@ -19,6 +19,9 @@ function AdminDashboard() {
         <Link to="/admin/all-orders" className="btn btn-primary w-25">
           View All Orders
         </Link>
+        <Link to="/admin/all-corso" className="btn btn-primary w-25">
+          View All corso
+        </Link>
       </div>
     </div>
   );

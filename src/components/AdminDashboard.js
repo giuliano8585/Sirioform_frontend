@@ -62,6 +62,11 @@ const AdminDashboard = () => {
                   Lista Sanitari
                 </Link>
               </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/all-corso" className="nav-link btn btn-primary w-100 btn-lg">
+                  Lista corso
+                </Link>
+              </li>
             </ul>
           </div>
         </nav>

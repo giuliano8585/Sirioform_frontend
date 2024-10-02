@@ -131,6 +131,15 @@ const InstructorDashboard = () => {
                   I miei Kit
                 </button>
               </li>
+
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/corso')}
+                >
+                  Lista Corso
+                </button>
+              </li>
             </ul>
           </div>
         </nav>

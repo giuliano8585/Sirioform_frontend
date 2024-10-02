@@ -11,8 +11,7 @@ const CenterList = () => {
   const [showSanitarioModal, setShowSanitarioModal] = useState(false);
   const [showInstructorModal, setShowInstructorModal] = useState(false);
   const [showDeleteCenterModal, setShowDeleteCenterModal] = useState(false);
-  const [showAssignedSanitariosModal, setShowAssignedSanitariosModal] =
-    useState(false);
+  const [showAssignedSanitariosModal, setShowAssignedSanitariosModal] = useState(false);
   const [showAssignedInstructorsModal, setShowAssignedInstructorsModal] =
     useState(false);
   const [searchQuery, setSearchQuery] = useState('');
