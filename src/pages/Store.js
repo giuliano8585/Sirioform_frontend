@@ -36,7 +36,9 @@ function Store() {
           <thead>
             <tr>
               <th>Prodotto</th>
-              <th>Quantità</th>
+              <th>Total Quantità</th>
+              <th>Remaining Quantità</th>
+              <th>used Quantità</th>
               <th>Azioni</th>
             </tr>
           </thead>
@@ -44,7 +46,9 @@ function Store() {
             {prodotti.map((prodotto) => (
               <tr key={prodotto._id}>
                 <td>{prodotto.title}</td>
+                <td>{prodotto.totalQuantity}</td>
                 <td>{prodotto.quantity}</td>
+                <td>{Number(prodotto.totalQuantity) - Number(prodotto.quantity)}</td>
                 <td>
                   <button
                     className="btn btn-info"

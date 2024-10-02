@@ -33,6 +33,11 @@ function OrdersPage() {
     fetchOrders();
   }, []);
 
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <div className="container mt-4">
       <h2>I miei ordini</h2>
@@ -62,7 +67,7 @@ function OrdersPage() {
                     <span key={item._id}>{item.quantity}</span>
                   ))}
                 </td>
-                <td>{order?.createdAt?.split('T')[0]}</td>
+                <td>{formatDate(order?.createdAt?.split('T')[0])}</td>
                 <td>{order.totalPrice}</td>
                 <td>
                   <button
