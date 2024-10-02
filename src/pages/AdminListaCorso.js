@@ -9,6 +9,8 @@ function AdminListaCorso() {
   const [showInstructorModal, setShowInstructorModal] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState([]);
   const [showGiornateModal, setShowGiornateModal] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [courseId, setCourseId] = useState(false);
   const [selectedGiornate, setSelecteGiornate] = useState([]);
 
   const navigate = useNavigate();
@@ -16,12 +18,9 @@ function AdminListaCorso() {
   useEffect(() => {
     const fetchCorso = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:5000/api/corsi/',
-          {
-            headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-          }
-        );
+        const res = await axios.get('http://localhost:5000/api/corsi/', {
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+        });
         setCorso(res.data);
       } catch (err) {
         console.error(err);
@@ -43,6 +42,10 @@ function AdminListaCorso() {
     setSelecteGiornate(direttoreCorso || []);
     setShowGiornateModal(true);
   };
+  const handleOpenCourseModal = (courseId) => {
+    setCourseId(courseId);
+    setShowStatusModal(true);
+  };
 
   return (
     <div className='container mt-4'>
@@ -53,6 +56,7 @@ function AdminListaCorso() {
             <th>Città</th>
             <th>Via</th>
             <th>Numero Discenti</th>
+            <th>Current Status</th>
             <th>direttore Details</th>
             <th>Città</th>
             <th>Regione</th>
@@ -64,6 +68,7 @@ function AdminListaCorso() {
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
+                <td>{corsoItem.status}</td>
                 <td>{corsoItem.numeroDiscenti}</td>
                 <td>
                   <button
@@ -79,7 +84,9 @@ function AdminListaCorso() {
                   <button
                     type='button'
                     className='btn btn-primary'
-                    onClick={() => handleOpenInstructorModal(corsoItem.istruttore)}
+                    onClick={() =>
+                      handleOpenInstructorModal(corsoItem.istruttore)
+                    }
                   >
                     instruttore Details
                   </button>
@@ -91,6 +98,15 @@ function AdminListaCorso() {
                     onClick={() => handleOpenGiornateModal(corsoItem.giornate)}
                   >
                     Giornate Details
+                  </button>
+                </td>
+                <td>
+                  <button
+                    type='button'
+                    className='btn btn-primary'
+                    onClick={() => handleOpenCourseModal(corsoItem?._id)}
+                  >
+                    Change Status
                   </button>
                 </td>
               </tr>
@@ -125,6 +141,12 @@ function AdminListaCorso() {
         <GiornateModal
           setShowGiornateModal={setShowGiornateModal}
           giornateDetails={selectedGiornate}
+        />
+      )}
+      {showStatusModal && (
+        <StatusModal
+          setShowStatusModal={setShowStatusModal}
+          courseId={courseId}
         />
       )}
     </div>
@@ -184,6 +206,7 @@ const SanitariosModal = ({ setShowSanitariosModal, direttoreCorso }) => {
   );
 };
 const InstuctorModal = ({ setShowInstructorModal, instructorDetails }) => {
+  console.log('instructorDetails: ', instructorDetails);
   return (
     <div className='modal modal-xl show d-block' tabIndex='-1'>
       <div className='modal-dialog'>
@@ -278,6 +301,59 @@ const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const StatusModal = ({ setShowStatusModal, courseId }) => {
+  const [status, setStatus] = useState('active');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.patch(
+        `http://localhost:5000/api/corsi/courses/${courseId}/status`,
+        {
+          status: status,
+        },
+        {
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+        }
+      );
+      alert('Corso status change con successo!');
+    } catch (err) {
+      console.error(err);
+      alert('Errore durante la creazione del corso');
+    }
+  };
+
+  return (
+    <div className='modal modal-xl show d-block' tabIndex='-1'>
+      <div className='modal-dialog'>
+        <div className='modal-content'>
+          <div className='modal-header'>
+            <h5 className='modal-title'>Change Status</h5>
+            <button
+              type='button'
+              className='close'
+              onClick={() => setShowStatusModal(false)}
+            >
+              <span>&times;</span>
+            </button>
+          </div>
+          <div className='modal-body'>
+            <form action='submit' onSubmit={handleSubmit}>
+              <select className='col-12 form-control' onChange={(e) => setStatus(e.target.value)} name='' id=''>
+                <option value='active'>Active</option>
+                <option value='unActive'>Un Active</option>
+              </select>
+              <button type='submit' className='btn btn-primary'>
+                Change Status
+              </button>
+            </form>
           </div>
         </div>
       </div>

@@ -60,7 +60,7 @@ function ListaCorso() {
         </thead>
         <tbody>
           {corso?.length > 0 ? (
-            corso.map((corsoItem) => (
+            corso.filter((item)=>item?.status=='active').map((corsoItem) => (
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
