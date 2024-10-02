@@ -34,6 +34,8 @@ import Store from './pages/Store'
 import StoreDetails from './pages/StoreDetails'
 import CreateCorso from './pages/CreateCorso'
 import ViewProfile from './pages/ViewProfile';
+import ListaCorso from './pages/ListaCorso';
+import AdminListaCorso from './pages/AdminListaCorso';
 
 
 const App = () => {
@@ -70,10 +72,12 @@ const App = () => {
         <Route path="/admin/orders" element={<OrderManagement />} />
         <Route path="/admin/create-product" element={<CreateProduct />} />
         <Route path="/admin/all-orders" element={<AdminOrders />} />
+        <Route path="/admin/all-corso" element={<AdminListaCorso />} />
         <Route path="/create-discente" element={<CreateDiscente />} />
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/lista-discenti" element={<ListaDiscentiPage />} />
         <Route path="/create-corso" element={<CreateCorso />} />
+        <Route path="/corso" element={<ListaCorso />} />
         <Route path="/store" element={<Store />} />
         <Route path="/store/:productId" element={<StoreDetails />} /> 
       </Routes>
