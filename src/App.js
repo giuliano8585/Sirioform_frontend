@@ -1,6 +1,11 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from 'react-router-dom';
 import RegisterCenter from './components/RegisterCenter';
 import RegisterInstructor from './components/RegisterInstructor';
 import Login from './components/Login';
@@ -37,6 +42,7 @@ import ViewProfile from './pages/ViewProfile';
 import ListaCorso from './pages/ListaCorso';
 import AdminListaCorso from './pages/AdminListaCorso';
 import Navbar from './components/Navbar';
+import { jwtDecode } from 'jwt-decode';
 
 const App = () => {
   return (
@@ -48,22 +54,70 @@ const App = () => {
           <Route path='/register-center' element={<RegisterCenter />} />
           <Route path='/register-instructor' element={<RegisterInstructor />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/admin-dashboard' element={<AdminDashboard />} />
-          <Route path='/center-dashboard' element={<CenterDashboard />} />
+          <Route
+            path='/admin-dashboard'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/center-dashboard'
+            element={
+              <ProtectedRoute allowedRoles={['center']}>
+                <CenterDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path='/instructor-dashboard'
-            element={<InstructorDashboard />}
+            element={
+              <ProtectedRoute allowedRoles={['instructor']}>
+                <InstructorDashboard />
+              </ProtectedRoute>
+            }
           />
-          <Route path='/user-dashboard' element={<ProtectedComponent />} />
-          <Route path='/centers-list' element={<CentersList />} />
-          <Route path='/instructors-list' element={<InstructorsList />} />
-          <Route path='/create-kit' element={<CreateKit />} />
-          {/* <Route path="/view-kits" element={<ViewKits />} /> */}
+          <Route
+            path='/centers-list'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CentersList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/instructors-list'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <InstructorsList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/create-kit'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CreateKit />
+              </ProtectedRoute>
+            }
+          />
           <Route path='/view-kits' element={<ProductsPage />} />
-          <Route path='/unapproved-centers' element={<UnapprovedCenters />} />
+          <Route
+            path='/unapproved-centers'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <UnapprovedCenters />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path='/unapproved-instructors'
-            element={<UnapprovedInstructors />}
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <UnapprovedInstructors />
+              </ProtectedRoute>
+            }
           />
           <Route path='/create-sanitario' element={<CreateSanitario />} />
           <Route path='/sanitarios-list' element={<ListaSanitari />} />
@@ -85,11 +139,39 @@ const App = () => {
           <Route path='/center/view-profile' element={<ViewProfile />} />
 
           <Route path='/payment' element={<Checkout />} />
-          <Route path='/admin/products' element={<ProductManagement />} />
-          <Route path='/admin/orders' element={<OrderManagement />} />
+          <Route
+            path='/admin/products'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <ProductManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/orders'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <OrderManagement />
+              </ProtectedRoute>
+            }
+          />
           <Route path='/admin/create-product' element={<CreateProduct />} />
-          <Route path='/admin/all-orders' element={<AdminOrders />} />
-          <Route path='/admin/all-corso' element={<AdminListaCorso />} />
+          <Route
+            path='/admin/all-orders'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminOrders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/all-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminListaCorso />
+              </ProtectedRoute>
+            }
+          />
           <Route path='/create-discente' element={<CreateDiscente />} />
           <Route path='/orders' element={<OrdersPage />} />
           <Route path='/lista-discenti' element={<ListaDiscentiPage />} />
@@ -104,3 +186,25 @@ const App = () => {
 };
 
 export default App;
+
+const ProtectedRoute = ({ allowedRoles, children }) => {
+  const getRoleFromToken = () => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      const decodedToken = jwtDecode(token);
+      return decodedToken.user.role;
+    } catch (error) {
+      console.error('Error decoding token', error);
+      return null;
+    }
+  };
+  const role = getRoleFromToken();
+
+  if (!allowedRoles.includes(role)) {
+    return <Navigate to='/login' replace />;
+  }
+
+  return children;
+};

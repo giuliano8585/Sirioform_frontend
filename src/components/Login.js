@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../App.css'; // Percorso corretto per il file CSS
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -21,13 +24,14 @@ const Login = () => {
     try {
       const res = await axios.post('http://localhost:5000/api/auth/login', formData);
       localStorage.setItem('token', res.data.token);
-      setLoading(false); // Rimuove lo stato di caricamento
-      if (formData.role === 'admin') {
-        window.location.href = '/admin-dashboard';
-      } else if (formData.role === 'instructor') {
-        window.location.href = '/instructor-dashboard';
+      setLoading(false); 
+      const decodedToken = jwtDecode(res.data.token);
+      if (decodedToken.user.role === 'admin') {
+        navigate('/admin-dashboard');
+      } else if (decodedToken.user.role === 'instructor') {
+        navigate('/instructor-dashboard');
       } else {
-        window.location.href = '/center-dashboard';
+        navigate('/center-dashboard');
       }
     } catch (err) {
       setLoading(false); // Rimuove lo stato di caricamento in caso di errore
@@ -67,7 +71,7 @@ const Login = () => {
             required 
           />
         </div>
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <label className="form-label">Role</label>
           <select 
             className="form-select" 
@@ -79,7 +83,7 @@ const Login = () => {
             <option value="instructor">Instructor</option>
             <option value="admin">Admin</option>
           </select>
-        </div>
+        </div> */}
         <button type="submit" className="btn btn-primary">
           {loading ? 'Loading...' : 'Login'}
         </button>
