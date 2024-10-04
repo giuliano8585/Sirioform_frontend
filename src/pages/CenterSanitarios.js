@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const CenterSanitarios = () => {
+  const token = localStorage.getItem('token');
+  const decodedToken = jwtDecode(token);
   const [sanitarios, setSanitarios] = useState([]);
   const navigate = useNavigate();
   const location = useLocation()
@@ -28,7 +31,7 @@ const CenterSanitarios = () => {
   }, []);
 
   const goBack = () => {
-    navigate('/center-dashboard');
+    navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard');
   };
 
   return (

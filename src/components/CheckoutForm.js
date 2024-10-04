@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
   const navigate = useNavigate()
@@ -40,6 +41,8 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
   };
 
   const handlePurchase = async (productId, quantity) => {
+    const token = localStorage.getItem('token');
+      const decodedToken = jwtDecode(token);
     try {
       const res = await axios.post(
         'http://localhost:5000/api/orders',
@@ -53,15 +56,7 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
       );
       alert('Order placed successfully!')
       onOrderSuccess(res.data);
-      navigate('/center-dashboard');
-      //we can redirect to center dashbor, if I login with center role, instructor dashboard if I login with instructor
-      // you can give route over here. what's root? when order is ok, and payment is ok we can redirect on home dashboard,yeah, just put the page name over here
-      // it will redict after order and payment completion, payment and order is now ok
-      //yes but currently we dont have any role becouse both are comming from diffrent schemas,
-      // we will do that functionality when we do it to one schema (user). ok. can you start to work for that tomorrow?yaeh tomorrow we will do a meeting and discuss these things. ok thanks. 
-      //tomorrow send me 30$ request also
-      //no worries, thank you. thanks
-      //my pleasure, Bye see. bye. good night, good night
+      navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard');
     } catch (err) {
       alert("Error placing the order");
     }

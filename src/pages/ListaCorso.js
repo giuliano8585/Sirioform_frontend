@@ -53,9 +53,10 @@ function ListaCorso() {
             <th>Città</th>
             <th>Via</th>
             <th>Numero Discenti</th>
-            <th>direttore Details</th>
-            <th>Città</th>
-            <th>Regione</th>
+            <th>Data creazione</th>
+            <th>direttore </th>
+            <th>Istruttori</th>
+            <th>Giornate</th>
           </tr>
         </thead>
         <tbody>
@@ -65,6 +66,7 @@ function ListaCorso() {
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
                 <td>{corsoItem.numeroDiscenti}</td>
+                <td>{corsoItem.createdAt?.split('T')[0]}</td>
                 <td>
                   <button
                     type='button'
