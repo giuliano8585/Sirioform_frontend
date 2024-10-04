@@ -133,7 +133,7 @@ const ViewProfile = () => {
         ))}
       </div>
       <div className="d-flex gap-5">
-      <div className="btn btn-primary"  onClick={() => navigate('/center-dashboard')}>Back</div>
+      <div className="btn btn-primary"  onClick={() => navigate(decodedToken.user.role=='instructor'?'/instructor-dashboard':'/center-dashboard')}>Back</div>
       <div className="btn btn-primary"  onClick={() => navigate(decodedToken.user.role=='instructor'?'/instructor/update-profile':'/center/update-profile',{state:{id:data?._id}})}>Edit</div>
       </div>
     </div>
