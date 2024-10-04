@@ -43,6 +43,8 @@ import ListaCorso from './pages/ListaCorso';
 import AdminListaCorso from './pages/AdminListaCorso';
 import Navbar from './components/Navbar';
 import { jwtDecode } from 'jwt-decode';
+import UpdateCenter from './pages/UpdateCenter';
+import UpdateInstructor from './pages/UpdateInstructor';
 
 const App = () => {
   return (
@@ -137,6 +139,8 @@ const App = () => {
           />
           <Route path='/instructor/view-profile' element={<ViewProfile />} />
           <Route path='/center/view-profile' element={<ViewProfile />} />
+          <Route path='/center/update-profile' element={<ProtectedRoute allowedRoles={['center']}><UpdateCenter  /></ProtectedRoute>} />
+          <Route path='/instructor/update-profile' element={<ProtectedRoute allowedRoles={['instructor']}><UpdateInstructor  /></ProtectedRoute>} />
 
           <Route path='/payment' element={<Checkout />} />
           <Route

@@ -3,7 +3,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function AdminListaCorso() {
+  const [render,setRender] = useState(false)
   const [corso, setCorso] = useState([]);
+  console.log('corso: ', corso);
   const [showSanitariosModal, setShowSanitariosModal] = useState(false);
   const [selectedDirettoreCorso, setSelectedDirettoreCorso] = useState([]);
   const [showInstructorModal, setShowInstructorModal] = useState(false);
@@ -28,7 +30,7 @@ function AdminListaCorso() {
     };
 
     fetchCorso();
-  }, []);
+  }, [render]);
 
   const handleOpenModal = (direttoreCorso) => {
     setSelectedDirettoreCorso(direttoreCorso || []);
@@ -55,6 +57,8 @@ function AdminListaCorso() {
           <tr>
             <th>Città</th>
             <th>Via</th>
+            <th>Created By</th>
+            <th>Course</th>
             <th>Numero Discenti</th>
             <th>Current Status</th>
             <th>direttore Details</th>
@@ -68,6 +72,8 @@ function AdminListaCorso() {
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
+                <td>{corsoItem.userId?.name}</td>
+                <td>{corsoItem?.tipologia?.type}</td>
                 <td>{corsoItem.status}</td>
                 <td>{corsoItem.numeroDiscenti}</td>
                 <td>
@@ -147,6 +153,8 @@ function AdminListaCorso() {
         <StatusModal
           setShowStatusModal={setShowStatusModal}
           courseId={courseId}
+          setRender={setRender}
+          render={render}
         />
       )}
     </div>
@@ -258,6 +266,10 @@ const InstuctorModal = ({ setShowInstructorModal, instructorDetails }) => {
 };
 
 const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
   return (
     <div className='modal modal-xl show d-block' tabIndex='-1'>
       <div className='modal-dialog'>
@@ -287,8 +299,8 @@ const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
                   {giornateDetails?.length > 0 ? (
                     giornateDetails.map((giornate, index) => (
                       <tr key={index}>
-                        <td>{giornate.dataInizio}</td>
-                        <td>{giornate.dataFine}</td>
+                        <td>{formatDate(giornate?.dataInizio?.split('T')[0])}</td>
+                        <td>{formatDate(giornate?.dataFine?.split('T')[0])}</td>
                         <td>{giornate.oraInizio}</td>
                         <td>{giornate.oraFine}</td>
                       </tr>
@@ -308,7 +320,7 @@ const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
   );
 };
 
-const StatusModal = ({ setShowStatusModal, courseId }) => {
+const StatusModal = ({ setShowStatusModal, courseId,setRender,render }) => {
   const [status, setStatus] = useState('active');
 
   const handleSubmit = async (e) => {
@@ -324,6 +336,8 @@ const StatusModal = ({ setShowStatusModal, courseId }) => {
         }
       );
       alert('Corso status change con successo!');
+      setRender(!render)
+      setShowStatusModal(false)
     } catch (err) {
       console.error(err);
       alert('Errore durante la creazione del corso');

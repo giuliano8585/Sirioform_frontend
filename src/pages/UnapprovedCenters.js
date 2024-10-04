@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 const UnapprovedCenters = () => {
+  const navigate = useNavigate()
   const [centers, setCenters] = useState([]);
   const token = localStorage.getItem('token')
+  const decodedToken = jwtDecode(token);
 
   useEffect(() => {
     const fetchUnapprovedCenters = async () => {
@@ -68,6 +72,7 @@ const UnapprovedCenters = () => {
           </tbody>
         </table>
       </div>
+      <div className=""  onClick={() => navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'instructor-dashboard')}>Back</div>
     </div>
   );
 };

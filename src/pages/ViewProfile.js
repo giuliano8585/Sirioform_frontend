@@ -1,13 +1,14 @@
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const ViewProfile = () => {
+  const token = localStorage.getItem('token');
+  const decodedToken = jwtDecode(token);
   const navigate = useNavigate();
   const location = useLocation();
-  console.log('location: ', location);
   const [data, setData] = useState(null);
-  console.log('data: ', data);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -130,6 +131,10 @@ const ViewProfile = () => {
             </div>
           </div>
         ))}
+      </div>
+      <div className="d-flex gap-5">
+      <div className="btn btn-primary"  onClick={() => navigate('/center-dashboard')}>Back</div>
+      <div className="btn btn-primary"  onClick={() => navigate(decodedToken.user.role=='instructor'?'/instructor/update-profile':'/center/update-profile',{state:{id:data?._id}})}>Edit</div>
       </div>
     </div>
   );
