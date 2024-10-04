@@ -86,7 +86,9 @@ function CreateCorso() {
   const removeDirecttore = (id) => {
     setCorso({
       ...corso,
-      direttoriCorso: corso.direttoriCorso.filter((direttori) => direttori !== id),
+      direttoriCorso: corso.direttoriCorso.filter(
+        (direttori) => direttori !== id
+      ),
     });
   };
 
@@ -270,6 +272,11 @@ function CreateCorso() {
                 onChange={handleIstruttoreChange}
               >
                 <option value=''>Seleziona un Istruttore</option>
+                {data?.role == 'instructor' && (
+                  <option value={data?._id}>
+                    {data?.firstName + ' ' + data?.lastName}
+                  </option>
+                )}
                 {data?.instructors?.map((instructor) => (
                   <option key={instructor._id} value={instructor._id}>
                     {instructor?.firstName + ' ' + instructor?.lastName}
@@ -277,19 +284,21 @@ function CreateCorso() {
                 ))}
               </select>
               <ul>
-                {corso.istruttori.map((istruttore, index) => (
-                  <li key={index}>
-                    {data?.instructors?.find(
-                      (instr) => instr._id === istruttore
-                    )?.firstName +
-                      ' ' +
-                      data?.instructors?.find(
+                {!data?.role == 'instructor' &&
+                  corso.istruttori.map((istruttore, index) => (
+                    <li key={index}>
+                      {data?.instructors?.find(
                         (instr) => instr._id === istruttore
-                      )?.lastName}
-                            <button onClick={() => removeIstruttore(istruttore)}>Remove</button>
-
-                  </li>
-                ))}
+                      )?.firstName +
+                        ' ' +
+                        data?.instructors?.find(
+                          (instr) => instr._id === istruttore
+                        )?.lastName}
+                      <button onClick={() => removeIstruttore(istruttore)}>
+                        Remove
+                      </button>
+                    </li>
+                  ))}
               </ul>
             </div>
             <button
@@ -324,8 +333,9 @@ function CreateCorso() {
                       ' ' +
                       data?.sanitarios?.find((san) => san._id === direttore)
                         ?.lastName}
-                              <button onClick={() => removeDirecttore(direttore)}>Remove</button>
-
+                    <button onClick={() => removeDirecttore(direttore)}>
+                      Remove
+                    </button>
                   </li>
                 ))}
               </ul>

@@ -3,9 +3,16 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function OrdersPage() {
+  const [kits, setKits] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [filter, setFilter] = useState({
+    type: '',
+    sortBy: 'date',
+    order: 'asc',
+  });
   const navigate = useNavigate();
 
   const handleShowModal = (order) => {
@@ -18,6 +25,11 @@ function OrdersPage() {
     setSelectedOrder(null);
   };
 
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilter({ ...filter, [name]: value });
+  };
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -25,6 +37,7 @@ function OrdersPage() {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setOrders(res.data);
+        setFilteredOrders(res.data); // Initialize with full data
       } catch (err) {
         setOrders([]);
       }
@@ -33,28 +46,108 @@ function OrdersPage() {
     fetchOrders();
   }, []);
 
+  useEffect(() => {
+    let sortedOrders = [...orders];
+
+    // Filter by type if provided
+    if (filter.type) {
+      sortedOrders = sortedOrders.filter((order) =>
+        order.orderItems.some((item) => item.productId?.type === filter.type)
+      );
+    }
+
+    // Sort by date or totalPrice
+    if (filter.sortBy === 'date') {
+      sortedOrders.sort(
+        (a, b) =>
+          new Date(a.createdAt) -
+          new Date(b.createdAt) * (filter.order === 'asc' ? 1 : -1)
+      );
+    } else if (filter.sortBy === 'price') {
+      sortedOrders.sort(
+        (a, b) =>
+          (a.totalPrice - b.totalPrice) * (filter.order === 'asc' ? 1 : -1)
+      );
+    }
+
+    setFilteredOrders(sortedOrders);
+  }, [filter, orders]);
+
+  useEffect(() => {
+    const fetchKits = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/kits');
+        setKits(res.data);
+      } catch (err) {
+        console.error(err);
+        alert('Errore nel recupero dei kit.');
+      }
+    };
+
+    fetchKits();
+  }, []);
+
   const formatDate = (dateString) => {
     const [year, month, day] = dateString.split('-');
     return `${day}/${month}/${year}`;
   };
 
+  const getTime = (time) => {
+    const date = new Date(time);
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    return `${hours} : ${minutes}`;
+  };
+
   return (
-    <div className="container mt-4">
-      <h2>I miei ordini</h2>
-      <table className="table table-hover">
+    <div className='container mt-4'>
+      <div className='d-flex align-items-center justify-content-between'>
+        <h2>I miei ordini</h2>
+        <div>
+          <select name='type' value={filter.type} onChange={handleFilterChange}>
+            <option value=''>All Types</option>
+            {[...new Set(kits.map((kit) => kit?.type))].map(
+              (uniqueType, index) => (
+                <option key={index} value={uniqueType}>
+                  {uniqueType}
+                </option>
+              )
+            )}
+          </select>
+          <select
+            name='sortBy'
+            value={filter.sortBy}
+            onChange={handleFilterChange}
+          >
+            <option value='date'>Order Date</option>
+            <option value='price'>Total Price</option>
+          </select>
+          <select
+            name='order'
+            value={filter.order}
+            onChange={handleFilterChange}
+          >
+            <option value='asc'>Ascending</option>
+            <option value='desc'>Descending</option>
+          </select>
+        </div>
+      </div>
+
+      <table className='table table-hover'>
         <thead>
           <tr>
             <th>#Order Id</th>
             <th>Product Name</th>
             <th>Product Quantity</th>
             <th>Order Date</th>
+            <th>Order Time</th>
             <th>Total Price</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {Array.isArray(orders) && orders.length > 0 ? (
-            orders.map((order) => (
+          {Array.isArray(filteredOrders) && filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => (
               <tr key={order._id}>
                 <td>{order._id}</td>
                 <td>
@@ -68,11 +161,12 @@ function OrdersPage() {
                   ))}
                 </td>
                 <td>{formatDate(order?.createdAt?.split('T')[0])}</td>
+                <td>{getTime(order?.createdAt)}</td>
                 <td>{order.totalPrice}</td>
                 <td>
                   <button
-                    type="button"
-                    className="btn btn-primary"
+                    type='button'
+                    className='btn btn-primary'
                     onClick={() => handleShowModal(order)}
                   >
                     Dettagli
@@ -82,7 +176,7 @@ function OrdersPage() {
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="text-muted">
+              <td colSpan='6' className='text-muted'>
                 Nessun ordine trovato.
               </td>
             </tr>
@@ -90,36 +184,58 @@ function OrdersPage() {
         </tbody>
       </table>
 
-      {/* Modale per i dettagli dell'ordine */}
       {showModal && selectedOrder && (
-        <div className="modal fade show d-block" tabIndex="-1" role="dialog">
-          <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div className="modal-content">
-              <div className="modal-header d-flex justify-content-between">
-                <h5 className="modal-title">Dettagli Ordine</h5>
-                <button type="button" className="close" onClick={handleCloseModal}>
-                  <span aria-hidden="true">&times;</span>
+        <div className='modal fade show d-block' tabIndex='-1' role='dialog'>
+          <div
+            className='modal-dialog modal-dialog-centered modal-lg'
+            role='document'
+          >
+            <div className='modal-content'>
+              <div className='modal-header d-flex justify-content-between'>
+                <h5 className='modal-title'>Dettagli Ordine</h5>
+                <button
+                  type='button'
+                  className='close'
+                  onClick={handleCloseModal}
+                >
+                  <span aria-hidden='true'>&times;</span>
                 </button>
               </div>
-              <div className="modal-body">
-                <p><strong>Order ID:</strong> {selectedOrder._id}</p>
-                <p><strong>Order Date:</strong> {selectedOrder.createdAt?.split('T')[0]}</p>
-                <p><strong>Prodotti:</strong></p>
+              <div className='modal-body'>
+                <p>
+                  <strong>Order ID:</strong> {selectedOrder._id}
+                </p>
+                <p>
+                  <strong>Order Date:</strong>{' '}
+                  {selectedOrder.createdAt?.split('T')[0]}
+                </p>
+                <p>
+                  <strong>Prodotti:</strong>
+                </p>
                 <ul>
                   {selectedOrder.orderItems.map((item) => (
                     <li key={item._id}>
-                      {item.productId?.title} - Quantità: {item.quantity} - Prezzo: {item.price}
+                      {item.productId?.title} - Quantità: {item.quantity} -
+                      Prezzo: {item.price}
                       <div>
                         <h6>Kit Number:</h6>
-                        {item?.progressiveNumbers?.map(progressivenumbers=><p className='ps-2'>{progressivenumbers}</p>)}
+                        {item?.progressiveNumbers?.map((progressivenumbers) => (
+                          <p className='ps-2'>{progressivenumbers}</p>
+                        ))}
                       </div>
                     </li>
                   ))}
                 </ul>
-                <p><strong>Prezzo Totale:</strong> {selectedOrder.totalPrice}</p>
+                <p>
+                  <strong>Prezzo Totale:</strong> {selectedOrder.totalPrice}
+                </p>
               </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
+              <div className='modal-footer'>
+                <button
+                  type='button'
+                  className='btn btn-secondary'
+                  onClick={handleCloseModal}
+                >
                   Chiudi
                 </button>
               </div>
@@ -128,7 +244,7 @@ function OrdersPage() {
         </div>
       )}
 
-      <button className="btn btn-secondary mt-4" onClick={() => navigate(-1)}>
+      <button className='btn btn-secondary mt-4' onClick={() => navigate(-1)}>
         Torna alla Dashboard
       </button>
     </div>
