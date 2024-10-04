@@ -104,14 +104,9 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path='/view-kits'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <ProductsPage />{' '}
-              </ProtectedRoute>
-            }
-          />
+          <Route path='/view-kits' element={
+            <ProtectedRoute allowedRoles={['admin','center','instructor']}>
+            <ProductsPage /> </ProtectedRoute>} />
           <Route
             path='/unapproved-centers'
             element={
@@ -128,53 +123,17 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path='/create-sanitario'
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <CreateSanitario />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/sanitarios-list'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <ListaSanitari />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/center-sanitarios'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center']}>
-                <CenterSanitarios />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/view-sanitarios'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <ViewSanitarios />
-              </ProtectedRoute>
-            }
-          />
+          <Route path='/create-sanitario' element={<ProtectedRoute allowedRoles={['admin']}><CreateSanitario /></ProtectedRoute>} />
+          <Route path='/sanitarios-list' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><ListaSanitari /></ProtectedRoute>} />
+          <Route path='/center-sanitarios' element={<ProtectedRoute allowedRoles={['admin','center']}><CenterSanitarios /></ProtectedRoute>} />
+          <Route path='/view-sanitarios' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><ViewSanitarios /></ProtectedRoute>} />
           <Route
             path='/view-instructor-sanitarios'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'instructor']}>
-                <ViewInstructorSanitarios />
-              </ProtectedRoute>
-            }
+            element={<ProtectedRoute allowedRoles={['admin','instructor']}><ViewInstructorSanitarios /></ProtectedRoute>}
           />
           <Route
             path='/center/view-instructors'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center']}>
-                <ViewInstructors />
-              </ProtectedRoute>
-            }
+            element={<ProtectedRoute allowedRoles={['admin','center']}><ViewInstructors /></ProtectedRoute>}
           />
           <Route
             path='/instructor/view-sanitarios'
@@ -182,31 +141,10 @@ const App = () => {
           />
           <Route path='/instructor/view-profile' element={<ViewProfile />} />
           <Route path='/center/view-profile' element={<ViewProfile />} />
-          <Route
-            path='/center/update-profile'
-            element={
-              <ProtectedRoute allowedRoles={['center']}>
-                <UpdateCenter />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/instructor/update-profile'
-            element={
-              <ProtectedRoute allowedRoles={['instructor']}>
-                <UpdateInstructor />
-              </ProtectedRoute>
-            }
-          />
+          <Route path='/center/update-profile' element={<ProtectedRoute allowedRoles={['center']}><UpdateCenter  /></ProtectedRoute>} />
+          <Route path='/instructor/update-profile' element={<ProtectedRoute allowedRoles={['instructor']}><UpdateInstructor  /></ProtectedRoute>} />
 
-          <Route
-            path='/payment'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <Checkout />
-              </ProtectedRoute>
-            }
-          />
+          <Route path='/payment' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><Checkout /></ProtectedRoute>} />
           <Route
             path='/admin/products'
             element={
@@ -218,19 +156,12 @@ const App = () => {
           <Route
             path='/admin/orders'
             element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+              <ProtectedRoute allowedRoles={['admin','center','instructor']}>
                 <OrderManagement />
               </ProtectedRoute>
             }
           />
-          <Route
-            path='/admin/create-product'
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <CreateProduct />
-              </ProtectedRoute>
-            }
-          />
+          <Route path='/admin/create-product' element={<ProtectedRoute allowedRoles={['admin']}><CreateProduct /></ProtectedRoute>} />
           <Route
             path='/admin/all-orders'
             element={
@@ -247,62 +178,13 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path='/create-discente'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <CreateDiscente />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/orders'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <OrdersPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/lista-discenti'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <ListaDiscentiPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/create-corso'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <CreateCorso />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/corso'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <ListaCorso />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/store'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <Store />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/store/:productId'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <StoreDetails />
-              </ProtectedRoute>
-            }
-          />
+          <Route path='/create-discente' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><CreateDiscente /></ProtectedRoute>} />
+          <Route path='/orders' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><OrdersPage /></ProtectedRoute>} />
+          <Route path='/lista-discenti' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><ListaDiscentiPage /></ProtectedRoute>} />
+          <Route path='/create-corso' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><CreateCorso /></ProtectedRoute>} />
+          <Route path='/corso' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><ListaCorso /></ProtectedRoute>} />
+          <Route path='/store' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><Store /></ProtectedRoute>} />
+          <Route path='/store/:productId' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><StoreDetails /></ProtectedRoute>} />
         </Routes>
       </Router>
     </>
