@@ -102,7 +102,9 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path='/view-kits' element={<ProductsPage />} />
+          <Route path='/view-kits' element={
+            <ProtectedRoute allowedRoles={['admin','center','instructor']}>
+            <ProductsPage /> </ProtectedRoute>} />
           <Route
             path='/unapproved-centers'
             element={
@@ -119,26 +121,26 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path='/create-sanitario' element={<CreateSanitario />} />
-          <Route path='/sanitarios-list' element={<ListaSanitari />} />
-          <Route path='/center-sanitarios' element={<CenterSanitarios />} />
-          <Route path='/view-sanitarios' element={<ViewSanitarios />} />
+          <Route path='/create-sanitario' element={<ProtectedRoute allowedRoles={['admin']}><CreateSanitario /></ProtectedRoute>} />
+          <Route path='/sanitarios-list' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><ListaSanitari /></ProtectedRoute>} />
+          <Route path='/center-sanitarios' element={<ProtectedRoute allowedRoles={['admin','center']}><CenterSanitarios /></ProtectedRoute>} />
+          <Route path='/view-sanitarios' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><ViewSanitarios /></ProtectedRoute>} />
           <Route
             path='/view-instructor-sanitarios'
-            element={<ViewInstructorSanitarios />}
+            element={<ProtectedRoute allowedRoles={['admin','instructor']}><ViewInstructorSanitarios /></ProtectedRoute>}
           />
           <Route
             path='/center/view-instructors'
-            element={<ViewInstructors />}
+            element={<ProtectedRoute allowedRoles={['admin','center']}><ViewInstructors /></ProtectedRoute>}
           />
           <Route
             path='/instructor/view-sanitarios'
             element={<ViewSanitarios />}
           />
-          <Route path='/instructor/view-profile' element={<ViewProfile />} />
-          <Route path='/center/view-profile' element={<ViewProfile />} />
+          <Route path='/instructor/view-profile' element={<ProtectedRoute allowedRoles={['admin','instructor']}><ViewProfile /></ProtectedRoute>} />
+          <Route path='/center/view-profile' element={<ProtectedRoute allowedRoles={['admin','center']}><ViewProfile /></ProtectedRoute>} />
 
-          <Route path='/payment' element={<Checkout />} />
+          <Route path='/payment' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><Checkout /></ProtectedRoute>} />
           <Route
             path='/admin/products'
             element={
@@ -150,12 +152,12 @@ const App = () => {
           <Route
             path='/admin/orders'
             element={
-              <ProtectedRoute allowedRoles={['admin']}>
+              <ProtectedRoute allowedRoles={['admin','center','instructor']}>
                 <OrderManagement />
               </ProtectedRoute>
             }
           />
-          <Route path='/admin/create-product' element={<CreateProduct />} />
+          <Route path='/admin/create-product' element={<ProtectedRoute allowedRoles={['admin']}><CreateProduct /></ProtectedRoute>} />
           <Route
             path='/admin/all-orders'
             element={
@@ -172,13 +174,13 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path='/create-discente' element={<CreateDiscente />} />
-          <Route path='/orders' element={<OrdersPage />} />
-          <Route path='/lista-discenti' element={<ListaDiscentiPage />} />
-          <Route path='/create-corso' element={<CreateCorso />} />
-          <Route path='/corso' element={<ListaCorso />} />
-          <Route path='/store' element={<Store />} />
-          <Route path='/store/:productId' element={<StoreDetails />} />
+          <Route path='/create-discente' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><CreateDiscente /></ProtectedRoute>} />
+          <Route path='/orders' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><OrdersPage /></ProtectedRoute>} />
+          <Route path='/lista-discenti' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><ListaDiscentiPage /></ProtectedRoute>} />
+          <Route path='/create-corso' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><CreateCorso /></ProtectedRoute>} />
+          <Route path='/corso' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><ListaCorso /></ProtectedRoute>} />
+          <Route path='/store' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><Store /></ProtectedRoute>} />
+          <Route path='/store/:productId' element={<ProtectedRoute allowedRoles={['admin','center','instructor']}><StoreDetails /></ProtectedRoute>} />
         </Routes>
       </Router>
     </>

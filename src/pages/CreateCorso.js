@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 function CreateCorso() {
+  const token = localStorage.getItem('token');
+  const decodedToken = jwtDecode(token);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -188,7 +191,7 @@ function CreateCorso() {
         }
       );
       alert('Corso creato con successo!');
-      navigate('/center-dashboard');
+      navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard');
     } catch (err) {
       console.error(err);
       alert('Errore durante la creazione del corso');

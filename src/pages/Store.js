@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 function Store() {
+  const token = localStorage.getItem('token');
+    const decodedToken = jwtDecode(token);
   const [prodotti, setProdotti] = useState([]);
   const navigate = useNavigate();
 
@@ -64,7 +67,7 @@ function Store() {
       )}
       <button
         className="btn btn-secondary mt-3"
-        onClick={() => navigate('/center-dashboard')}
+        onClick={() => navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard')}
       >
         Torna alla Dashboard
       </button>
