@@ -73,18 +73,18 @@ const ViewProfile = () => {
             <h3 className='col-6'>{data?.email}</h3>
           </div>
         </div>
-        {!location?.state?.isCenter &&
-        <div className='d-flex justify-items-between  col-12'>
-          <div className='d-flex justify-items-between  col-6'>
-            <h2 className='col-6'>brevetNumber :</h2>{' '}
-            <h3 className='col-6'>{data?.brevetNumber}</h3>
+        {!location?.state?.isCenter && (
+          <div className='d-flex justify-items-between  col-12'>
+            <div className='d-flex justify-items-between  col-6'>
+              <h2 className='col-6'>brevetNumber :</h2>{' '}
+              <h3 className='col-6'>{data?.brevetNumber}</h3>
+            </div>
+            <div className='d-flex justify-items-between  col-6'>
+              <h2 className='col-6'>fiscalCode :</h2>{' '}
+              <h3 className='col-6'>{data?.fiscalCode}</h3>
+            </div>
           </div>
-          <div className='d-flex justify-items-between  col-6'>
-            <h2 className='col-6'>fiscalCode :</h2>{' '}
-            <h3 className='col-6'>{data?.fiscalCode}</h3>
-          </div>
-        </div>
-        }
+        )}
         <div className='d-flex justify-items-between  col-12'>
           <div className='d-flex justify-items-between  col-6'>
             <h2 className='col-6'>piva :</h2>{' '}
@@ -105,36 +105,65 @@ const ViewProfile = () => {
             <h3 className='col-6'>{data?.region}</h3>
           </div>
         </div>
-        {!location?.state?.isCenter&&<h2 className='col-6'>Qualifications:</h2>}
-        {!location?.state?.isCenter && data?.qualifications?.map((data) => (
-          <div className='d-flex justify-items-between  col-12'>
-            <div className='d-flex justify-items-between  col-6'>
-              <h2 className='col-6'>Qualification Type :</h2>{' '}
-              <h3 className='col-6'>{data?.name}</h3>
+        {!location?.state?.isCenter && (
+          <h2 className='col-6'>Qualifications:</h2>
+        )}
+        {!location?.state?.isCenter &&
+          data?.qualifications?.map((data) => (
+            <div className='d-flex justify-items-between  col-12'>
+              <div className='d-flex justify-items-between  col-6'>
+                <h2 className='col-6'>Qualification Type :</h2>{' '}
+                <h3 className='col-6'>{data?.name}</h3>
+              </div>
+              <div className='d-flex justify-items-between  col-6'>
+                <h2 className='col-6'>expriration Date:</h2>{' '}
+                <h3 className='col-6'>{data?.expirationDate?.split('T')[0]}</h3>
+              </div>
             </div>
-            <div className='d-flex justify-items-between  col-6'>
-              <h2 className='col-6'>expriration Date:</h2>{' '}
-              <h3 className='col-6'>{data?.expirationDate?.split('T')[0]}</h3>
+          ))}
+        {location?.state?.isCenter && <h2 className='col-6'>sanitarios:</h2>}
+        {location?.state?.isCenter &&
+          data?.sanitarios?.map((data) => (
+            <div className='d-flex justify-items-between  col-12'>
+              <div className='d-flex justify-items-between  col-6'>
+                <h2 className='col-6'>sanitarios Name :</h2>{' '}
+                <h3 className='col-6'>
+                  {data?.firstName + ' ' + data?.lastName}
+                </h3>
+              </div>
+              <div className='d-flex justify-items-between  col-6'>
+                <h2 className='col-6'> sanitarios Email:</h2>{' '}
+                <h3 className='col-6'>{data?.email}</h3>
+              </div>
             </div>
-          </div>
-        ))}
-        {location?.state?.isCenter&&<h2 className='col-6'>sanitarios:</h2>}
-        {location?.state?.isCenter && data?.sanitarios?.map((data) => (
-          <div className='d-flex justify-items-between  col-12'>
-            <div className='d-flex justify-items-between  col-6'>
-              <h2 className='col-6'>sanitarios Name :</h2>{' '}
-              <h3 className='col-6'>{data?.firstName +" "+ data?.lastName}</h3>
-            </div>
-            <div className='d-flex justify-items-between  col-6'>
-              <h2 className='col-6'> sanitarios Email:</h2>{' '}
-              <h3 className='col-6'>{data?.email}</h3>
-            </div>
-          </div>
-        ))}
+          ))}
       </div>
-      <div className="d-flex gap-5">
-      <div className="btn btn-primary"  onClick={() => navigate(decodedToken.user.role=='instructor'?'/instructor-dashboard':'/center-dashboard')}>Back</div>
-      <div className="btn btn-primary"  onClick={() => navigate(decodedToken.user.role=='instructor'?'/instructor/update-profile':'/center/update-profile',{state:{id:data?._id}})}>Edit</div>
+      <div className='d-flex gap-5'>
+        <div
+          className='btn btn-primary'
+          onClick={() =>
+            navigate(
+              decodedToken.user.role == 'instructor'
+                ? '/instructor-dashboard'
+                : '/center-dashboard'
+            )
+          }
+        >
+          Back
+        </div>
+        <div
+          className='btn btn-primary'
+          onClick={() =>
+            navigate(
+              decodedToken.user.role == 'instructor'
+                ? '/instructor/update-profile'
+                : '/center/update-profile',
+              { state: { id: data?._id } }
+            )
+          }
+        >
+          Edit
+        </div>
       </div>
     </div>
   );
