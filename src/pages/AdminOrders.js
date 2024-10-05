@@ -5,8 +5,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function AdminOrders() {
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [sortOrder, setSortOrder] = useState('');
+  const [filterType, setFilterType] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [kits, setKits] = useState([]);
 
   const handleShowModal = (order) => {
     setSelectedOrder(order);
@@ -29,6 +33,7 @@ function AdminOrders() {
           }
         );
         setOrders(res.data);
+        setFilteredOrders(res.data);
       } catch (err) {
         console.error(err);
         setOrders([]);
@@ -37,83 +42,160 @@ function AdminOrders() {
 
     fetchOrders();
   }, []);
+  useEffect(() => {
+    const fetchKits = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/kits');
+        setKits(res.data);
+      } catch (err) {
+        console.error(err);
+        alert('Errore nel recupero dei kit.');
+      }
+    };
+
+    fetchKits();
+  }, []);
+
+  const handleSort = (orderType) => {
+    setSortOrder(orderType);
+    let sortedOrders = [...filteredOrders];
+
+    if (orderType === 'date-asc') {
+      sortedOrders.sort(
+        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      );
+    } else if (orderType === 'date-desc') {
+      sortedOrders.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+    } else if (orderType === 'type-asc') {
+      sortedOrders.sort((a, b) =>
+        a.orderItems[0]?.productId?.type.localeCompare(
+          b.orderItems[0]?.productId?.type
+        )
+      );
+    } else if (orderType === 'type-desc') {
+      sortedOrders.sort((a, b) =>
+        b.orderItems[0]?.productId?.type.localeCompare(
+          a.orderItems[0]?.productId?.type
+        )
+      );
+    }
+
+    setFilteredOrders(sortedOrders);
+  };
+
+  const handleFilterType = (type) => {
+    setFilterType(type);
+    if (type) {
+      const filtered = orders.filter((order) =>
+        order.orderItems.some((item) => item.productId?.type === type)
+      );
+      setFilteredOrders(filtered);
+    } else {
+      setFilteredOrders(orders);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
 
   return (
     <div className='container mt-5'>
       <h2 className='text-center mb-4'>All Orders</h2>
-      <div className='mb-4'>
+      <div className='mb-4 d-flex align-items-center justify-content-between'>
         <Link to='/admin-dashboard' className='btn btn-secondary'>
           Back to Dashboard
         </Link>
+        <div className='filters'>
+          <div className='d-flex'>
+            <select
+              className='form-control me-2'
+              value={sortOrder}
+              onChange={(e) => handleSort(e.target.value)}
+            >
+              <option value=''>Sort by</option>
+              <option value='date-asc'>Date Ascending</option>
+              <option value='date-desc'>Date Descending</option>
+              <option value='type-asc'>Type Ascending</option>
+              <option value='type-desc'>Type Descending</option>
+            </select>
+            <select
+              className='form-control'
+              value={filterType}
+              onChange={(e) => handleFilterType(e.target.value)}
+            >
+              <option value=''>Filter by Type</option>
+              {[...new Set(kits.map((kit) => kit?.type))].map(
+                (uniqueType, index) => (
+                  <option key={index} value={uniqueType}>
+                    {uniqueType}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+        </div>
       </div>
-      <table class='table table-hover'>
+      <table className='table table-hover'>
         <thead>
           <tr>
             <th scope='col'>#Order Id</th>
             <th scope='col'>User Name</th>
             <th scope='col'>Product Name</th>
-            <th scope='col'>Product Quantity</th>
+            <th scope='col'>Product Type</th>
+            <th scope='col'>total Quantity</th>
+            <th scope='col'>remaining Quantity</th>
             <th scope='col'>Order Date</th>
             <th scope='col'>Total Price</th>
             <th scope='col'></th>
           </tr>
         </thead>
         <tbody>
-          {Array.isArray(orders) && orders.length > 0 ? (
-            <>
-              {/* <div className="list-group">
-          {orders.map(order => (
-            <div key={order._id} className="list-group-item mb-3">
-              <h5>Order #{order._id}</h5>
-              <p>Customer: {order.userId?.firstName || 'Unknown'} {order.userId?.lastName || 'Unknown'}</p>
-              <ul className="list-group">
-                {order.orderItems.map(item => (
-                  <li key={item._id} className="list-group-item">
-                    Product ID: {item.productId} - Quantity: {item.quantity} - 
-                    Code: {item.code || 'N/A'} - Price: €{item.price}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-2"><strong>Total Price:</strong> €{order.totalPrice}</p>
-            </div>
-          ))}
-        </div> */}
-              {orders.map((order) => (
-                <tr>
-                  <>
-                    <th scope='row'>{order._id}</th>
-                    <td>
-                      {order.userId?.firstName || 'Unknown'}{' '}
-                      {order.userId?.lastName || 'Unknown'}
-                    </td>
-                    <td>
-                      {order.orderItems.map((item) => (
-                        <span key={item._id} className=''>
-                          {item.productId?.title}
-                        </span>
-                      ))}
-                    </td>
-                    <td>
-                      {order.orderItems.map((item) => (
-                        <span key={item._id} className=''>
-                          {item.quantity}
-                        </span>
-                      ))}
-                    </td>
-                    <td>
-                      {order?.createdAt?.split('T')[0]}
-                    </td>
-                    <td>{order.totalPrice}</td>
-                    <td>
-                      {' '}
-                      <button type='button' class='btn btn-primary' data-toggle="modal" data-target="#exampleModalCenter" onClick={() => handleShowModal(order)}>
-                        Details
-                      </button>
-                    </td>
-                  </>
-                </tr>
-              ))}
-            </>
+          {Array.isArray(filteredOrders) && filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => (
+              <tr key={order._id}>
+                <th scope='row'>{order._id}</th>
+                <td>
+                  {order?.userId?.role === 'center'
+                    ? order.userId?.name
+                    : `${order.userId?.firstName} ${order.userId?.lastName}`}
+                </td>
+                <td>
+                  {order.orderItems.map((item) => (
+                    <span key={item._id}>{item.productId?.code}</span>
+                  ))}
+                </td>
+                <td>
+                  {order.orderItems.map((item) => (
+                    <span key={item._id}>{item.productId?.type}</span>
+                  ))}
+                </td>
+                <td>
+                  {order.orderItems.map((item) => (
+                    <span key={item._id}>{item.totalQuantity}</span>
+                  ))}
+                </td>
+                <td>
+                  {order.orderItems.map((item) => (
+                    <span key={item._id}>{item.quantity}</span>
+                  ))}
+                </td>
+                <td>{formatDate(order?.createdAt?.split('T')[0])}</td>
+                <td>{order.totalPrice}</td>
+                <td>
+                  <button
+                    type='button'
+                    className='btn btn-primary'
+                    onClick={() => handleShowModal(order)}
+                  >
+                    Details
+                  </button>
+                </td>
+              </tr>
+            ))
           ) : (
             <p className='text-muted'>No orders found.</p>
           )}
@@ -121,47 +203,69 @@ function AdminOrders() {
       </table>
       {showModal && selectedOrder && (
         <div
-          className="modal fade show d-block"
-          tabIndex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalCenterTitle"
-          aria-hidden="true"
+          className='modal fade show d-block'
+          tabIndex='-1'
+          role='dialog'
+          aria-labelledby='exampleModalCenterTitle'
+          aria-hidden='true'
         >
-          <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div className="modal-content">
-              <div className="modal-header d-flex justify-content-between">
-                <h5 className="modal-title" id="exampleModalLongTitle">
+          <div
+            className='modal-dialog modal-dialog-centered modal-lg'
+            role='document'
+          >
+            <div className='modal-content'>
+              <div className='modal-header d-flex justify-content-between'>
+                <h5 className='modal-title' id='exampleModalLongTitle'>
                   Order Details
                 </h5>
                 <button
-                  type="button"
-                  className="close"
+                  type='button'
+                  className='close'
                   onClick={handleCloseModal}
                 >
-                  <span aria-hidden="true">&times;</span>
+                  <span aria-hidden='true'>&times;</span>
                 </button>
               </div>
-              <div className="modal-body">
-                <p><strong>Order ID:</strong> {selectedOrder._id}</p>
-                <p><strong>Order Date:</strong> {selectedOrder?.createdAt?.split('T')[0]}</p>
-                <p><strong>Customer Name:</strong> {selectedOrder.userId?.firstName} {selectedOrder.userId?.lastName}</p>
-                <p><strong>Products:</strong></p>
+              <div className='modal-body'>
+                <p>
+                  <strong>Order ID:</strong> {selectedOrder._id}
+                </p>
+                <p>
+                  <strong>Order Date:</strong>{' '}
+                  {selectedOrder?.createdAt?.split('T')[0]}
+                </p>
+                <p>
+                  <strong>Customer Name:</strong>{' '}
+                  {selectedOrder.userId?.firstName}{' '}
+                  {selectedOrder.userId?.lastName}
+                </p>
+                <p>
+                  <strong>Products:</strong>
+                </p>
                 <ul>
                   {selectedOrder.orderItems.map((item) => (
                     <>
-                    <li key={item._id}>
-                     Product Name :{item.productId?.title} - Quantity: {item.quantity} - Price :{item.price} 
-                     {item?.progressiveNumbers && item?.progressiveNumbers?.map((item)=><p className='py-0' style={{padding:"0px"}}>progressive Numbers : <strong>{item}</strong></p>)}
-                    </li>
+                      <li key={item._id}>
+                        Product Name :{item.productId?.title} - Quantity:{' '}
+                        {item.quantity} - Price :{item.price}
+                        {item?.progressiveNumbers &&
+                          item?.progressiveNumbers?.map((item) => (
+                            <p className='py-0' style={{ padding: '0px' }}>
+                              progressive Numbers : <strong>{item}</strong>
+                            </p>
+                          ))}
+                      </li>
                     </>
                   ))}
                 </ul>
-                <p><strong>Total Price:</strong> {selectedOrder.totalPrice}</p>
+                <p>
+                  <strong>Total Price:</strong> {selectedOrder.totalPrice}
+                </p>
               </div>
-              <div className="modal-footer">
+              <div className='modal-footer'>
                 <button
-                  type="button"
-                  className="btn btn-secondary"
+                  type='button'
+                  className='btn btn-secondary'
                   onClick={handleCloseModal}
                 >
                   Close
@@ -176,4 +280,3 @@ function AdminOrders() {
 }
 
 export default AdminOrders;
-

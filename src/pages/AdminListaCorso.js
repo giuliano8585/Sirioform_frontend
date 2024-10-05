@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 function AdminListaCorso() {
   const [render,setRender] = useState(false)
   const [corso, setCorso] = useState([]);
-  console.log('corso: ', corso);
   const [showSanitariosModal, setShowSanitariosModal] = useState(false);
   const [selectedDirettoreCorso, setSelectedDirettoreCorso] = useState([]);
   const [showInstructorModal, setShowInstructorModal] = useState(false);
@@ -72,7 +71,7 @@ function AdminListaCorso() {
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
-                <td>{corsoItem.userId?.name}</td>
+                <td>{corsoItem.userId?.role=='center'?corsoItem.userId?.name:(corsoItem.userId?.firstName+' '+corsoItem.userId?.lastName)}</td>
                 <td>{corsoItem?.tipologia?.type}</td>
                 <td>{corsoItem.status}</td>
                 <td>{corsoItem.numeroDiscenti}</td>

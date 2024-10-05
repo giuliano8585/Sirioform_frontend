@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [centerAccount, setCenterAccount] = useState(false);
+  const [instructorAccount, setInstructorAccount] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
@@ -43,14 +45,118 @@ const Navbar = () => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+  const generalCategory = notifications?.filter((item) => item?.category !== 'instructorAccount' && item?.category !== 'centerAccount');
+  const centerCategory = notifications?.filter((item) => item?.category === 'centerAccount');
+  const instructorCategory = notifications?.filter((item) => item?.category === 'instructorAccount');
+  
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
-  const dotColor = unreadCount > 0 ? 'green' : 'red';
+  const generalUnreadCount = notifications?.filter((n) => !n.isRead && n?.category !== 'instructorAccount' && n?.category !== 'centerAccount').length;
+  const centerUnreadCount = notifications?.filter((n) => !n.isRead && n?.category === 'centerAccount').length;
+  const instructorUnreadCount = notifications?.filter((n) => !n.isRead && n?.category === 'instructorAccount').length;
+
+  const dotColor = generalUnreadCount > 0 ? 'green' : 'red';
+  const centerdotColor = centerUnreadCount > 0 ? 'green' : 'red';
+  const instructordotColor = instructorUnreadCount > 0 ? 'green' : 'red';
 
   return (
     <div>
       <nav className='navbar navbar-expand-lg navbar-light bg-light col-12'>
-        <div className='ms-auto me-5 position-relative'>
+        <div className="ms-auto me-5 d-flex gap-3">
+        <div className='position-relative'>
+          <div
+            className='position-absolute'
+            style={{
+              width: '24px',
+              height: '24px',
+              top: -5,
+              right: -5,
+              backgroundColor: instructordotColor,
+              borderRadius: '50%',
+            }}
+          />
+          <button className='btn btn-primary' onClick={()=>setInstructorAccount(!instructorAccount)}>
+           instructor Notifications
+          </button>
+          {instructorAccount && (
+            <div
+              className='dropdown-menu show'
+              style={{
+                width: '400px', 
+                maxWidth: '90vw', 
+                right: '0', 
+                left: 'auto',
+                overflow: 'auto',
+              }}
+            >
+              {instructorCategory?.length === 0 ? (
+                <span className='dropdown-item'>No notifications</span>
+              ) : (
+                instructorCategory?.map((notification) => (
+                  <a
+                    key={notification._id}
+                    className='dropdown-item'
+                    onClick={() => handleMarkAsRead(notification._id)}
+                    href='#'
+                    style={notification.isRead ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}
+                  >
+                    {notification?.senderId?.username} {notification.message}
+                    {!notification.isRead && (
+                      <span className='text-danger'> (New)</span>
+                    )}
+                  </a>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+        <div className='position-relative'>
+          <div
+            className='position-absolute'
+            style={{
+              width: '24px',
+              height: '24px',
+              top: -5,
+              right: -5,
+              backgroundColor: centerdotColor,
+              borderRadius: '50%',
+            }}
+          />
+          <button className='btn btn-primary' onClick={()=>setCenterAccount(!centerAccount)}>
+           Center Notifications
+          </button>
+          {centerAccount && (
+            <div
+              className='dropdown-menu show'
+              style={{
+                width: '400px', 
+                maxWidth: '90vw', 
+                right: '0', 
+                left: 'auto',
+                overflow: 'auto',
+              }}
+            >
+              {centerCategory?.length === 0 ? (
+                <span className='dropdown-item'>No notifications</span>
+              ) : (
+                centerCategory?.map((notification) => (
+                  <a
+                    key={notification._id}
+                    className='dropdown-item'
+                    onClick={() => handleMarkAsRead(notification._id)}
+                    href='#'
+                    style={notification.isRead ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}
+                  >
+                    {notification?.senderId?.username} {notification.message}
+                    {!notification.isRead && (
+                      <span className='text-danger'> (New)</span>
+                    )}
+                  </a>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+        <div className='position-relative'>
           <div
             className='position-absolute'
             style={{
@@ -76,10 +182,10 @@ const Navbar = () => {
                 overflow: 'auto',
               }}
             >
-              {notifications.length === 0 ? (
+              {generalCategory?.length === 0 ? (
                 <span className='dropdown-item'>No notifications</span>
               ) : (
-                notifications.map((notification) => (
+                generalCategory?.map((notification) => (
                   <a
                     key={notification._id}
                     className='dropdown-item'
@@ -96,6 +202,7 @@ const Navbar = () => {
               )}
             </div>
           )}
+        </div>
         </div>
       </nav>
     </div>

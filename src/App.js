@@ -45,11 +45,11 @@ import Navbar from './components/Navbar';
 import { jwtDecode } from 'jwt-decode';
 import UpdateCenter from './pages/UpdateCenter';
 import UpdateInstructor from './pages/UpdateInstructor';
+import AdminProductsPage from './pages/AdminProductPage';
 
 const App = () => {
   return (
     <>
-      <Navbar />
       <Router>
         <Routes>
           <Route path='/' element={<Home />} />
@@ -248,6 +248,14 @@ const App = () => {
             }
           />
           <Route
+            path='/admin/view-kits'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminProductsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path='/create-discente'
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
@@ -330,5 +338,11 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
     return <Navigate to='/login' replace />;
   }
 
-  return children;
+  return (
+    <>
+      {' '}
+      <Navbar />
+      {children}
+    </>
+  );
 };

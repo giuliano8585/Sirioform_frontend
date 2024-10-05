@@ -67,6 +67,11 @@ const AdminDashboard = () => {
                   Lista corso
                 </Link>
               </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/view-kits" className="nav-link btn btn-primary w-100 btn-lg">
+                  Lista Kits
+                </Link>
+              </li>
             </ul>
           </div>
         </nav>

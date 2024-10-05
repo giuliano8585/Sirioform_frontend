@@ -5,8 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './ListaSanitari.css'; // Assicurati di creare e importare questo file CSS
 
 const ListaSanitari = () => {
+  const [render,setRender] = useState(false)
   const [sanitarios, setSanitarios] = useState([]);
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedSanitario, setSelectedSanitario] = useState(null);
 
   useEffect(() => {
     const fetchSanitarios = async () => {
@@ -19,16 +22,32 @@ const ListaSanitari = () => {
     };
 
     fetchSanitarios();
-  }, []);
+  }, [render]);
+
+  const handleDeleteSanitario = async (id) => {
+    try {
+      const res = await axios.delete(
+        `http://localhost:5000/api/sanitarios/${id}`
+      );
+      setRender(!render)
+      setShowModal(false)
+    } catch (err) {
+      console.error('Errore nel recupero dei sanitari', err);
+    }
+  };
 
   const goBack = () => {
     navigate('/admin-dashboard');
   };
 
+  const handleShowModal = (data) => {
+    setShowModal(true);
+    setSelectedSanitario(data);
+  };
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">Lista Sanitari</h2>
-      <table className="table table-bordered">
+    <div className='container mt-5'>
+      <h2 className='mb-4'>Lista Sanitari</h2>
+      <table className='table table-bordered'>
         <thead>
           <tr>
             <th>Nome</th>
@@ -43,7 +62,7 @@ const ListaSanitari = () => {
           </tr>
         </thead>
         <tbody>
-          {sanitarios.map(sanitario => (
+          {sanitarios.map((sanitario) => (
             <tr key={sanitario._id}>
               <td>{sanitario.firstName}</td>
               <td>{sanitario.lastName}</td>
@@ -54,17 +73,59 @@ const ListaSanitari = () => {
               <td>{sanitario.email}</td>
               <td>{sanitario.phone}</td>
               <td>
-                <button className="btn btn-danger btn-sm">Elimina</button>
+                <button
+                  onClick={() => handleShowModal(sanitario?._id)}
+                  className='btn btn-danger btn-sm'
+                >
+                  Elimina
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <button className="btn btn-secondary mt-4" onClick={goBack}>Indietro</button>
+      <button className='btn btn-secondary mt-4' onClick={goBack}>
+        Indietro
+      </button>
+      {showModal && selectedSanitario && (
+        <div className='modal modal-xl show d-block' tabIndex='-1'>
+          <div className='modal-dialog'>
+            <div className='modal-content'>
+              <div className='modal-header'>
+                <h5 className='modal-title'>Delete Sanitari</h5>
+                <button
+                  type='button'
+                  className='close'
+                  onClick={() => setShowModal(false)}
+                >
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className='modal-body'>
+                <div className='table-responsive'>
+                  <p className='text-center'>are you sure want to delete</p>
+                  <div className='d-flex align-items-center justify-content-center gap-4'>
+                    <button
+                      onClick={() => setShowModal(false)}
+                      className='btn btn-primary btn-sm'
+                    >
+                      No
+                    </button>
+                    <button
+                      onClick={() => handleDeleteSanitario(selectedSanitario)}
+                      className='btn btn-danger btn-sm'
+                    >
+                      Elimina
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default ListaSanitari;
-
-
