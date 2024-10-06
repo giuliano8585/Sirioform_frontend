@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function AdminOrders() {
+  const token = localStorage.getItem('token');
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [sortOrder, setSortOrder] = useState('');
@@ -24,7 +25,6 @@ function AdminOrders() {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const token = localStorage.getItem('token');
       try {
         const res = await axios.get(
           'http://localhost:5000/api/orders/admin/orders',
@@ -42,14 +42,14 @@ function AdminOrders() {
 
     fetchOrders();
   }, []);
+
   useEffect(() => {
     const fetchKits = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/kits');
+        const res = await axios.get('http://localhost:5000/api/kits',{headers:{'x-auth-token': `${token}`}});
         setKits(res.data);
       } catch (err) {
         console.error(err);
-        alert('Errore nel recupero dei kit.');
       }
     };
 

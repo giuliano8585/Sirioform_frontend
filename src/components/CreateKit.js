@@ -12,6 +12,7 @@ const CreateKit = () => {
     cost3: '',
     profileImage: null,
   });
+  const [showApproveConfirmModal, setShowApproveConfirmModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -42,13 +43,16 @@ const CreateKit = () => {
       await axios.post('http://localhost:5000/api/kits/create', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'x-auth-token': localStorage.getItem('token'),
         },
       });
       alert('Kit creato con successo!');
+      setShowApproveConfirmModal(false);
       navigate('/admin-dashboard');
     } catch (err) {
       console.error(err);
       alert('Errore nella creazione del kit.');
+      setShowApproveConfirmModal(false);
     }
   };
 
@@ -60,7 +64,7 @@ const CreateKit = () => {
   return (
     <div className='container mt-5'>
       <h1 className='mb-4'>Crea Kit</h1>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
+      <form encType='multipart/form-data'>
         <div className='form-group mb-3'>
           <label htmlFor='code'>Codice Kit</label>
           <input
@@ -141,17 +145,60 @@ const CreateKit = () => {
             type='file'
             className='form-control'
             id='customFile'
-            onChange={handleFileChange} 
-            accept="image/*" 
+            onChange={handleFileChange}
+            accept='image/*'
           />
         </div>
-        <button type='submit' className='btn btn-primary me-2'>
+        <button
+          type='button'
+          onClick={() => setShowApproveConfirmModal(true)}
+          className='btn btn-primary me-2'
+        >
           Crea
         </button>
         <button type='button' className='btn btn-secondary' onClick={goBack}>
           Indietro
         </button>
       </form>
+      {showApproveConfirmModal && (
+        <div className='modal modal-xl show d-block' tabIndex='-1'>
+          <div className='modal-dialog'>
+            <div className='modal-content'>
+              <div className='modal-header'>
+                <h5 className='modal-title'>Confirm</h5>
+                <button
+                  type='button'
+                  className='close'
+                  onClick={() => setShowApproveConfirmModal(false)}
+                >
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className='modal-body'>
+                <div className='table-responsive'>
+                  <p className='text-center'>
+                    are you sure want to Approve center
+                  </p>
+                  <div className='d-flex align-items-center justify-content-center gap-4'>
+                    <button
+                      onClick={() => setShowApproveConfirmModal(false)}
+                      className='btn btn-info btn-sm'
+                    >
+                      No
+                    </button>
+                    <button
+                      onClick={handleSubmit}
+                      className='btn btn-primary btn-sm'
+                    >
+                      Yes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

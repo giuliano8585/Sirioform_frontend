@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ReCAPTCHA from 'react-google-recaptcha';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-const RegisterCenter = () => {
+const AdminUpdateCenter = () => {
+//   const { centerId } = useParams();
+const location = useLocation()
+const centerId = location?.state?.centerId
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
@@ -13,13 +15,24 @@ const RegisterCenter = () => {
     city: '',
     region: '',
     email: '',
-    phone: '',
-    username: '',
-    password: '',
-    repeatPassword: '',
+    phone: ''
   });
-  const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [message, setMessage] = useState('');
+
+  // Fetch the existing center data
+  useEffect(() => {
+    const fetchCenterData = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/centers/${centerId}`);
+        setFormData(res.data); // Assuming the API returns an object with all the fields
+      } catch (err) {
+        console.error('Error fetching center data:', err);
+        setMessage('Error fetching center data.');
+      }
+    };
+
+    fetchCenterData();
+  }, [centerId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,66 +41,47 @@ const RegisterCenter = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!recaptchaToken) {
-      alert('Please complete the reCAPTCHA');
-      return;
-    }
-
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/centers/register',
-        {
-          ...formData,
-          recaptchaToken,
-        }
-      );
+      const res = await axios.patch(`http://localhost:5000/api/centers/${centerId}`, formData);
       console.log(res.data);
-      setMessage(
-        'Registrazione avvenuta con successo! Controlla la tua email per conferma.'
-      );
+      setMessage('Center updated successfully.');
     } catch (err) {
       console.error('Error response:', err.response.data);
-      setMessage('Errore nella registrazione. Riprova.');
+      setMessage('Error updating the center.');
     }
   };
 
-  const handleRecaptcha = (value) => {
-    setRecaptchaToken(value);
+  const handleCloseModal = () => {
+    setMessage('');
+    navigate('/admin-dashboard'); // Redirect after update
   };
-  const handleCloseModal = (message) => {
-    message ==
-    'Registrazione avvenuta con successo! Controlla la tua email per conferma.'
-      ? navigate('/login')
-      : setMessage('');
-  };
+
   return (
     <div className='container mt-5'>
-      <h2 className='mb-4'>Register Center</h2>
+      <h2 className='mb-4'>Update Center</h2>
       {message && (
         <div className='modal modal-xl show d-block' tabIndex='-1'>
           <div className='modal-dialog'>
             <div className='modal-content'>
               <div className='modal-header'>
-                <h5 className='modal-title'>Center Registered</h5>
+                <h5 className='modal-title'>Update Center</h5>
                 <button
                   type='button'
                   className='close'
-                  onClick={() => handleCloseModal(message)}
+                  onClick={handleCloseModal}
                 >
                   <span>&times;</span>
                 </button>
               </div>
               <div className='modal-body'>
-                <div className='table-responsive'>
-                  <p className='text-center'>{message}</p>
-                  <div className='d-flex align-items-center justify-content-center gap-4'>
-                    <button
-                      onClick={() => handleCloseModal(message)}
-                      className='btn btn-primary btn-sm'
-                    >
-                      Okay
-                    </button>
-                  </div>
+                <p className='text-center'>{message}</p>
+                <div className='d-flex align-items-center justify-content-center gap-4'>
+                  <button
+                    onClick={handleCloseModal}
+                    className='btn btn-primary btn-sm'
+                  >
+                    Okay
+                  </button>
                 </div>
               </div>
             </div>
@@ -200,61 +194,12 @@ const RegisterCenter = () => {
             required
           />
         </div>
-        <div className='mb-3'>
-          <label htmlFor='username' className='form-label'>
-            Username
-          </label>
-          <input
-            type='text'
-            className='form-control'
-            id='username'
-            name='username'
-            value={formData.username}
-            onChange={handleChange}
-            placeholder='Username'
-            required
-          />
-        </div>
-        <div className='mb-3'>
-          <label htmlFor='password' className='form-label'>
-            Password
-          </label>
-          <input
-            type='password'
-            className='form-control'
-            id='password'
-            name='password'
-            value={formData.password}
-            onChange={handleChange}
-            placeholder='Password'
-            required
-          />
-        </div>
-        <div className='mb-3'>
-          <label htmlFor='repeatPassword' className='form-label'>
-            Repeat Password
-          </label>
-          <input
-            type='password'
-            className='form-control'
-            id='repeatPassword'
-            name='repeatPassword'
-            value={formData.repeatPassword}
-            onChange={handleChange}
-            placeholder='Repeat Password'
-            required
-          />
-        </div>
-        <ReCAPTCHA
-          sitekey='6LfhQhcqAAAAAHPx5jGmeyWyQLJIwLZwmbIk9iHp' // Sostituisci con la tua Site Key
-          onChange={handleRecaptcha}
-        />
         <button type='submit' className='btn btn-primary mt-3'>
-          Register
+          Update
         </button>
       </form>
     </div>
   );
 };
 
-export default RegisterCenter;
+export default AdminUpdateCenter;

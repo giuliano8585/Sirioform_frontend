@@ -23,53 +23,63 @@ const AdminDashboard = () => {
             <h1 className="h4">Admin Dashboard</h1>
             <ul className="nav flex-column">
               <li className="nav-item mb-2">
-                <Link to="/centers-list" className="nav-link btn btn-primary w-100 btn-lg">
+                <Link to="/centers-list" className=" btn btn-primary w-100 btn-lg">
                   Lista Centri
                 </Link>
               </li>
               <li className="nav-item mb-2">
-                <Link to="/instructors-list" className="nav-link btn btn-primary w-100 btn-lg">
+                <Link to="/instructors-list" className=" btn btn-primary w-100 btn-lg">
                   Lista Istruttori
                 </Link>
               </li>
               <li className="nav-item mb-2">
-                <Link to="/unapproved-centers" className="nav-link btn btn-primary w-100 btn-lg">
+                <Link to="/unapproved-centers" className=" btn btn-primary w-100 btn-lg">
                   Centri da Abilitare
                 </Link>
               </li>
               <li className="nav-item mb-2">
-                <Link to="/unapproved-instructors" className="nav-link btn btn-primary w-100 btn-lg">
+                <Link to="/unapproved-instructors" className=" btn btn-primary w-100 btn-lg">
                   Istruttori da Abilitare
                 </Link>
               </li>
               <li className="nav-item mb-2">
-                <Link to="/admin/all-orders" className="nav-link btn btn-primary w-100 btn-lg">
+                <Link to="/admin/all-orders" className=" btn btn-primary w-100 btn-lg">
                   All Orders
                 </Link>
               </li>
               <li className="nav-item mb-2">
-                <button className="nav-link btn btn-primary w-100 btn-lg" onClick={goToCreateKit}>
+                <button className=" btn btn-primary w-100 btn-lg" onClick={goToCreateKit}>
                   Crea Kit
                 </button>
               </li>
               <li className="nav-item mb-2">
-                <button className="nav-link btn btn-primary w-100 btn-lg" onClick={goToCreateSanitario}>
+                <button className=" btn btn-primary w-100 btn-lg" onClick={goToCreateSanitario}>
                   Crea Sanitario
                 </button>
               </li>
               <li className="nav-item mb-2">
-                <Link to="/sanitarios-list" className="nav-link btn btn-primary w-100 btn-lg">
+                <Link to="/sanitarios-list" className=" btn btn-primary w-100 btn-lg">
                   Lista Sanitari
                 </Link>
               </li>
               <li className="nav-item mb-2">
-                <Link to="/admin/all-corso" className="nav-link btn btn-primary w-100 btn-lg">
+                <Link to="/admin/all-corso" className=" btn btn-primary w-100 btn-lg">
                   Lista corso
                 </Link>
               </li>
               <li className="nav-item mb-2">
-                <Link to="/admin/view-kits" className="nav-link btn btn-primary w-100 btn-lg">
+                <Link to="/admin/unactive-corso" className=" btn btn-primary w-100 btn-lg">
+                  Un Active Lista corso
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/view-kits" className=" btn btn-primary w-100 btn-lg">
                   Lista Kits
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/view-descente" className=" btn btn-primary w-100 btn-lg">
+                  Lista Descente
                 </Link>
               </li>
             </ul>

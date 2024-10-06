@@ -8,6 +8,8 @@ const UnapprovedInstructors = () => {
   const [instructors, setInstructors] = useState([]);
   const token = localStorage.getItem('token')
   const decodedToken = jwtDecode(token);
+  const [showApproveConfirmModal , setShowApproveConfirmModal] = useState(false)
+
 
   useEffect(() => {
     const fetchUnapprovedInstructors = async () => {
@@ -53,8 +55,62 @@ const UnapprovedInstructors = () => {
                 <td>{instructor.email}</td>
                 <td>{instructor.phone}</td>
                 <td>
-                  <button className="btn btn-success mb-2" onClick={() => approveInstructor(instructor._id)}>Approva</button>
+                  <button className="btn btn-success mb-2" onClick={() =>setShowApproveConfirmModal(true)}>Approva</button>
                 </td>
+                {showApproveConfirmModal && (
+                            <div
+                              className='modal modal-xl show d-block'
+                              tabIndex='-1'
+                            >
+                              <div className='modal-dialog'>
+                                <div className='modal-content'>
+                                  <div className='modal-header'>
+                                    <h5 className='modal-title'>
+                                      Confirm
+                                    </h5>
+                                    <button
+                                      type='button'
+                                      className='close'
+                                      onClick={() =>
+                                        setShowApproveConfirmModal(
+                                          false
+                                        )
+                                      }
+                                    >
+                                      <span>&times;</span>
+                                    </button>
+                                  </div>
+                                  <div className='modal-body'>
+                                    <div className='table-responsive'>
+                                      <p className='text-center'>
+                                        are you sure want to Approve center
+                                      </p>
+                                      <div className='d-flex align-items-center justify-content-center gap-4'>
+                                        <button
+                                          onClick={() =>
+                                            setShowApproveConfirmModal(
+                                              false
+                                            )
+                                          }
+                                          className='btn btn-info btn-sm'
+                                        >
+                                          No
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            approveInstructor(instructor._id)
+                                          }
+                                          className='btn btn-primary btn-sm'
+                                        >
+                                          Yes
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
               </tr>
             ))}
           </tbody>
