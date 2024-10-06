@@ -46,6 +46,10 @@ import { jwtDecode } from 'jwt-decode';
 import UpdateCenter from './pages/UpdateCenter';
 import UpdateInstructor from './pages/UpdateInstructor';
 import AdminProductsPage from './pages/AdminProductPage';
+import AdminUnActiveCourses from './pages/AdminUnActiveCourses';
+import AdminAllDiscente from './pages/AdminAllDiscente';
+import AdminUpdateCenter from './pages/AdminUpdateCenter';
+import AdminUpdateInstructor from './pages/AdminUpdateInstructor';
 
 const App = () => {
   return (
@@ -224,6 +228,22 @@ const App = () => {
             }
           />
           <Route
+            path='/admin/update-center'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminUpdateCenter />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/update-instructor'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminUpdateInstructor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path='/admin/create-product'
             element={
               <ProtectedRoute allowedRoles={['admin']}>
@@ -248,10 +268,26 @@ const App = () => {
             }
           />
           <Route
+            path='/admin/unactive-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminUnActiveCourses />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path='/admin/view-kits'
             element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <AdminProductsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/view-descente'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminAllDiscente />
               </ProtectedRoute>
             }
           />

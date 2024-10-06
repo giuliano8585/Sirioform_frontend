@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 function AdminProductsPage() {
   const [products, setProducts] = useState([]);
+  const [showApproveConfirmModal , setShowApproveConfirmModal] = useState(false)
   const [quantities, setQuantities] = useState({});
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -148,6 +149,7 @@ function AdminProductsPage() {
       );
       alert('Kit aggiornato con successo!');
       handleCloseModal();
+      setShowApproveConfirmModal(false)
     } catch (err) {
       console.error(err);
       alert('Errore nell\'aggiornamento del kit.');
@@ -266,7 +268,7 @@ function AdminProductsPage() {
               </div>
               <div className='modal-body'>
                 {modalType === 'edit' && (
-                  <form onSubmit={handleUpdate} encType="multipart/form-data">
+                  <form  encType="multipart/form-data">
                     <div className='form-group mb-3'>
                       <label htmlFor='code'>Codice Kit</label>
                       <input
@@ -354,7 +356,7 @@ function AdminProductsPage() {
                         accept="image/*"
                       />
                     </div>
-                    <button type='submit' className='btn btn-primary me-2'>
+                    <button onClick={()=>setShowApproveConfirmModal(true)} type='button' className='btn btn-primary me-2'>
                       Aggiorna
                     </button>
                     <button
@@ -364,6 +366,58 @@ function AdminProductsPage() {
                     >
                       Annulla
                     </button>
+                    {showApproveConfirmModal && (
+                            <div
+                              className='modal modal-xl show d-block'
+                              tabIndex='-1'
+                            >
+                              <div className='modal-dialog'>
+                                <div className='modal-content'>
+                                  <div className='modal-header'>
+                                    <h5 className='modal-title'>
+                                      Confirm
+                                    </h5>
+                                    <button
+                                      type='button'
+                                      className='close'
+                                      onClick={() =>
+                                        setShowApproveConfirmModal(
+                                          false
+                                        )
+                                      }
+                                    >
+                                      <span>&times;</span>
+                                    </button>
+                                  </div>
+                                  <div className='modal-body'>
+                                    <div className='table-responsive'>
+                                      <p className='text-center'>
+                                        are you sure want to Edit Kit
+                                      </p>
+                                      <div className='d-flex align-items-center justify-content-center gap-4'>
+                                        <button
+                                          onClick={() =>
+                                            setShowApproveConfirmModal(
+                                              false
+                                            )
+                                          }
+                                          className='btn btn-info btn-sm'
+                                        >
+                                          No
+                                        </button>
+                                        <button
+                                          onClick={handleUpdate}
+                                          className='btn btn-primary btn-sm'
+                                        >
+                                          Yes
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                   </form>
                 )}
                 {modalType === 'delete' && (

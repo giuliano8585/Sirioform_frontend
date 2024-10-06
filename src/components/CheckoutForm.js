@@ -1,15 +1,20 @@
 import { useState } from 'react';
-import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
+import {
+  useStripe,
+  useElements,
+  PaymentElement,
+} from '@stripe/react-stripe-js';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
 const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState(null);
-  const [isProcessing, setIsProcessing] = useState(false); 
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showApproveConfirmModal, setShowApproveConfirmModal] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,7 +35,10 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
 
     if (result.error) {
       setMessage(result.error.message);
-    } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
+    } else if (
+      result.paymentIntent &&
+      result.paymentIntent.status === 'succeeded'
+    ) {
       setMessage('Payment successful!');
       handlePurchase(productId, quantity);
     } else {
@@ -42,7 +50,7 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
 
   const handlePurchase = async (productId, quantity) => {
     const token = localStorage.getItem('token');
-      const decodedToken = jwtDecode(token);
+    const decodedToken = jwtDecode(token);
     try {
       const res = await axios.post(
         'http://localhost:5000/api/orders',
@@ -54,21 +62,72 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }
       );
-      alert('Order placed successfully!')
+      alert('Order placed successfully!');
       onOrderSuccess(res.data);
-      navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard');
+      navigate(
+        decodedToken.user.role == 'admin'
+          ? '/admin-dashboard'
+          : decodedToken.user.role == 'center'
+          ? '/center-dashboard'
+          : '/instructor-dashboard'
+      );
+      setShowApproveConfirmModal(false)
     } catch (err) {
-      alert("Error placing the order");
+      alert('Error placing the order');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form >
       <PaymentElement />
-      <button disabled={!stripe || isProcessing} className='btn btn-primary w-100 my-2'>
-        {isProcessing ? "Processing..." : "Submit Payment"}
+      <button
+        disabled={!stripe || isProcessing}
+        className='btn btn-primary w-100 my-2'
+        type='button'
+        onClick={()=>setShowApproveConfirmModal(true)}
+      >
+        {isProcessing ? 'Processing...' : 'Submit Payment'}
       </button>
       {message && <div>{message}</div>}
+      {showApproveConfirmModal && (
+        <div className='modal modal-xl show d-block' tabIndex='-1'>
+          <div className='modal-dialog'>
+            <div className='modal-content'>
+              <div className='modal-header'>
+                <h5 className='modal-title'>Confirm</h5>
+                <button
+                  type='button'
+                  className='close'
+                  onClick={() => setShowApproveConfirmModal(false)}
+                >
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className='modal-body'>
+                <div className='table-responsive'>
+                  <p className='text-center'>
+                    are you sure want to Buy
+                  </p>
+                  <div className='d-flex align-items-center justify-content-center gap-4'>
+                    <button
+                      onClick={() => setShowApproveConfirmModal(false)}
+                      className='btn btn-info btn-sm'
+                    >
+                      No
+                    </button>
+                    <button
+                      onClick={handleSubmit}
+                      className='btn btn-primary btn-sm'
+                    >
+                      Yes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 };

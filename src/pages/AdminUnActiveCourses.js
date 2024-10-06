@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function AdminListaCorso() {
+function AdminUnActiveCourses() {
   const [render, setRender] = useState(false);
   const [corso, setCorso] = useState([]);
   const [showSanitariosModal, setShowSanitariosModal] = useState(false);
@@ -66,8 +66,8 @@ function AdminListaCorso() {
           </tr>
         </thead>
         <tbody>
-          {corso?.filter((items)=>items?.status=='active')?.length > 0 ? (
-            corso?.filter((items)=>items?.status=='active').map((corsoItem) => (
+          {corso?.filter((items)=>items?.status=='unactive')?.length > 0 ? (
+            corso?.filter((items)=>items?.status=='unactive')?.map((corsoItem) => (
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
@@ -166,7 +166,7 @@ function AdminListaCorso() {
   );
 }
 
-export default AdminListaCorso;
+export default AdminUnActiveCourses;
 
 const SanitariosModal = ({ setShowSanitariosModal, direttoreCorso }) => {
   return (

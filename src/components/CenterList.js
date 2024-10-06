@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const CenterList = () => {
+  const navigate = useNavigate()
   const [centers, setCenters] = useState([]);
   const [selectedCenter, setSelectedCenter] = useState(null);
   const [sanitarios, setSanitarios] = useState([]);
@@ -10,10 +12,21 @@ const CenterList = () => {
   const [allInstructors, setAllInstructors] = useState([]);
   const [showSanitarioModal, setShowSanitarioModal] = useState(false);
   const [showInstructorModal, setShowInstructorModal] = useState(false);
+  const [showRemoveSanatriAssociateConfirmModal, setShowRemoveSanatriAssociateConfirmModal] = useState(false);
   const [showDeleteCenterModal, setShowDeleteCenterModal] = useState(false);
-  const [showAssignedSanitariosModal, setShowAssignedSanitariosModal] = useState(false);
+  const [
+    showRemoveInstructorConfirmModal,
+    setShowRemoveInstructorConfirmModal,
+  ] = useState(false);
+  const [showAssignedSanitariosModal, setShowAssignedSanitariosModal] =
+    useState(false);
+  const [showSaniatarioConfirmModal, setShowSaniatarioConfirmModal] =
+    useState(false);
+  const [showInstructorConfirmModal, setShowInstructorConfirmModal] =
+    useState(false);
   const [showAssignedInstructorsModal, setShowAssignedInstructorsModal] =
     useState(false);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredSanitarios, setFilteredSanitarios] = useState(allSanitarios);
   const [filteredInstructors, setFilteredInstructors] =
@@ -114,17 +127,19 @@ const CenterList = () => {
     }
   };
 
-  const handleDeleteCenter = async () => {
-
-  };
+  const handleDeleteCenter = async () => {};
 
   const handleRemoveSanitario = async (sanitarioId) => {
     try {
       await axios.post('http://localhost:5000/api/centers/remove-sanitario', {
         centerId: selectedCenter,
         sanitarioId,
-      });
+      },
+    {
+      headers:{ 'x-auth-token': localStorage.getItem('token'),}
+    });
       setSanitarios(sanitarios.filter((s) => s._id !== sanitarioId));
+      setShowRemoveSanatriAssociateConfirmModal(false)
     } catch (err) {
       console.error('Error removing sanitario:', err);
     }
@@ -143,7 +158,6 @@ const CenterList = () => {
 
   const handleAddInstructor = async (instructorId) => {
     if (!instructorId) return;
-
     try {
       await axios.post('http://localhost:5000/api/centers/assign-instructor', {
         centerId: selectedCenter,
@@ -151,6 +165,7 @@ const CenterList = () => {
       });
       alert('Istruttore assegnato con successo!');
       setShowInstructorModal(false);
+      setShowInstructorConfirmModal(false);
     } catch (err) {
       console.error('Error assigning instructor:', err);
     }
@@ -171,11 +186,18 @@ const CenterList = () => {
 
   const handleRemoveInstructor = async (instructorId) => {
     try {
-      await axios.post('http://localhost:5000/api/centers/remove-instructor', {
-        centerId: selectedCenter,
-        instructorId,
-      });
+      await axios.post(
+        'http://localhost:5000/api/centers/remove-instructor',
+        {
+          centerId: selectedCenter,
+          instructorId,
+        },
+        {
+          headers: { 'x-auth-token': localStorage.getItem('token') },
+        }
+      );
       setInstructors(instructors.filter((i) => i._id !== instructorId));
+      setShowRemoveInstructorConfirmModal(false);
     } catch (err) {
       console.error('Error removing instructor:', err);
     }
@@ -244,6 +266,12 @@ const CenterList = () => {
                   >
                     Lista Sanitari
                   </button>
+                  <button
+                    className='btn btn-primary'
+                    onClick={() => navigate("/admin/update-center",{state:{centerId:center._id}})}
+                  >
+                    Edit Center
+                  </button>
                 </td>
               </tr>
             ))}
@@ -304,11 +332,63 @@ const CenterList = () => {
                             <button
                               type='button'
                               className='btn btn-primary'
-                              onClick={() => handleAddSanitario(sanitarios._id)}
+                              onClick={() =>
+                                setShowSaniatarioConfirmModal(true)
+                              }
                             >
                               Assign
                             </button>
                           </td>
+                          {showSaniatarioConfirmModal && (
+                            <div
+                              className='modal modal-xl show d-block'
+                              tabIndex='-1'
+                            >
+                              <div className='modal-dialog'>
+                                <div className='modal-content'>
+                                  <div className='modal-header'>
+                                    <h5 className='modal-title'>
+                                      Delete Sanitari
+                                    </h5>
+                                    <button
+                                      type='button'
+                                      className='close'
+                                      onClick={() =>
+                                        setShowSaniatarioConfirmModal(false)
+                                      }
+                                    >
+                                      <span>&times;</span>
+                                    </button>
+                                  </div>
+                                  <div className='modal-body'>
+                                    <div className='table-responsive'>
+                                      <p className='text-center'>
+                                        are you sure want to Assign Sanatrio
+                                      </p>
+                                      <div className='d-flex align-items-center justify-content-center gap-4'>
+                                        <button
+                                          onClick={() =>
+                                            setShowSaniatarioConfirmModal(false)
+                                          }
+                                          className='btn btn-info btn-sm'
+                                        >
+                                          No
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            handleAddSanitario(sanitarios._id)
+                                          }
+                                          className='btn btn-primary btn-sm'
+                                        >
+                                          Yes
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -368,12 +448,62 @@ const CenterList = () => {
                               type='button'
                               className='btn btn-primary'
                               onClick={() =>
-                                handleAddInstructor(instructor._id)
+                                setShowInstructorConfirmModal(true)
                               }
                             >
                               Assegna
                             </button>
                           </td>
+                          {showInstructorConfirmModal && (
+                            <div
+                              className='modal modal-xl show d-block'
+                              tabIndex='-1'
+                            >
+                              <div className='modal-dialog'>
+                                <div className='modal-content'>
+                                  <div className='modal-header'>
+                                    <h5 className='modal-title'>
+                                      Delete Sanitari
+                                    </h5>
+                                    <button
+                                      type='button'
+                                      className='close'
+                                      onClick={() =>
+                                        setShowInstructorConfirmModal(false)
+                                      }
+                                    >
+                                      <span>&times;</span>
+                                    </button>
+                                  </div>
+                                  <div className='modal-body'>
+                                    <div className='table-responsive'>
+                                      <p className='text-center'>
+                                        are you sure want to Assign Sanatrio
+                                      </p>
+                                      <div className='d-flex align-items-center justify-content-center gap-4'>
+                                        <button
+                                          onClick={() =>
+                                            setShowInstructorConfirmModal(false)
+                                          }
+                                          className='btn btn-info btn-sm'
+                                        >
+                                          No
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            handleAddInstructor(instructor._id)
+                                          }
+                                          className='btn btn-primary btn-sm'
+                                        >
+                                          Yes
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -433,12 +563,66 @@ const CenterList = () => {
                               type='button'
                               className='btn  btn-danger'
                               onClick={() =>
-                                handleRemoveSanitario(sanitarios._id)
+                                setShowRemoveSanatriAssociateConfirmModal(true)
                               }
                             >
                               Elimina
                             </button>
                           </td>
+                          {showRemoveSanatriAssociateConfirmModal && (
+                            <div
+                              className='modal modal-xl show d-block'
+                              tabIndex='-1'
+                            >
+                              <div className='modal-dialog'>
+                                <div className='modal-content'>
+                                  <div className='modal-header'>
+                                    <h5 className='modal-title'>
+                                      Delete Sanitari Associate
+                                    </h5>
+                                    <button
+                                      type='button'
+                                      className='close'
+                                      onClick={() =>
+                                        setShowRemoveSanatriAssociateConfirmModal(
+                                          false
+                                        )
+                                      }
+                                    >
+                                      <span>&times;</span>
+                                    </button>
+                                  </div>
+                                  <div className='modal-body'>
+                                    <div className='table-responsive'>
+                                      <p className='text-center'>
+                                        are you sure want to Assign Sanatrio
+                                      </p>
+                                      <div className='d-flex align-items-center justify-content-center gap-4'>
+                                        <button
+                                          onClick={() =>
+                                            setShowRemoveSanatriAssociateConfirmModal(
+                                              false
+                                            )
+                                          }
+                                          className='btn btn-info btn-sm'
+                                        >
+                                          No
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            handleRemoveSanitario(sanitarios._id)
+                                          }
+                                          className='btn btn-primary btn-sm'
+                                        >
+                                          Yes
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -465,7 +649,9 @@ const CenterList = () => {
                 </button>
               </div>
               <div className='modal-body mx-auto '>
-                <h5 className='modal-title py-3'>Are you sure want to Delete</h5>
+                <h5 className='modal-title py-3'>
+                  Are you sure want to Delete
+                </h5>
                 <div className='d-flex align-items-center gap-3 mx-auto'>
                   <button
                     type='button'
@@ -538,12 +724,68 @@ const CenterList = () => {
                               type='button'
                               className='btn btn-danger btn-sm'
                               onClick={() =>
-                                handleRemoveInstructor(instructor._id)
+                                setShowRemoveInstructorConfirmModal(true)
                               }
                             >
                               Elimina
                             </button>
                           </td>
+                          {showRemoveInstructorConfirmModal && (
+                            <div
+                              className='modal modal-xl show d-block'
+                              tabIndex='-1'
+                            >
+                              <div className='modal-dialog'>
+                                <div className='modal-content'>
+                                  <div className='modal-header'>
+                                    <h5 className='modal-title'>
+                                      Delete Sanitari
+                                    </h5>
+                                    <button
+                                      type='button'
+                                      className='close'
+                                      onClick={() =>
+                                        setShowRemoveInstructorConfirmModal(
+                                          false
+                                        )
+                                      }
+                                    >
+                                      <span>&times;</span>
+                                    </button>
+                                  </div>
+                                  <div className='modal-body'>
+                                    <div className='table-responsive'>
+                                      <p className='text-center'>
+                                        are you sure want to Assign Sanatrio
+                                      </p>
+                                      <div className='d-flex align-items-center justify-content-center gap-4'>
+                                        <button
+                                          onClick={() =>
+                                            setShowRemoveInstructorConfirmModal(
+                                              false
+                                            )
+                                          }
+                                          className='btn btn-info btn-sm'
+                                        >
+                                          No
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            handleRemoveInstructor(
+                                              instructor._id
+                                            )
+                                          }
+                                          className='btn btn-primary btn-sm'
+                                        >
+                                          Yes
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </tr>
                       ))}
                     </tbody>

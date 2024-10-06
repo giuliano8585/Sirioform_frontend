@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ReCAPTCHA from 'react-google-recaptcha';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-const RegisterInstructor = () => {
-  const navigate = useNavigate()
+const AdminUpdateInstructor = () => {
+  const navigate = useNavigate();
+  const location = useLocation()
+  const id = location?.state?.instructorId
+  const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+      firstName: '',
+      lastName: '',
     fiscalCode: '',
     brevetNumber: '',
-    qualifications: [{ name: '', expirationDate: '' }], // Updated to include an array of qualifications
+    qualifications: [{ name: '', expirationDate: '' }],
     piva: '',
     address: '',
     city: '',
@@ -20,11 +22,29 @@ const RegisterInstructor = () => {
     phone: '',
     username: '',
     password: '',
-    repeatPassword: '',
   });
-  const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [message, setMessage] = useState('');
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  console.log('formData: ', formData);
+
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
+  useEffect(() => {
+    // Fetch existing instructor details
+    const fetchInstructorDetails = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/instructors/${id}`,{headers: { 'x-auth-token': `${localStorage.getItem('token')}` }});
+        setFormData(res.data); // Assume the API returns instructor details in the same structure
+      } catch (err) {
+        console.error(err);
+        setMessage('Error fetching instructor details.');
+      }
+    };
+
+    fetchInstructorDetails();
+  }, [id]);
 
   const handleChange = (e, index, field) => {
     if (field === 'qualifications') {
@@ -64,65 +84,49 @@ const RegisterInstructor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!recaptchaToken) {
-      alert('Please complete the reCAPTCHA');
-      return;
-    }
-
+    
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/instructors/register',
-        {
-          ...formData,
-          recaptchaToken,
-        }
+      const res = await axios.patch(
+        `http://localhost:5000/api/instructors/update/${id}`, // Use appropriate update endpoint
+        formData,
+        {headers: { 'x-auth-token': `${localStorage.getItem('token')}` }}
       );
-      console.log(res.data);
-      setMessage(
-        'Registrazione avvenuta con successo! Controlla la tua email per conferma.'
-      );
+      alert('Instructor update successfully')
+      setShowModal(false)
+
+      // Redirect or perform any other action on success
     } catch (err) {
       console.error(err.response.data);
-      setMessage('Errore nella registrazione. Riprova.');
+      alert('Error updating instructor. Please try again.');
     }
-  };
-
-  const handleRecaptcha = (value) => {
-    setRecaptchaToken(value);
-  };
-  const handleCloseModal = (message) => {
-    message ==
-    'Registrazione avvenuta con successo! Controlla la tua email per conferma.'
-      ? navigate('/login')
-      : setMessage('');
   };
 
   return (
     <div className='container mt-5'>
-      <h2 className='mb-4'>Register Instructor</h2>
-      {message && (
+      <h2 className='mb-4'>Update Instructor</h2>
+      {showModal && (
         <div className='modal modal-xl show d-block' tabIndex='-1'>
           <div className='modal-dialog'>
             <div className='modal-content'>
               <div className='modal-header'>
-                <h5 className='modal-title'>Center Registered</h5>
+                <h5 className='modal-title'>Instructor Registered</h5>
                 <button
                   type='button'
                   className='close'
-                  onClick={() => handleCloseModal(message)}
+                  onClick={() => setShowModal(false)}
                 >
                   <span>&times;</span>
                 </button>
               </div>
               <div className='modal-body'>
                 <div className='table-responsive'>
-                  <p className='text-center'>{message}</p>
+                  <p className='text-center'>Are you sure Want to update</p>
                   <div className='d-flex align-items-center justify-content-center gap-4'>
                     <button
-                      onClick={() => handleCloseModal(message)}
+                      onClick={handleSubmit}
                       className='btn btn-primary btn-sm'
                     >
-                      Okay
+                      Yes
                     </button>
                   </div>
                 </div>
@@ -131,7 +135,7 @@ const RegisterInstructor = () => {
           </div>
         </div>
       )}
-      <form onSubmit={handleSubmit}>
+      <form >
         <div className='row'>
           <div className='col-md-6 mb-3'>
             <label htmlFor='firstName' className='form-label'>
@@ -195,71 +199,57 @@ const RegisterInstructor = () => {
           </div>
 
           {/* Qualification Fields */}
-          {formData.qualifications.map((qualification, index) => (
-            <>
-              <div key={index} className='col-md-12 mb-3'>
-                <div className='row'>
-                  <div className='col-md-5'>
-                    <label
-                      htmlFor={`qualification-name-${index}`}
-                      className='form-label'
-                    >
-                      Qualification
-                    </label>
-                    <select
-                      class='form-select'
-                      aria-label='Default select example'
-                      id={`qualification-name-${index}`}
-                      name='name'
-                      value={qualification.name}
-                      onChange={(e) => handleQualificationChange(index, e)}
-                      placeholder='Qualification'
-                    >
-                      <option selected>Select Qualification</option>
-                      <option value='blsk'>BLSK</option>
-                      <option value='bls'>BLS</option>
-                      <option value='blsd'>BLSD</option>
-                    </select>
-                    {/* <input
-                      type='text'
-                      className='form-control'
-                      id={`qualification-name-${index}`}
-                      name='name'
-                      value={qualification.name}
-                      onChange={(e) => handleQualificationChange(index, e)}
-                      placeholder='Qualification'
-                      required
-                    /> */}
-                  </div>
-                  <div className='col-md-5'>
-                    <label
-                      htmlFor={`expirationDate-${index}`}
-                      className='form-label'
-                    >
-                      Expiration Date
-                    </label>
-                    <input
-                      type='date'
-                      className='form-control'
-                      id={`expirationDate-${index}`}
-                      name='expirationDate'
-                      value={qualification.expirationDate}
-                      onChange={(e) => handleQualificationChange(index, e)}
-                      required
-                    />
-                  </div>
-                  <div className='col-md-2 d-flex align-items-end'>
-                    <button
-                      type='button'
-                      className='btn btn-danger'
-                      onClick={() => handleRemoveQualification(index)}
-                    >
-                      Remove
-                    </button>
-                  </div>
+          {formData?.qualifications?.map((qualification, index) => (
+            <div key={index} className='col-md-12 mb-3'>
+              <div className='row'>
+                <div className='col-md-5'>
+                  <label
+                    htmlFor={`qualification-name-${index}`}
+                    className='form-label'
+                  >
+                    Qualification
+                  </label>
+                  <select
+                    className='form-select'
+                    id={`qualification-name-${index}`}
+                    name='name'
+                    value={qualification.name}
+                    defaultValue={qualification.name}
+                    onChange={(e) => handleQualificationChange(index, e)}
+                  >
+                    <option value={qualification.name}>{qualification.name}</option>
+                    <option value='blsk'>BLSK</option>
+                    <option value='bls'>BLS</option>
+                    <option value='blsd'>BLSD</option>
+                  </select>
+                </div>
+                <div className='col-md-5'>
+                  <label
+                    htmlFor={`expirationDate-${index}`}
+                    className='form-label'
+                  >
+                    Expiration Date
+                  </label>
+                  <input
+                    className='form-control'
+                    id={`expirationDate-${index}`}
+                    name='expirationDate'
+                    value={qualification?.expirationDate}
+                    onChange={(e) => handleQualificationChange(index, e)}
+                    required
+                  />
+                </div>
+                <div className='col-md-2 d-flex align-items-end'>
+                  <button
+                    type='button'
+                    className='btn btn-danger'
+                    onClick={() => handleRemoveQualification(index)}
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
-            </>
+            </div>
           ))}
 
           <div className='col-md-12 mb-3 text-end'>
@@ -272,6 +262,7 @@ const RegisterInstructor = () => {
             </button>
           </div>
 
+          {/* Other fields */}
           <div className='col-md-6 mb-3'>
             <label htmlFor='piva' className='form-label'>
               PIVA
@@ -352,7 +343,7 @@ const RegisterInstructor = () => {
               Phone
             </label>
             <input
-              type='text'
+              type='tel'
               className='form-control'
               id='phone'
               name='phone'
@@ -389,35 +380,17 @@ const RegisterInstructor = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder='Password'
-              required
-            />
-          </div>
-          <div className='col-md-6 mb-3'>
-            <label htmlFor='repeatPassword' className='form-label'>
-              Repeat Password
-            </label>
-            <input
-              type='password'
-              className='form-control'
-              id='repeatPassword'
-              name='repeatPassword'
-              value={formData.repeatPassword}
-              onChange={handleChange}
-              placeholder='Repeat Password'
-              required
             />
           </div>
         </div>
-        <ReCAPTCHA
-          sitekey='6LfhQhcqAAAAAHPx5jGmeyWyQLJIwLZwmbIk9iHp'
-          onChange={handleRecaptcha}
-        />
-        <button type='submit' className='btn btn-primary mt-4'>
-          Register
+
+        <button type='button' onClick={()=>setShowModal(true)} className='btn btn-primary'>
+          Update Instructor
         </button>
+
       </form>
     </div>
   );
 };
 
-export default RegisterInstructor;
+export default AdminUpdateInstructor;

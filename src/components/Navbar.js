@@ -1,7 +1,11 @@
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
 
 const Navbar = () => {
+  const token = localStorage.getItem('token');
+    const decodedToken = jwtDecode(token);
+    
   const [isOpen, setIsOpen] = useState(false);
   const [centerAccount, setCenterAccount] = useState(false);
   const [instructorAccount, setInstructorAccount] = useState(false);
@@ -62,6 +66,8 @@ const Navbar = () => {
     <div>
       <nav className='navbar navbar-expand-lg navbar-light bg-light col-12'>
         <div className="ms-auto me-5 d-flex gap-3">
+{decodedToken.user.role == 'admin' &&
+        <>
         <div className='position-relative'>
           <div
             className='position-absolute'
@@ -99,7 +105,7 @@ const Navbar = () => {
                     href='#'
                     style={notification.isRead ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}
                   >
-                    {notification?.senderId?.username} {notification.message}
+                    {notification?.userName} {notification.message}
                     {!notification.isRead && (
                       <span className='text-danger'> (New)</span>
                     )}
@@ -146,7 +152,7 @@ const Navbar = () => {
                     href='#'
                     style={notification.isRead ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}
                   >
-                    {notification?.senderId?.username} {notification.message}
+                    {notification?.userName} {notification.message}
                     {!notification.isRead && (
                       <span className='text-danger'> (New)</span>
                     )}
@@ -156,6 +162,8 @@ const Navbar = () => {
             </div>
           )}
         </div>
+        </>
+}
         <div className='position-relative'>
           <div
             className='position-absolute'
@@ -193,7 +201,7 @@ const Navbar = () => {
                     href='#'
                     style={notification.isRead ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}
                   >
-                    {notification?.senderId?.username} {notification.message}
+                    {notification?.userName} {notification.message}
                     {!notification.isRead && (
                       <span className='text-danger'> (New)</span>
                     )}
