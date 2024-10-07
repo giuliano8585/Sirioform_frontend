@@ -200,7 +200,7 @@ function CreateCorso() {
           }
         )
           .then((res) => {
-            if (res?.status === 200) {
+            if (res?.status === 200||201) {
               Swal.fire('Saved!', '', 'success');
               navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard');
             } else {
