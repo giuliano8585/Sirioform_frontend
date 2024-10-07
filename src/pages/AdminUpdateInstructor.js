@@ -387,6 +387,9 @@ const AdminUpdateInstructor = () => {
         <button type='button' onClick={()=>setShowModal(true)} className='btn btn-primary'>
           Update Instructor
         </button>
+        <button type='button' onClick={()=>navigate('/admin-dashboard')} className='btn btn-info'>
+          Back
+        </button>
 
       </form>
     </div>

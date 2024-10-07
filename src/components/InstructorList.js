@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const InstructorList = () => {
   const navigate = useNavigate()
@@ -14,7 +15,6 @@ const InstructorList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showDeleteCenterModal, setShowDeleteCenterModal] = useState(false);
   const [showSanatriAssociateConfirmModal, setShowSanatriAssociateConfirmModal] = useState(false);
-  const [showRemoveSanatriAssociateConfirmModal, setShowRemoveSanatriAssociateConfirmModal] = useState(false);
   const [showQualificationModal, setShowQualificationModal] = useState(false);
   const [filteredSanitariosData, setFilteredSanitariosData] =
     useState(allSanitarios);
@@ -71,20 +71,33 @@ const InstructorList = () => {
 
   const handleAddSanitario = async (sanitarioId) => {
     if (!sanitarioId) return;
-
-    try {
-      await axios.post(
-        'http://localhost:5000/api/instructors/assign-sanitario',
-        {
-          instructorId: selectedInstructor,
-          sanitarioId: sanitarioId,
-        }
-      );
-      alert('Sanitario assegnato con successo!');
-      setSelectedInstructor(null);
-    } catch (err) {
-      console.error('Error assigning sanitario:', err);
-    }
+    Swal.fire({
+      title: 'Do you want to Assign Sanitario?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.post(
+          'http://localhost:5000/api/instructors/assign-sanitario',
+          {
+            instructorId: selectedInstructor,
+            sanitarioId: sanitarioId,
+          }
+        )
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
   };
 
   const handleViewSanitarios = async (instructorId) => {
@@ -101,18 +114,34 @@ const InstructorList = () => {
   };
 
   const handleRemoveSanitario = async (sanitarioId) => {
-    try {
-      await axios.post(
-        'http://localhost:5000/api/instructors/remove-sanitario',
-        {
-          instructorId: selectedInstructor,
-          sanitarioId,
-        }
-      );
-      setSanitarios(sanitarios.filter((s) => s._id !== sanitarioId));
-    } catch (err) {
-      console.error('Error removing sanitario:', err);
-    }
+    Swal.fire({
+      title: 'Do you want to save the changes?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.post(
+          'http://localhost:5000/api/instructors/remove-sanitario',
+          {
+            instructorId: selectedInstructor,
+            sanitarioId,
+          }
+        )
+          .then((res) => {
+            if (res?.status === 200) {
+              setSanitarios(sanitarios.filter((s) => s._id !== sanitarioId));
+              Swal.fire('Saved!', '', 'success');
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
   };
 
   return (
@@ -244,65 +273,11 @@ const InstructorList = () => {
                             <button
                               type='button'
                               className='btn  btn-primary'
-                              onClick={() => setShowSanatriAssociateConfirmModal(true)}
+                              onClick={() => handleAddSanitario(sanitarios._id)}
                             >
                               Assegna
                             </button>
                           </td>
-                          {showSanatriAssociateConfirmModal && (
-                            <div
-                              className='modal modal-xl show d-block'
-                              tabIndex='-1'
-                            >
-                              <div className='modal-dialog'>
-                                <div className='modal-content'>
-                                  <div className='modal-header'>
-                                    <h5 className='modal-title'>
-                                      Assign
-                                    </h5>
-                                    <button
-                                      type='button'
-                                      className='close'
-                                      onClick={() =>
-                                        setShowSanatriAssociateConfirmModal(
-                                          false
-                                        )
-                                      }
-                                    >
-                                      <span>&times;</span>
-                                    </button>
-                                  </div>
-                                  <div className='modal-body'>
-                                    <div className='table-responsive'>
-                                      <p className='text-center'>
-                                        are you sure want to Assign 
-                                      </p>
-                                      <div className='d-flex align-items-center justify-content-center gap-4'>
-                                        <button
-                                          onClick={() =>
-                                            setShowSanatriAssociateConfirmModal(
-                                              false
-                                            )
-                                          }
-                                          className='btn btn-info btn-sm'
-                                        >
-                                          No
-                                        </button>
-                                        <button
-                                          onClick={() =>
-                                            handleAddSanitario(sanitarios._id)
-                                          }
-                                          className='btn btn-primary btn-sm'
-                                        >
-                                          Yes
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -448,66 +423,12 @@ const InstructorList = () => {
                               type='button'
                               className='btn btn-danger'
                               onClick={() =>
-                                setShowRemoveSanatriAssociateConfirmModal(true)
+                                handleRemoveSanitario(sanitarios._id)
                               }
                             >
                               Elimina
                             </button>
                           </td>
-                          {showRemoveSanatriAssociateConfirmModal && (
-                            <div
-                              className='modal modal-xl show d-block'
-                              tabIndex='-1'
-                            >
-                              <div className='modal-dialog'>
-                                <div className='modal-content'>
-                                  <div className='modal-header'>
-                                    <h5 className='modal-title'>
-                                      Delete Sanitari Associate
-                                    </h5>
-                                    <button
-                                      type='button'
-                                      className='close'
-                                      onClick={() =>
-                                        setShowRemoveSanatriAssociateConfirmModal(
-                                          false
-                                        )
-                                      }
-                                    >
-                                      <span>&times;</span>
-                                    </button>
-                                  </div>
-                                  <div className='modal-body'>
-                                    <div className='table-responsive'>
-                                      <p className='text-center'>
-                                        are you sure want to Delete 
-                                      </p>
-                                      <div className='d-flex align-items-center justify-content-center gap-4'>
-                                        <button
-                                          onClick={() =>
-                                            setShowRemoveSanatriAssociateConfirmModal(
-                                              false
-                                            )
-                                          }
-                                          className='btn btn-info btn-sm'
-                                        >
-                                          No
-                                        </button>
-                                        <button
-                                          onClick={() =>
-                                            handleRemoveSanitario(sanitarios._id)
-                                          }
-                                          className='btn btn-primary btn-sm'
-                                        >
-                                          Yes
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
                         </tr>
                       ))}
                     </tbody>

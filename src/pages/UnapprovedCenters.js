@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const UnapprovedCenters = () => {
   const navigate = useNavigate()
   const [centers, setCenters] = useState([]);
   const token = localStorage.getItem('token')
   const decodedToken = jwtDecode(token);
-  const [showApproveConfirmModal , setShowApproveConfirmModal] = useState(false)
 
   useEffect(() => {
     const fetchUnapprovedCenters = async () => {
@@ -18,7 +18,7 @@ const UnapprovedCenters = () => {
             'x-auth-token': token,
           }
         });
-        setCenters(res.data);
+        setCenters(res.data?.filter((item)=>item?.role=='center'));
       } catch (err) {
         console.error('Error fetching unapproved centers:', err);
       }
@@ -28,16 +28,32 @@ const UnapprovedCenters = () => {
   }, []);
 
   const approveCenter = async (id) => {
-    try {
-      await axios.put(`http://localhost:5000/api/centers/approve/${id}`,{}, {
-        headers: {
-          'x-auth-token': token,
-        }
-      });
-      setCenters(centers.filter(center => center._id !== id));
-    } catch (err) {
-      console.error('Error approving center:', err);
-    }
+    Swal.fire({
+      title: 'Do you want to Approve the Center?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.put(`http://localhost:5000/api/centers/approve/${id}`,{}, {
+          headers: {
+            'x-auth-token': token,
+          }
+        })
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+              setCenters(centers.filter(center => center._id !== id));
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
   };
 
   return (
@@ -66,62 +82,8 @@ const UnapprovedCenters = () => {
                 <td>{center.email}</td>
                 <td>{center.phone}</td>
                 <td>
-                  <button className="btn btn-success mb-2" onClick={() =>setShowApproveConfirmModal(true)}>Approva</button>
+                  <button className="btn btn-success mb-2" onClick={() =>approveCenter(center._id)}>Approva</button>
                 </td>
-                {showApproveConfirmModal && (
-                            <div
-                              className='modal modal-xl show d-block'
-                              tabIndex='-1'
-                            >
-                              <div className='modal-dialog'>
-                                <div className='modal-content'>
-                                  <div className='modal-header'>
-                                    <h5 className='modal-title'>
-                                      Confirm
-                                    </h5>
-                                    <button
-                                      type='button'
-                                      className='close'
-                                      onClick={() =>
-                                        setShowApproveConfirmModal(
-                                          false
-                                        )
-                                      }
-                                    >
-                                      <span>&times;</span>
-                                    </button>
-                                  </div>
-                                  <div className='modal-body'>
-                                    <div className='table-responsive'>
-                                      <p className='text-center'>
-                                        are you sure want to Approve center
-                                      </p>
-                                      <div className='d-flex align-items-center justify-content-center gap-4'>
-                                        <button
-                                          onClick={() =>
-                                            setShowApproveConfirmModal(
-                                              false
-                                            )
-                                          }
-                                          className='btn btn-info btn-sm'
-                                        >
-                                          No
-                                        </button>
-                                        <button
-                                          onClick={() =>
-                                            approveCenter(center._id)
-                                          }
-                                          className='btn btn-primary btn-sm'
-                                        >
-                                          Yes
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
               </tr>
             ))}
           </tbody>

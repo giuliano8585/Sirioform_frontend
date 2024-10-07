@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function AdminUnActiveCourses() {
   const [render, setRender] = useState(false);
@@ -15,6 +16,15 @@ function AdminUnActiveCourses() {
   const [selectedGiornate, setSelecteGiornate] = useState([]);
 
   const navigate = useNavigate();
+
+  const [filteredCorso, setFilteredCorso] = useState([]);
+  const [filters, setFilters] = useState({
+    startDate: '',
+    endDate: '',
+    courseType: '',
+    centerName: '',
+    instructorName: '',
+  });
 
   useEffect(() => {
     const fetchCorso = async () => {
@@ -48,9 +58,92 @@ function AdminUnActiveCourses() {
     setShowStatusModal(true);
   };
 
+  useEffect(() => {
+    let filtered = [...corso];
+    if (filters.startDate) {
+      filtered = filtered.filter(
+        (c) =>
+          new Date(c?.giornate[0]?.dataInizio?.split('T')[0]) >=
+          new Date(filters.startDate)
+      );
+    }
+    if (filters.endDate) {
+      filtered = filtered.filter(
+        (c) =>
+          new Date(c.giornate[0]?.dataFine?.split('T')[0]) <=
+          new Date(filters.endDate)
+      );
+    }
+    if (filters.courseType) {
+      filtered = filtered.filter((c) =>
+        c.tipologia?.type
+          .toLowerCase()
+          .includes(filters.courseType.toLowerCase())
+      );
+    }
+    if (filters.centerName) {
+      filtered = filtered.filter((c) =>
+        c.userId?.name?.toLowerCase().includes(filters.centerName.toLowerCase())
+      );
+    }
+    if (filters.instructorName) {
+      filtered = filtered.filter((c) => {
+        const fullName = `${c.userId?.firstName} ${c.userId?.lastName}`;
+        return fullName
+          .toLowerCase()
+          .includes(filters.instructorName.toLowerCase());
+      });
+    }
+    setFilteredCorso(filtered);
+  }, [filters, corso]);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+  };
+
   return (
     <div className='container mt-4'>
-      <h2>Lista corso</h2>
+      <div className='d-flex align-items-center justify-content-between'>
+        <h2>Lista corso</h2>
+        <div className='filters'>
+          <input
+            type='date'
+            name='startDate'
+            value={filters.startDate}
+            onChange={handleFilterChange}
+            placeholder='Start Date'
+          />
+          <input
+            type='date'
+            name='endDate'
+            value={filters.endDate}
+            onChange={handleFilterChange}
+            placeholder='End Date'
+          />
+          <input
+            type='text'
+            name='courseType'
+            value={filters.courseType}
+            onChange={handleFilterChange}
+            placeholder='Course Type'
+          />
+          <input
+            type='text'
+            name='centerName'
+            value={filters.centerName}
+            onChange={handleFilterChange}
+            placeholder='Center Name'
+          />
+          <input
+            type='text'
+            name='instructorName'
+            value={filters.instructorName}
+            onChange={handleFilterChange}
+            placeholder='Instructor Name'
+          />
+        </div>
+      </div>
       <table className='table table-hover'>
         <thead>
           <tr>
@@ -66,8 +159,8 @@ function AdminUnActiveCourses() {
           </tr>
         </thead>
         <tbody>
-          {corso?.filter((items)=>items?.status=='unactive')?.length > 0 ? (
-            corso?.filter((items)=>items?.status=='unactive')?.map((corsoItem) => (
+          {filteredCorso?.filter((items)=>items?.status=='unactive')?.length > 0 ? (
+            filteredCorso?.filter((items)=>items?.status=='unactive')?.map((corsoItem) => (
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
@@ -219,7 +312,6 @@ const SanitariosModal = ({ setShowSanitariosModal, direttoreCorso }) => {
   );
 };
 const InstuctorModal = ({ setShowInstructorModal, instructorDetails }) => {
-  console.log('instructorDetails: ', instructorDetails);
   return (
     <div className='modal modal-xl show d-block' tabIndex='-1'>
       <div className='modal-dialog'>
@@ -333,23 +425,39 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.patch(
-        `http://localhost:5000/api/corsi/courses/${courseId}/status`,
-        {
-          status: status,
-        },
-        {
-          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-        }
-      );
-      alert('Corso status change con successo!');
-      setRender(!render);
-      setShowStatusModal(false);
-    } catch (err) {
-      console.error(err);
-      alert('Errore durante la creazione del corso');
-    }
+    e.preventDefault();
+    Swal.fire({
+      title: 'Do you want to Change the status of the Course?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .patch(
+            `http://localhost:5000/api/corsi/courses/${courseId}/status`,
+            {
+              status: status,
+            },
+            {
+              headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+            }
+          )
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+              setRender(!render);
+              setShowStatusModal(false);
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
   };
 
   return (
@@ -367,7 +475,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
             </button>
           </div>
           <div className='modal-body'>
-            <form>
+            <form onSubmit={handleSubmit}>
               <select
                 className='col-12 form-control'
                 onChange={(e) => setStatus(e.target.value)}
@@ -378,8 +486,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
                 <option value='unActive'>Un Active</option>
               </select>
               <button
-                onClick={() => setShowApproveConfirmModal(true)}
-                type='button'
+                type='submit'
                 className='btn btn-primary'
               >
                 Change Status
@@ -388,45 +495,6 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
           </div>
         </div>
       </div>
-      {showApproveConfirmModal && (
-        <div className='modal modal-xl show d-block' tabIndex='-1'>
-          <div className='modal-dialog'>
-            <div className='modal-content'>
-              <div className='modal-header'>
-                <h5 className='modal-title'>Confirm</h5>
-                <button
-                  type='button'
-                  className='close'
-                  onClick={() => setShowApproveConfirmModal(false)}
-                >
-                  <span>&times;</span>
-                </button>
-              </div>
-              <div className='modal-body'>
-                <div className='table-responsive'>
-                  <p className='text-center'>
-                    are you sure want to Approve center
-                  </p>
-                  <div className='d-flex align-items-center justify-content-center gap-4'>
-                    <button
-                      onClick={() => setShowApproveConfirmModal(false)}
-                      className='btn btn-info btn-sm'
-                    >
-                      No
-                    </button>
-                    <button
-                      onClick={handleSubmit}
-                      className='btn btn-primary btn-sm'
-                    >
-                      Yes
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

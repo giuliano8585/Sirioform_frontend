@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function ListaCorso() {
+function UnActiveCourse() {
   const [corso, setCorso] = useState([]);
   const [showSanitariosModal, setShowSanitariosModal] = useState(false);
   const [selectedDirettoreCorso, setSelectedDirettoreCorso] = useState([]);
@@ -46,7 +46,7 @@ function ListaCorso() {
 
   return (
     <div className='container mt-4'>
-      <h2>Lista corso</h2>
+      <h2>Un Active Lista corso</h2>
       <table className='table table-hover'>
         <thead>
           <tr>
@@ -62,7 +62,7 @@ function ListaCorso() {
         </thead>
         <tbody>
           {corso?.length > 0 ? (
-            corso.filter((item)=>item?.status=='active').map((corsoItem) => (
+            corso.filter((item)=>item?.status=='unactive').map((corsoItem) => (
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
@@ -135,7 +135,7 @@ function ListaCorso() {
   );
 }
 
-export default ListaCorso;
+export default UnActiveCourse;
 
 const SanitariosModal = ({ setShowSanitariosModal, direttoreCorso }) => {
   return (
