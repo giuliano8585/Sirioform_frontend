@@ -287,19 +287,20 @@ function CreateCorso() {
                 onChange={handleIstruttoreChange}
               >
                 <option value=''>Seleziona un Istruttore</option>
-                {data?.role == 'instructor' && (
+                {data?.role == 'center' ? (data?.instructors?.map((instructor) => (
+                  <option key={instructor._id} value={instructor._id}>
+                  {instructor?.firstName + ' ' + instructor?.lastName}
+                  </option>
+                ))):(
                   <option value={data?._id}>
                     {data?.firstName + ' ' + data?.lastName}
                   </option>
-                )}
-                {data?.instructors?.map((instructor) => (
-                  <option key={instructor._id} value={instructor._id}>
-                    {instructor?.firstName + ' ' + instructor?.lastName}
-                  </option>
-                ))}
+                )
+                
+              }
               </select>
               <ul>
-                {!data?.role == 'instructor' &&
+                {data?.role == 'center' &&
                   corso.istruttori.map((istruttore, index) => (
                     <li key={index}>
                       {data?.instructors?.find(
