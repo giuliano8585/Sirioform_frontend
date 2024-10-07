@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
 
 function CreateCorso() {
   const token = localStorage.getItem('token');
@@ -181,23 +182,37 @@ function CreateCorso() {
       }
     }
 
-    try {
-      const res = await axios.post(
-        'http://localhost:5000/api/corsi',
-        {
-          ...corso,
-          giornate,
-        },
-        {
-          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-        }
-      );
-      alert('Corso creato con successo!');
-      navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard');
-    } catch (err) {
-      console.error(err);
-      alert('Errore durante la creazione del corso');
-    }
+    Swal.fire({
+      title: 'Are you sure want to create course?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.post(
+          'http://localhost:5000/api/corsi',
+          {
+            ...corso,
+            giornate,
+          },
+          {
+            headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+          }
+        )
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+              navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard');
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
   };
 
   if (loading) {

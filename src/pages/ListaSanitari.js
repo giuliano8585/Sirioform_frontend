@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ListaSanitari.css'; // Assicurati di creare e importare questo file CSS
+import Swal from 'sweetalert2';
 
 const ListaSanitari = () => {
   const [render, setRender] = useState(false);
@@ -26,16 +27,30 @@ const ListaSanitari = () => {
   }, [render]);
 
   const handleDeleteSanitario = async (id) => {
-    try {
-      const res = await axios.delete(
-        `http://localhost:5000/api/sanitarios/${id}`
-      );
-      setRender(!render);
-      setShowModal(false);
-      setShowApproveConfirmModal(false)
-    } catch (err) {
-      console.error('Errore nel recupero dei sanitari', err);
-    }
+    Swal.fire({
+      title: 'Do you want to Delete?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(
+          `http://localhost:5000/api/sanitarios/${id}`
+        )
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Deleted!', '', 'success');
+              setRender(!render);
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
   };
 
   const goBack = () => {
@@ -76,51 +91,12 @@ const ListaSanitari = () => {
               <td>{sanitario.phone}</td>
               <td>
                 <button
-                  onClick={() => setShowApproveConfirmModal(true)}
+                  onClick={() => handleDeleteSanitario(sanitario?._id)}
                   className='btn btn-danger btn-sm'
                 >
                   Elimina
                 </button>
               </td>
-              {showApproveConfirmModal && (
-                <div className='modal modal-xl show d-block' tabIndex='-1'>
-                  <div className='modal-dialog'>
-                    <div className='modal-content'>
-                      <div className='modal-header'>
-                        <h5 className='modal-title'>Confirm</h5>
-                        <button
-                          type='button'
-                          className='close'
-                          onClick={() => setShowApproveConfirmModal(false)}
-                        >
-                          <span>&times;</span>
-                        </button>
-                      </div>
-                      <div className='modal-body'>
-                        <div className='table-responsive'>
-                          <p className='text-center'>
-                            are you sure want to delete sanitari
-                          </p>
-                          <div className='d-flex align-items-center justify-content-center gap-4'>
-                            <button
-                              onClick={() => setShowApproveConfirmModal(false)}
-                              className='btn btn-info btn-sm'
-                            >
-                              No
-                            </button>
-                            <button
-                              onClick={() => handleShowModal(sanitario?._id)}
-                              className='btn btn-primary btn-sm'
-                            >
-                              Yes
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </tr>
           ))}
         </tbody>

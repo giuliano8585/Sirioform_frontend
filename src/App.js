@@ -50,6 +50,8 @@ import AdminUnActiveCourses from './pages/AdminUnActiveCourses';
 import AdminAllDiscente from './pages/AdminAllDiscente';
 import AdminUpdateCenter from './pages/AdminUpdateCenter';
 import AdminUpdateInstructor from './pages/AdminUpdateInstructor';
+import UpdateDiscente from './pages/UpdateDiscente';
+import UnActiveCourse from './pages/UnActiveCourse';
 
 const App = () => {
   return (
@@ -300,6 +302,14 @@ const App = () => {
             }
           />
           <Route
+            path='/update-discente'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <UpdateDiscente />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path='/orders'
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
@@ -328,6 +338,14 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
                 <ListaCorso />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/unactive-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <UnActiveCourse />
               </ProtectedRoute>
             }
           />

@@ -9,6 +9,7 @@ function AdminOrders() {
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [sortOrder, setSortOrder] = useState('');
   const [filterType, setFilterType] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [kits, setKits] = useState([]);
@@ -96,6 +97,17 @@ function AdminOrders() {
       setFilteredOrders(orders);
     }
   };
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    const filtered = orders.filter((order) => {
+      const fullName = `${order.userId?.firstName || ''} ${order.userId?.lastName || ''}`.toLowerCase();
+      const centerName = order.userId?.name?.toLowerCase() || '';
+      const searchValue = e.target.value.toLowerCase();
+
+      return fullName.includes(searchValue) || centerName.includes(searchValue);
+    });
+    setFilteredOrders(filtered);
+  };
 
   const formatDate = (dateString) => {
     const [year, month, day] = dateString.split('-');
@@ -111,6 +123,13 @@ function AdminOrders() {
         </Link>
         <div className='filters'>
           <div className='d-flex'>
+          <input
+              type='text'
+              className='form-control me-2'
+              placeholder='Search by User Name'
+              value={searchTerm}
+              onChange={handleSearch} // Attach search handler
+            />
             <select
               className='form-control me-2'
               value={sortOrder}

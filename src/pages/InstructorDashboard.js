@@ -140,6 +140,14 @@ const InstructorDashboard = () => {
                   Lista Corso
                 </button>
               </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/unactive-corso')}
+                >
+                  Unactive Lista Corso
+                </button>
+              </li>
             </ul>
           </div>
         </nav>

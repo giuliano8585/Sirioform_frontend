@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 function AdminAllDiscente() {
   const [discenti, setDiscenti] = useState([]);
-  console.log('discenti: ', discenti);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,9 +22,9 @@ function AdminAllDiscente() {
   }, []);
 
   return (
-    <div className="container mt-4">
+    <div className='container mt-4'>
       <h2>Lista Discenti</h2>
-      <table className="table table-hover">
+      <table className='table table-hover'>
         <thead>
           <tr>
             <th>Nome</th>
@@ -38,15 +37,22 @@ function AdminAllDiscente() {
             <th>Email</th>
             <th>Telefono</th>
             <th>Num. Brevetto</th>
+            <th>Edit</th>
           </tr>
         </thead>
         <tbody>
-          {discenti.length > 0 ? (
-            discenti.map((discente) => (
+          {discenti?.length > 0 ? (
+            discenti?.map((discente) => (
               <tr key={discente._id}>
                 <td>{discente.nome}</td>
                 <td>{discente.cognome}</td>
-                <td>{discente?.userId?.role=='center'?discente?.userId?.name:discente?.userId?.firstName+" "+discente?.userId?.lastName}</td>
+                <td>
+                  {discente?.userId?.role == 'center'
+                    ? discente?.userId?.name
+                    : discente?.userId?.firstName +
+                      ' ' +
+                      discente?.userId?.lastName}
+                </td>
                 <td>{discente.codiceFiscale}</td>
                 <td>{discente.indirizzo}</td>
                 <td>{discente.città}</td>
@@ -54,18 +60,32 @@ function AdminAllDiscente() {
                 <td>{discente.email}</td>
                 <td>{discente.telefono}</td>
                 <td>{discente.patentNumber}</td>
+                <td>
+                  <button
+                    className='btn btn-primary mt-4'
+                    onClick={() =>
+                      navigate('/update-discente', {
+                        state: { id: discente?._id },
+                      })
+                    }
+                  >
+                    Edit
+                  </button>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="8" className="text-muted">Nessun discente trovato.</td>
+              <td colSpan='8' className='text-muted'>
+                Nessun discente trovato.
+              </td>
             </tr>
           )}
         </tbody>
       </table>
 
       {/* Bottone per tornare alla dashboard */}
-      <button className="btn btn-secondary mt-4" onClick={() => navigate(-1)}>
+      <button className='btn btn-secondary mt-4' onClick={() => navigate(-1)}>
         Torna alla Dashboard
       </button>
     </div>
