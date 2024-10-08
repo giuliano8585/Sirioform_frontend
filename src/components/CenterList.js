@@ -7,17 +7,21 @@ const CenterList = () => {
   const navigate = useNavigate();
   const [centers, setCenters] = useState([]);
   const [selectedCenter, setSelectedCenter] = useState(null);
+  const [selectedCenterData, setSelectedCenterData] = useState(null);
   const [sanitarios, setSanitarios] = useState([]);
   const [instructors, setInstructors] = useState([]);
   const [allSanitarios, setAllSanitarios] = useState([]);
   const [allInstructors, setAllInstructors] = useState([]);
   const [showSanitarioModal, setShowSanitarioModal] = useState(false);
+  const [render, setRender] = useState(false);
   const [showInstructorModal, setShowInstructorModal] = useState(false);
   const [showDeleteCenterModal, setShowDeleteCenterModal] = useState(false);
   const [showAssignedSanitariosModal, setShowAssignedSanitariosModal] =
     useState(false);
   const [showAssignedInstructorsModal, setShowAssignedInstructorsModal] =
     useState(false);
+  const [filteredCenters, setFilteredCenters] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredSanitarios, setFilteredSanitarios] = useState(allSanitarios);
@@ -65,6 +69,7 @@ const CenterList = () => {
       try {
         const res = await axios.get('http://localhost:5000/api/centers');
         setCenters(res.data);
+        setFilteredCenters(res.data);
       } catch (err) {
         console.error('Error fetching centers:', err);
       }
@@ -72,6 +77,21 @@ const CenterList = () => {
 
     fetchCenters();
   }, []);
+  useEffect(() => {
+    const fetchCenters = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/centers/${selectedCenter}`
+        );
+        setSelectedCenterData(res.data);
+      } catch (err) {
+        console.error('Error fetching centers:', err);
+      }
+    };
+    if (selectedCenter !== null) {
+      fetchCenters();
+    }
+  }, [selectedCenter, render]);
 
   const handleAssignSanitario = async (centerId) => {
     setSelectedCenter(centerId);
@@ -109,6 +129,7 @@ const CenterList = () => {
           .then((res) => {
             if (res?.status === 200) {
               Swal.fire('Saved!', '', 'success');
+              setRender(!render);
             } else {
               Swal.fire('Something went wrong', '', 'info');
             }
@@ -199,6 +220,7 @@ const CenterList = () => {
           .then((res) => {
             if (res?.status === 200) {
               Swal.fire('Saved!', '', 'success');
+              setRender(!render);
             } else {
               Swal.fire('Something went wrong', '', 'info');
             }
@@ -259,9 +281,32 @@ const CenterList = () => {
     });
   };
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    const filtered = centers.filter((center) => {
+      const fullName = `${center?.name || ''}`.toLowerCase();
+      const centerName = center?.region?.toLowerCase() || '';
+      const searchValue = e.target.value.toLowerCase();
+
+      return fullName.includes(searchValue) || centerName.includes(searchValue);
+    });
+    setFilteredCenters(filtered);
+  };
+
   return (
     <div className='container mt-4'>
-      <h1 className='mb-4'>Lista Centri</h1>
+      <div className='d-flex justify-content-between'>
+        <h1 className='mb-4'>Lista Centri</h1>
+        <div className=''>
+          <input
+            type='text'
+            className='form-control me-2'
+            placeholder='Search by center Name and region'
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </div>
+      </div>
       <div className='table-responsive'>
         <table className='table table-striped table-bordered'>
           <thead className='thead-dark'>
@@ -278,63 +323,67 @@ const CenterList = () => {
             </tr>
           </thead>
           <tbody>
-            {centers.map((center) => (
-              <tr key={center._id}>
-                <td>{center.code}</td>
-                <td>{center.name}</td>
-                <td>{center.foundationDate}</td>
-                <td>{center.piva}</td>
-                <td>{center.address}</td>
-                <td>{center.region}</td>
-                <td>{center.phone}</td>
-                <td>{center.email}</td>
-                <td>
-                  <button
-                    className='btn btn-primary mb-2'
-                    onClick={() => handleAssignSanitario(center._id)}
-                  >
-                    Assegna Sanitario
-                  </button>
-                  <button
-                    className='btn btn-primary mb-2'
-                    onClick={() => handleViewInstructors(center._id)}
-                  >
-                    Istruttori
-                  </button>
-                  <button
-                    className='btn btn-primary mb-2'
-                    onClick={() => handleAssignInstructor(center._id)}
-                  >
-                    Assegna Istruttori
-                  </button>
-                  <button className='btn btn-primary mb-2'>Abilita</button>
-                  <button
-                    className='btn btn-danger mb-2'
-                    onClick={() =>
-                      setShowDeleteCenterModal(!showDeleteCenterModal)
-                    }
-                  >
-                    Elimina
-                  </button>
-                  <button
-                    className='btn btn-info'
-                    onClick={() => handleViewSanitarios(center._id)}
-                  >
-                    Lista Sanitari
-                  </button>
-                  <button
-                    className='btn btn-primary'
-                    onClick={() =>
-                      navigate('/admin/update-center', {
-                        state: { centerId: center._id },
-                      })
-                    }
-                  >
-                    Edit Center
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {Array.isArray(filteredCenters) && filteredCenters?.length > 0 ? (
+              filteredCenters.map((center) => (
+                <tr key={center._id}>
+                  <td>{center.code}</td>
+                  <td>{center.name}</td>
+                  <td>{center.foundationDate}</td>
+                  <td>{center.piva}</td>
+                  <td>{center.address}</td>
+                  <td>{center.region}</td>
+                  <td>{center.phone}</td>
+                  <td>{center.email}</td>
+                  <td>
+                    <button
+                      className='btn btn-primary mb-2'
+                      onClick={() => handleAssignSanitario(center._id)}
+                    >
+                      Assegna Sanitario
+                    </button>
+                    <button
+                      className='btn btn-primary mb-2'
+                      onClick={() => handleViewInstructors(center._id)}
+                    >
+                      Istruttori
+                    </button>
+                    <button
+                      className='btn btn-primary mb-2'
+                      onClick={() => handleAssignInstructor(center._id)}
+                    >
+                      Assegna Istruttori
+                    </button>
+                    <button className='btn btn-primary mb-2'>Abilita</button>
+                    <button
+                      className='btn btn-danger mb-2'
+                      onClick={() =>
+                        setShowDeleteCenterModal(!showDeleteCenterModal)
+                      }
+                    >
+                      Elimina
+                    </button>
+                    <button
+                      className='btn btn-info'
+                      onClick={() => handleViewSanitarios(center._id)}
+                    >
+                      Lista Sanitari
+                    </button>
+                    <button
+                      className='btn btn-primary'
+                      onClick={() =>
+                        navigate('/admin/update-center', {
+                          state: { centerId: center._id },
+                        })
+                      }
+                    >
+                      Edit Center
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <>No Data</>
+            )}
           </tbody>
         </table>
       </div>
@@ -379,28 +428,35 @@ const CenterList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredSanitarios.map((sanitarios) => (
-                        <tr key={sanitarios._id}>
-                          <td>{sanitarios.firstName}</td>
-                          <td>{sanitarios.lastName}</td>
-                          <td>{sanitarios.email}</td>
-                          <td>
-                            {sanitarios.address}, {sanitarios.city},{' '}
-                            {sanitarios.region}
-                          </td>
-                          <td>
-                            <button
-                              type='button'
-                              className='btn btn-primary'
-                              onClick={() =>
-                                handleAddSanitario(sanitarios?._id)
-                              }
-                            >
-                              Assign
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {filteredSanitarios
+                        ?.filter(
+                          (item) =>
+                            !selectedCenterData?.sanitarios?.some(
+                              (center) => center._id === item._id
+                            )
+                        )
+                        .map((sanitarios) => (
+                          <tr key={sanitarios._id}>
+                            <td>{sanitarios.firstName}</td>
+                            <td>{sanitarios.lastName}</td>
+                            <td>{sanitarios.email}</td>
+                            <td>
+                              {sanitarios.address}, {sanitarios.city},{' '}
+                              {sanitarios.region}
+                            </td>
+                            <td>
+                              <button
+                                type='button'
+                                className='btn btn-primary'
+                                onClick={() =>
+                                  handleAddSanitario(sanitarios?._id)
+                                }
+                              >
+                                Assign
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -444,7 +500,12 @@ const CenterList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredInstructors.map((instructor) => (
+                      {filteredInstructors?.filter(
+                          (item) =>
+                            !selectedCenterData?.instructors?.some(
+                              (center) => center === item._id
+                            )
+                        )?.map((instructor) => (
                         <tr key={instructor._id}>
                           <td>{instructor.firstName}</td>
                           <td>{instructor.lastName}</td>

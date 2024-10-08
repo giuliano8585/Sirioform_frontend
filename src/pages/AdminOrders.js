@@ -14,6 +14,11 @@ function AdminOrders() {
   const [showModal, setShowModal] = useState(false);
   const [kits, setKits] = useState([]);
 
+    const [filters, setFilters] = useState({
+    startDate: '',
+    endDate: '',
+  });
+
   const handleShowModal = (order) => {
     setSelectedOrder(order);
     setShowModal(true);
@@ -114,6 +119,30 @@ function AdminOrders() {
     return `${day}/${month}/${year}`;
   };
 
+  useEffect(() => {
+    let filtered = [...orders];
+    if (filters.startDate) {
+      filtered = filtered.filter(
+        (c) =>
+          new Date(c?.createdAt?.split('T')[0]) >=
+          new Date(filters.startDate)
+      );
+    }
+    if (filters.endDate) {
+      filtered = filtered.filter(
+        (c) =>
+          new Date(c.createdAt?.split('T')[0]) <=
+          new Date(filters.endDate)
+      );
+    }
+    setFilteredOrders(filtered);
+  }, [filters, orders]);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+  };
+
   return (
     <div className='container mt-5'>
       <h2 className='text-center mb-4'>All Orders</h2>
@@ -123,6 +152,20 @@ function AdminOrders() {
         </Link>
         <div className='filters'>
           <div className='d-flex'>
+          <input
+            type='date'
+            name='startDate'
+            value={filters.startDate}
+            onChange={handleFilterChange}
+            placeholder='Start Date'
+          />
+          <input
+            type='date'
+            name='endDate'
+            value={filters.endDate}
+            onChange={handleFilterChange}
+            placeholder='End Date'
+          />
           <input
               type='text'
               className='form-control me-2'

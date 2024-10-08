@@ -8,6 +8,7 @@ const Navbar = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [centerAccount, setCenterAccount] = useState(false);
+  const [render, setRender] = useState(false);
   const [instructorAccount, setInstructorAccount] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
@@ -27,7 +28,7 @@ const Navbar = () => {
     };
 
     fetchNotifications();
-  }, []);
+  }, [render]);
 
   const handleMarkAsRead = async (id) => {
     try {
@@ -47,15 +48,27 @@ const Navbar = () => {
   };
   const handleRemove = async (id) => {
     try {
+      await axios.delete(`http://localhost:5000/api/notifications/${id}`, {
+        headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+      });
+      setNotifications(
+        notifications
+          ?.filter((a) => a?._id !== id)
+          .map((n) => (n._id === id ? { ...n, isRead: true } : n))
+      );
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  };
+  const handleRemoveByCategrory = async (category) => {
+    try {
       await axios.delete(
-        `http://localhost:5000/api/notifications/${id}`,
+        `http://localhost:5000/api/notifications/delete-category/${category}`,
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }
       );
-      setNotifications(
-        notifications?.filter((a)=>a?._id!==id).map((n) => (n._id === id ? { ...n, isRead: true } : n))
-      );
+      setRender(!render);
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
@@ -131,24 +144,42 @@ const Navbar = () => {
                     {instructorCategory?.length === 0 ? (
                       <span className='dropdown-item'>No notifications</span>
                     ) : (
-                      instructorCategory?.map((notification) => (
-                        <a
-                          key={notification._id}
-                          className='dropdown-item'
-                          onClick={() => handleMarkAsRead(notification._id)}
-                          href='#'
-                          style={
-                            notification.isRead
-                              ? { fontWeight: 'normal' }
-                              : { fontWeight: 'bold' }
+                      <>
+                        <button
+                          className=''
+                          onClick={() =>
+                            handleRemoveByCategrory('instructorAccount')
                           }
                         >
-                          {notification?.userName} {notification.message}
-                          {!notification.isRead && (
-                            <span className='text-danger'> (New)</span>
-                          )}
-                        </a>
-                      ))
+                          Clear All
+                        </button>
+                        {instructorCategory?.map((notification) => (
+                          <div className='d-flex'>
+                            <a
+                              key={notification._id}
+                              className='dropdown-item'
+                              onClick={() => handleMarkAsRead(notification._id)}
+                              href='#'
+                              style={
+                                notification.isRead
+                                  ? { fontWeight: 'normal' }
+                                  : { fontWeight: 'bold' }
+                              }
+                            >
+                              {notification?.userName} {notification.message}
+                              {!notification.isRead && (
+                                <span className='text-danger'> (New)</span>
+                              )}
+                            </a>
+                            <button
+                              onClick={() => handleRemove(notification._id)}
+                              className='text-danger'
+                            >
+                              X
+                            </button>
+                          </div>
+                        ))}
+                      </>
                     )}
                   </div>
                 )}
@@ -185,24 +216,42 @@ const Navbar = () => {
                     {centerCategory?.length === 0 ? (
                       <span className='dropdown-item'>No notifications</span>
                     ) : (
-                      centerCategory?.map((notification) => (
-                        <a
-                          key={notification._id}
-                          className='dropdown-item'
-                          onClick={() => handleMarkAsRead(notification._id)}
-                          href='#'
-                          style={
-                            notification.isRead
-                              ? { fontWeight: 'normal' }
-                              : { fontWeight: 'bold' }
+                      <>
+                        <button
+                          className=''
+                          onClick={() =>
+                            handleRemoveByCategrory('centerAccount')
                           }
                         >
-                          {notification?.userName} {notification.message}
-                          {!notification.isRead && (
-                            <span className='text-danger'> (New)</span>
-                          )}
-                        </a>
-                      ))
+                          Clear All
+                        </button>
+                        {centerCategory?.map((notification) => (
+                          <div className='d-flex'>
+                            <a
+                              key={notification._id}
+                              className='dropdown-item'
+                              onClick={() => handleMarkAsRead(notification._id)}
+                              href='#'
+                              style={
+                                notification.isRead
+                                  ? { fontWeight: 'normal' }
+                                  : { fontWeight: 'bold' }
+                              }
+                            >
+                              {notification?.userName} {notification.message}
+                              {!notification.isRead && (
+                                <span className='text-danger'> (New)</span>
+                              )}
+                            </a>
+                            <button
+                              onClick={() => handleRemove(notification._id)}
+                              className='text-danger'
+                            >
+                              X
+                            </button>
+                          </div>
+                        ))}
+                      </>
                     )}
                   </div>
                 )}
@@ -238,29 +287,40 @@ const Navbar = () => {
                 {generalCategory?.length === 0 ? (
                   <span className='dropdown-item'>No notifications</span>
                 ) : (
-                  generalCategory?.map((notification) => (
-                    <div className="d-flex">
-
-                    <a
-                      key={notification._id}
-                      className='dropdown-item'
-                      onClick={() => handleMarkAsRead(notification._id)}
-                      href='#'
-                      style={
-                        notification.isRead
-                          ? { fontWeight: 'normal' }
-                          : { fontWeight: 'bold' }
-                      }
+                  <>
+                    <button
+                      className=''
+                      onClick={() => handleRemoveByCategrory('general')}
                     >
-                      {notification?.userName} {notification.message}
-                      {!notification.isRead && (
-                        <span className='text-danger'> (New)</span>
-                      )}
-
-                    </a>
-                    <button onClick={()=>handleRemove(notification._id)} className="text-danger">X</button>
+                      Clear All
+                    </button>
+                    {generalCategory?.map((notification) => (
+                      <div className='d-flex'>
+                        <a
+                          key={notification._id}
+                          className='dropdown-item'
+                          onClick={() => handleMarkAsRead(notification._id)}
+                          href='#'
+                          style={
+                            notification.isRead
+                              ? { fontWeight: 'normal' }
+                              : { fontWeight: 'bold' }
+                          }
+                        >
+                          {notification?.userName} {notification.message}
+                          {!notification.isRead && (
+                            <span className='text-danger'> (New)</span>
+                          )}
+                        </a>
+                        <button
+                          onClick={() => handleRemove(notification._id)}
+                          className='text-danger'
+                        >
+                          X
+                        </button>
                       </div>
-                  ))
+                    ))}
+                  </>
                 )}
               </div>
             )}

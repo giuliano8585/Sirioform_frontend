@@ -12,7 +12,10 @@ function OrdersPage() {
     type: '',
     sortBy: 'date',
     order: 'asc',
+    startDate: '',
+    endDate: '',
   });
+
   const navigate = useNavigate();
 
   const handleShowModal = (order) => {
@@ -76,7 +79,7 @@ function OrdersPage() {
   useEffect(() => {
     const fetchKits = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/kits');
+        const res = await axios.get('http://localhost:5000/api/kits',{headers: { 'x-auth-token': `${localStorage.getItem('token')}` }});
         setKits(res.data);
       } catch (err) {
         console.error(err);
@@ -86,6 +89,25 @@ function OrdersPage() {
 
     fetchKits();
   }, []);
+
+  useEffect(() => {
+    let filtered = [...orders];
+    if (filter.startDate) {
+      filtered = filtered.filter(
+        (c) =>
+          new Date(c?.createdAt?.split('T')[0]) >=
+          new Date(filter.startDate)
+      );
+    }
+    if (filter.endDate) {
+      filtered = filtered.filter(
+        (c) =>
+          new Date(c.createdAt?.split('T')[0]) <=
+          new Date(filter.endDate)
+      );
+    }
+    setFilteredOrders(filtered);
+  }, [filter, orders]);
 
   const formatDate = (dateString) => {
     const [year, month, day] = dateString.split('-');
@@ -104,6 +126,20 @@ function OrdersPage() {
       <div className='d-flex align-items-center justify-content-between'>
         <h2>I miei ordini</h2>
         <div>
+        <input
+            type='date'
+            name='startDate'
+            value={filter.startDate}
+            onChange={handleFilterChange}
+            placeholder='Start Date'
+          />
+          <input
+            type='date'
+            name='endDate'
+            value={filter.endDate}
+            onChange={handleFilterChange}
+            placeholder='End Date'
+          />
           <select name='type' value={filter.type} onChange={handleFilterChange}>
             <option value=''>All Types</option>
             {[...new Set(kits.map((kit) => kit?.type))].map(
