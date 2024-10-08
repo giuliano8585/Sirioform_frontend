@@ -203,7 +203,7 @@ function AdminListaCorso() {
                     Giornate Details
                   </button>
                 </td>
-                <td>
+                {/* <td>
                   <button
                     type='button'
                     className='btn btn-primary'
@@ -211,7 +211,7 @@ function AdminListaCorso() {
                   >
                     Change Status
                   </button>
-                </td>
+                </td> */}
               </tr>
             ))
           ) : (

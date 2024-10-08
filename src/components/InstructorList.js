@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const InstructorList = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [instructors, setInstructors] = useState([]);
   const [selectedInstructor, setSelectedInstructor] = useState(null);
   const [sanitarios, setSanitarios] = useState([]);
@@ -13,14 +13,16 @@ const InstructorList = () => {
   const [viewingSanitarios, setViewingSanitarios] = useState(false);
   const [assigningSanitarios, setAssigningSanitarios] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedInstructorData, setSelectedInstructorData] = useState(null);
   const [showDeleteCenterModal, setShowDeleteCenterModal] = useState(false);
-  const [showSanatriAssociateConfirmModal, setShowSanatriAssociateConfirmModal] = useState(false);
   const [showQualificationModal, setShowQualificationModal] = useState(false);
   const [filteredSanitariosData, setFilteredSanitariosData] =
     useState(allSanitarios);
   const [filteredViewSanitariosData, setFilteredViewSanitariosData] =
     useState(sanitarios);
-
+  const [filteredInstructors, setFilteredInstructors] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [render, setRender] = useState(false);
   useEffect(() => {
     const query = searchQuery.toLowerCase();
     setFilteredSanitariosData(
@@ -50,6 +52,7 @@ const InstructorList = () => {
       try {
         const res = await axios.get('http://localhost:5000/api/instructors');
         setInstructors(res.data);
+        setFilteredInstructors(res?.data)
       } catch (err) {
         console.error('Error fetching instructors:', err);
       }
@@ -57,6 +60,22 @@ const InstructorList = () => {
 
     fetchInstructors();
   }, []);
+
+  useEffect(() => {
+    const fetchCenters = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/instructors/${selectedInstructor}`
+        );
+        setSelectedInstructorData(res.data);
+      } catch (err) {
+        console.error('Error fetching centers:', err);
+      }
+    };
+    if (selectedInstructor !== null) {
+      fetchCenters();
+    }
+  }, [selectedInstructor, render]);
 
   const handleAssignSanitario = async (instructorId) => {
     setSelectedInstructor(instructorId);
@@ -78,16 +97,15 @@ const InstructorList = () => {
       denyButtonText: `Don't save`,
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.post(
-          'http://localhost:5000/api/instructors/assign-sanitario',
-          {
+        axios
+          .post('http://localhost:5000/api/instructors/assign-sanitario', {
             instructorId: selectedInstructor,
             sanitarioId: sanitarioId,
-          }
-        )
+          })
           .then((res) => {
             if (res?.status === 200) {
               Swal.fire('Saved!', '', 'success');
+              setRender(!render);
             } else {
               Swal.fire('Something went wrong', '', 'info');
             }
@@ -121,13 +139,11 @@ const InstructorList = () => {
       denyButtonText: `Don't save`,
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.post(
-          'http://localhost:5000/api/instructors/remove-sanitario',
-          {
+        axios
+          .post('http://localhost:5000/api/instructors/remove-sanitario', {
             instructorId: selectedInstructor,
             sanitarioId,
-          }
-        )
+          })
           .then((res) => {
             if (res?.status === 200) {
               setSanitarios(sanitarios.filter((s) => s._id !== sanitarioId));
@@ -144,9 +160,32 @@ const InstructorList = () => {
     });
   };
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    const filtered = instructors.filter((instructor) => {
+      const fullName = `${instructor?.firstName || ''} ${instructor?.lastName || ''}`.toLowerCase();
+      const region = instructor?.region?.toLowerCase() || '';
+      const searchValue = e.target.value.toLowerCase();
+
+      return fullName.includes(searchValue) || region.includes(searchValue);
+    });
+    setFilteredInstructors(filtered);
+  };
+
   return (
     <div className='container mt-4'>
-      <h1 className='mb-4'>Lista Istruttori</h1>
+      <div className='d-flex justify-content-between'>
+        <h1 className='mb-4'>Lista Istruttori</h1>
+        <div className=''>
+          <input
+            type='text'
+            className='form-control me-2'
+            placeholder='Search by instrucor Name and region'
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </div>
+      </div>
       <div className='table-responsive'>
         <table className='table table-striped table-bordered'>
           <thead className='thead-dark'>
@@ -164,7 +203,7 @@ const InstructorList = () => {
             </tr>
           </thead>
           <tbody>
-            {instructors.map((instructor) => (
+            {filteredInstructors?.map((instructor) => (
               <tr key={instructor._id}>
                 <td>{instructor.brevetNumber}</td>
                 <td>{instructor.firstName}</td>
@@ -208,7 +247,9 @@ const InstructorList = () => {
                   <button
                     className='btn btn-primary'
                     onClick={() =>
-                      navigate('/admin/update-instructor',{state:{instructorId:instructor?._id}})
+                      navigate('/admin/update-instructor', {
+                        state: { instructorId: instructor?._id },
+                      })
                     }
                   >
                     Update Instructor
@@ -260,7 +301,12 @@ const InstructorList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredSanitariosData?.map((sanitarios) => (
+                      {filteredSanitariosData?.filter(
+                          (item) =>
+                            !selectedInstructorData?.sanitarios?.some(
+                              (sanatrio) => sanatrio?._id === item._id
+                            )
+                        )?.map((sanitarios) => (
                         <tr key={sanitarios._id}>
                           <td>{sanitarios.firstName}</td>
                           <td>{sanitarios.lastName}</td>
@@ -376,7 +422,7 @@ const InstructorList = () => {
       )}
 
       {/* Modal per Visualizzare Sanitari */}
-      {selectedInstructor && viewingSanitarios && (
+      {viewingSanitarios && (
         <div className='modal modal-xl show d-block' tabIndex='-1'>
           <div className='modal-dialog'>
             <div className='modal-content'>
@@ -385,7 +431,7 @@ const InstructorList = () => {
                 <button
                   type='button'
                   className='close'
-                  onClick={() => setSelectedInstructor(null)}
+                  onClick={() => setViewingSanitarios(false)}
                 >
                   <span>&times;</span>
                 </button>
