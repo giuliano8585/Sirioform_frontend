@@ -174,7 +174,8 @@ function OrdersPage() {
           <tr>
             <th>#Order Id</th>
             <th>Product Name</th>
-            <th>Product Quantity</th>
+            <th>total Quantity</th>
+            <th>remaining Quantity</th>
             <th>Order Date</th>
             <th>Order Time</th>
             <th>Total Price</th>
@@ -189,6 +190,11 @@ function OrdersPage() {
                 <td>
                   {order.orderItems.map((item) => (
                     <span key={item._id}>{item.productId?.type}</span>
+                  ))}
+                </td>
+                <td>
+                  {order.orderItems.map((item) => (
+                    <span key={item._id}>{item.totalQuantity}</span>
                   ))}
                 </td>
                 <td>
@@ -251,7 +257,7 @@ function OrdersPage() {
                 <ul>
                   {selectedOrder.orderItems.map((item) => (
                     <li key={item._id}>
-                      {item.productId?.title} - Quantità: {item.quantity} -
+                      {item.productId?.title} - Quantità: {item.totalQuantity} -
                       Prezzo: {item.price}
                       <div>
                         <h6>Kit Number:</h6>

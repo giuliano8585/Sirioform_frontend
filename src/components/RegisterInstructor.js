@@ -11,7 +11,7 @@ const RegisterInstructor = () => {
     lastName: '',
     fiscalCode: '',
     brevetNumber: '',
-    qualifications: [{ name: '', expirationDate: '' }], // Updated to include an array of qualifications
+    qualifications: [{ name: '', expirationDate: '' }], 
     piva: '',
     address: '',
     city: '',
@@ -24,7 +24,6 @@ const RegisterInstructor = () => {
   });
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [message, setMessage] = useState('');
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
 
   const handleChange = (e, index, field) => {
     if (field === 'qualifications') {
@@ -64,6 +63,14 @@ const RegisterInstructor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const fiscalCodePattern = /^[A-Z]{6}[0-9]{2}[A-EHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/;
+
+    if (!fiscalCodePattern.test(formData.fiscalCode)) {
+      alert('Invalid Fiscal Code');
+      return;
+    }
+
     if (!recaptchaToken) {
       alert('Please complete the reCAPTCHA');
       return;
@@ -175,6 +182,7 @@ const RegisterInstructor = () => {
               value={formData.fiscalCode}
               onChange={handleChange}
               placeholder='Fiscal Code'
+              pattern='^[A-Z]{6}[0-9]{2}[A-EHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$'
               required
             />
           </div>
@@ -220,16 +228,6 @@ const RegisterInstructor = () => {
                       <option value='bls'>BLS</option>
                       <option value='blsd'>BLSD</option>
                     </select>
-                    {/* <input
-                      type='text'
-                      className='form-control'
-                      id={`qualification-name-${index}`}
-                      name='name'
-                      value={qualification.name}
-                      onChange={(e) => handleQualificationChange(index, e)}
-                      placeholder='Qualification'
-                      required
-                    /> */}
                   </div>
                   <div className='col-md-5'>
                     <label
