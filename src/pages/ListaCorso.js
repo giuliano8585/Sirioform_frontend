@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function ListaCorso() {
   const [corso, setCorso] = useState([]);
@@ -9,6 +10,12 @@ function ListaCorso() {
   const [showInstructorModal, setShowInstructorModal] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState([]);
   const [showGiornateModal, setShowGiornateModal] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [allDiscente, setAllDiscente] = useState([]);
+  const [allCourseDiscente, setAllCourseDiscente] = useState([]);
+  const [showDiscenteModal, setShowDiscenteModal] = useState(false);
+  const [render, setRender] = useState(false);
+  const [showCourseDiscenteModal, setShowCourseDiscenteModal] = useState(false);
   const [selectedGiornate, setSelecteGiornate] = useState([]);
 
   const navigate = useNavigate();
@@ -30,6 +37,34 @@ function ListaCorso() {
 
     fetchCorso();
   }, []);
+
+  const handleDiscente = async (courseId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/corsi/user-courses/${courseId}`,
+        {
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+        }
+      );
+      setAllCourseDiscente(res.data?.discente);
+      setShowCourseDiscenteModal(true);
+    } catch (err) {
+      console.error('Error fetching instructors:', err);
+    }
+  };
+
+  const handleAllDiscente = async (courseId) => {
+    setSelectedCourse(courseId);
+    try {
+      const res = await axios.get('http://localhost:5000/api/discenti/', {
+        headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+      });
+      setAllDiscente(res.data);
+      setShowDiscenteModal(true);
+    } catch (err) {
+      console.error('Error fetching instructors:', err);
+    }
+  };
 
   const handleOpenModal = (direttoreCorso) => {
     setSelectedDirettoreCorso(direttoreCorso || []);
@@ -58,47 +93,73 @@ function ListaCorso() {
             <th>direttore </th>
             <th>Istruttori</th>
             <th>Giornate</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {corso?.length > 0 ? (
-            corso.filter((item)=>item?.status=='active').map((corsoItem) => (
-              <tr key={corsoItem._id}>
-                <td>{corsoItem.città}</td>
-                <td>{corsoItem.via}</td>
-                <td>{corsoItem?.tipologia?.type}</td>
-                <td>{corsoItem.numeroDiscenti}</td>
-                <td>{corsoItem.createdAt?.split('T')[0]}</td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenModal(corsoItem.direttoreCorso)}
-                  >
-                    direttore Details
-                  </button>
-                </td>
-                <td>
-                  {' '}
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenInstructorModal(corsoItem.istruttore)}
-                  >
-                    instruttore Details
-                  </button>
-                </td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenGiornateModal(corsoItem.giornate)}
-                  >
-                    Giornate Details
-                  </button>
-                </td>
-              </tr>
-            ))
+            corso
+              .filter((item) => item?.status == 'active')
+              .map((corsoItem) => (
+                <tr key={corsoItem._id}>
+                  <td>{corsoItem.città}</td>
+                  <td>{corsoItem.via}</td>
+                  <td>{corsoItem?.tipologia?.type}</td>
+                  <td>{corsoItem.numeroDiscenti}</td>
+                  <td>{corsoItem.createdAt?.split('T')[0]}</td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleOpenModal(corsoItem.direttoreCorso)}
+                    >
+                      direttore Details
+                    </button>
+                  </td>
+                  <td>
+                    {' '}
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() =>
+                        handleOpenInstructorModal(corsoItem.istruttore)
+                      }
+                    >
+                      instruttore Details
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() =>
+                        handleOpenGiornateModal(corsoItem.giornate)
+                      }
+                    >
+                      Giornate Details
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleAllDiscente(corsoItem._id)}
+                    >
+                      Assign Discente
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleDiscente(corsoItem?._id)}
+                    >
+                      All Discente
+                    </button>
+                  </td>
+                </tr>
+              ))
           ) : (
             <tr>
               <td colSpan='8' className='text-muted'>
@@ -123,6 +184,21 @@ function ListaCorso() {
         <InstuctorModal
           setShowInstructorModal={setShowInstructorModal}
           instructorDetails={selectedInstructor}
+        />
+      )}
+      {showDiscenteModal && (
+        <DiscenteModal
+          setShowDiscenteModal={setShowDiscenteModal}
+          alldiscente={allDiscente}
+          selectedCourse={selectedCourse}
+          setRender={setRender}
+          render={render}
+        />
+      )}
+      {showCourseDiscenteModal && (
+        <CourseDiscenteModal
+          setShowCourseDiscenteModal={setShowCourseDiscenteModal}
+          allCoursediscente={allCourseDiscente}
         />
       )}
       {showGiornateModal && (
@@ -221,6 +297,162 @@ const InstuctorModal = ({ setShowInstructorModal, instructorDetails }) => {
                         <td>{instructor.lastName}</td>
                         <td>{instructor.email}</td>
                         <td>{instructor.address}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan='5'>No Direttore Corso found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const DiscenteModal = ({
+  setShowDiscenteModal,
+  alldiscente,
+  selectedCourse,
+  setRender,
+  render,
+}) => {
+  const handleAssignDiscente = (discenteId) => {
+    if (!discenteId) return;
+    Swal.fire({
+      title: 'Do you want to save the changes?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .patch(
+            'http://localhost:5000/api/corsi/assign-discente',
+            {
+              courseId: selectedCourse,
+              discenteId: discenteId,
+            },
+            {
+              headers: {
+                'x-auth-token': localStorage.getItem('token'),
+              },
+            }
+          )
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+              setRender(!render);
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
+  };
+  return (
+    <div className='modal modal-xl show d-block' tabIndex='-1'>
+      <div className='modal-dialog'>
+        <div className='modal-content'>
+          <div className='modal-header'>
+            <h5 className='modal-title'>Assign Discente</h5>
+            <button
+              type='button'
+              className='close'
+              onClick={() => setShowDiscenteModal(false)}
+            >
+              <span>&times;</span>
+            </button>
+          </div>
+          <div className='modal-body'>
+            <div className='table-responsive'>
+              <table className='table table-striped table-bordered'>
+                <thead className='thead-dark'>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>E-Mail</th>
+                    <th>Indirizzo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {alldiscente?.length > 0 ? (
+                    alldiscente.map((discente, index) => (
+                      <tr key={index}>
+                        <td>{discente.nome}</td>
+                        <td>{discente.cognome}</td>
+                        <td>{discente.email}</td>
+                        <td>{discente.indirizzo}</td>
+                        <td>
+                          <button
+                            type='button'
+                            className='btn btn-primary'
+                            onClick={() => handleAssignDiscente(discente?._id)}
+                          >
+                            Assign Discente
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan='5'>No Direttore Corso found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+const CourseDiscenteModal = ({
+  setShowCourseDiscenteModal,
+  allCoursediscente,
+}) => {
+  return (
+    <div className='modal modal-xl show d-block' tabIndex='-1'>
+      <div className='modal-dialog'>
+        <div className='modal-content'>
+          <div className='modal-header'>
+            <h5 className='modal-title'>Assign Discente</h5>
+            <button
+              type='button'
+              className='close'
+              onClick={() => setShowCourseDiscenteModal(false)}
+            >
+              <span>&times;</span>
+            </button>
+          </div>
+          <div className='modal-body'>
+            <div className='table-responsive'>
+              <table className='table table-striped table-bordered'>
+                <thead className='thead-dark'>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>E-Mail</th>
+                    <th>Indirizzo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allCoursediscente?.length > 0 ? (
+                    allCoursediscente?.map((discente, index) => (
+                      <tr key={index}>
+                        <td>{discente?.nome}</td>
+                        <td>{discente?.cognome}</td>
+                        <td>{discente?.email}</td>
+                        <td>{discente?.indirizzo}</td>
                       </tr>
                     ))
                   ) : (

@@ -309,7 +309,7 @@ function AdminOrders() {
                     <>
                       <li key={item._id}>
                         Product Name :{item.productId?.title} - Quantity:{' '}
-                        {item.quantity} - Price :{item.price}
+                        {item.totalQuantity} - Price :{item.price}
                         {item?.progressiveNumbers &&
                           item?.progressiveNumbers?.map((item) => (
                             <p className='py-0' style={{ padding: '0px' }}>
