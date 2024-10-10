@@ -52,6 +52,13 @@ import AdminUpdateCenter from './pages/AdminUpdateCenter';
 import AdminUpdateInstructor from './pages/AdminUpdateInstructor';
 import UpdateDiscente from './pages/UpdateDiscente';
 import UnActiveCourse from './pages/UnActiveCourse';
+import RrefreshKit from './pages/RefreshKit';
+import AdminRefreshKit from './pages/AdminRefreshKit';
+import CreateRefreshCourse from './pages/CreateRefreshCourse';
+import ListaRefreshCourse from './pages/ListaRefreshCourse';
+import UnActiveRefreshCourse from './pages/UnActiveRefreshCourse';
+import AdminListaRefreshCourse from './pages/AdminListaRefreshCourse';
+import AdminUnActiveRefreshCourse from './pages/AdminUnActiveRefreshCourse';
 
 const App = () => {
   return (
@@ -115,6 +122,14 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
                 <ProductsPage />{' '}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/view-refresh-kits'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <RrefreshKit />{' '}
               </ProtectedRoute>
             }
           />
@@ -277,11 +292,35 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+            <Route
+              path='/admin/all-refresh-corso'
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminListaRefreshCourse />
+                </ProtectedRoute>
+              }
+            />
+          <Route
+            path='/admin/unactive-refresh-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminUnActiveRefreshCourse />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path='/admin/view-kits'
             element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <AdminProductsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/view-refresh-kits'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminRefreshKit />
               </ProtectedRoute>
             }
           />
@@ -334,6 +373,14 @@ const App = () => {
             }
           />
           <Route
+            path='/create-referesh-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <CreateRefreshCourse />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path='/corso'
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
@@ -342,10 +389,26 @@ const App = () => {
             }
           />
           <Route
+            path='/refresh-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <ListaRefreshCourse />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path='/unactive-corso'
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
                 <UnActiveCourse />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/unactive-refresh-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <UnActiveRefreshCourse />
               </ProtectedRoute>
             }
           />

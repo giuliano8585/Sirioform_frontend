@@ -1,27 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
-function UnActiveCourse() {
+function AdminListaRefreshCourse() {
+  const [render, setRender] = useState(false);
   const [corso, setCorso] = useState([]);
   const [showSanitariosModal, setShowSanitariosModal] = useState(false);
   const [selectedDirettoreCorso, setSelectedDirettoreCorso] = useState([]);
   const [showInstructorModal, setShowInstructorModal] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState([]);
   const [showGiornateModal, setShowGiornateModal] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [courseId, setCourseId] = useState(false);
   const [selectedGiornate, setSelecteGiornate] = useState([]);
 
   const navigate = useNavigate();
 
+  const [filteredCorso, setFilteredCorso] = useState([]);
+  const [filters, setFilters] = useState({
+    startDate: '',
+    endDate: '',
+    courseType: '',
+    centerName: '',
+    instructorName: '',
+  });
+
   useEffect(() => {
     const fetchCorso = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:5000/api/corsi/user-courses',
-          {
-            headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-          }
-        );
+        const res = await axios.get('http://localhost:5000/api/corsi/', {
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+        });
         setCorso(res.data);
       } catch (err) {
         console.error(err);
@@ -29,7 +39,7 @@ function UnActiveCourse() {
     };
 
     fetchCorso();
-  }, []);
+  }, [render]);
 
   const handleOpenModal = (direttoreCorso) => {
     setSelectedDirettoreCorso(direttoreCorso || []);
@@ -43,32 +53,126 @@ function UnActiveCourse() {
     setSelecteGiornate(direttoreCorso || []);
     setShowGiornateModal(true);
   };
+  const handleOpenCourseModal = (courseId) => {
+    setCourseId(courseId);
+    setShowStatusModal(true);
+  };
 
+  useEffect(() => {
+    let filtered = [...corso];
+    if (filters.startDate) {
+      filtered = filtered.filter(
+        (c) =>
+          new Date(c?.giornate[0]?.dataInizio?.split('T')[0]) >=
+          new Date(filters.startDate)
+      );
+    }
+    if (filters.endDate) {
+      filtered = filtered.filter(
+        (c) =>
+          new Date(c.giornate[0]?.dataFine?.split('T')[0]) <=
+          new Date(filters.endDate)
+      );
+    }
+    if (filters.courseType) {
+      filtered = filtered.filter((c) =>
+        c.tipologia?.type
+          .toLowerCase()
+          .includes(filters.courseType.toLowerCase())
+      );
+    }
+    if (filters.centerName) {
+      filtered = filtered.filter((c) =>
+        c.userId?.name?.toLowerCase().includes(filters.centerName.toLowerCase())
+      );
+    }
+    if (filters.instructorName) {
+      filtered = filtered.filter((c) => {
+        const fullName = `${c.userId?.firstName} ${c.userId?.lastName}`;
+        return fullName
+          .toLowerCase()
+          .includes(filters.instructorName.toLowerCase());
+      });
+    }
+    setFilteredCorso(filtered);
+  }, [filters, corso]);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+  };
   return (
     <div className='container mt-4'>
-      <h2>Un Active Lista corso</h2>
+      <div className='d-flex align-items-center justify-content-between'>
+        <h2>Lista corso</h2>
+        <div className='filters'>
+          <input
+            type='date'
+            name='startDate'
+            value={filters.startDate}
+            onChange={handleFilterChange}
+            placeholder='Start Date'
+          />
+          <input
+            type='date'
+            name='endDate'
+            value={filters.endDate}
+            onChange={handleFilterChange}
+            placeholder='End Date'
+          />
+          <input
+            type='text'
+            name='courseType'
+            value={filters.courseType}
+            onChange={handleFilterChange}
+            placeholder='Course Type'
+          />
+          <input
+            type='text'
+            name='centerName'
+            value={filters.centerName}
+            onChange={handleFilterChange}
+            placeholder='Center Name'
+          />
+          <input
+            type='text'
+            name='instructorName'
+            value={filters.instructorName}
+            onChange={handleFilterChange}
+            placeholder='Instructor Name'
+          />
+        </div>
+      </div>
       <table className='table table-hover'>
         <thead>
           <tr>
             <th>Città</th>
             <th>Via</th>
-            <th>Type</th>
+            <th>Created By</th>
+            <th>Course</th>
             <th>Numero Discenti</th>
-            <th>Data creazione</th>
-            <th>direttore </th>
-            <th>Istruttori</th>
-            <th>Giornate</th>
+            <th>Current Status</th>
+            <th>direttore Details</th>
+            <th>Città</th>
+            <th>Regione</th>
           </tr>
         </thead>
         <tbody>
-          {corso?.filter((item) => item?.status == 'unactive'&&item?.isRefreshCourse!==true).length > 0 ? (
-            corso?.filter((item)=>item?.status=='unactive'&&item?.isRefreshCourse!==true).map((corsoItem) => (
+          {filteredCorso?.filter((item)=>item?.status=='active'&&item?.isRefreshCourse==true)?.length > 0 ? (
+            filteredCorso?.filter((item)=>item?.status=='active'&&item?.isRefreshCourse==true)?.map((corsoItem) => (
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
+                <td>
+                  {corsoItem.userId?.role == 'center'
+                    ? corsoItem.userId?.name
+                    : corsoItem.userId?.firstName +
+                      ' ' +
+                      corsoItem.userId?.lastName}
+                </td>
                 <td>{corsoItem?.tipologia?.type}</td>
+                <td>{corsoItem.status}</td>
                 <td>{corsoItem.numeroDiscenti}</td>
-                <td>{corsoItem.createdAt?.split('T')[0]}</td>
                 <td>
                   <button
                     type='button'
@@ -83,7 +187,9 @@ function UnActiveCourse() {
                   <button
                     type='button'
                     className='btn btn-primary'
-                    onClick={() => handleOpenInstructorModal(corsoItem.istruttore)}
+                    onClick={() =>
+                      handleOpenInstructorModal(corsoItem.istruttore)
+                    }
                   >
                     instruttore Details
                   </button>
@@ -97,6 +203,15 @@ function UnActiveCourse() {
                     Giornate Details
                   </button>
                 </td>
+                {/* <td>
+                  <button
+                    type='button'
+                    className='btn btn-primary'
+                    onClick={() => handleOpenCourseModal(corsoItem?._id)}
+                  >
+                    Change Status
+                  </button>
+                </td> */}
               </tr>
             ))
           ) : (
@@ -131,11 +246,19 @@ function UnActiveCourse() {
           giornateDetails={selectedGiornate}
         />
       )}
+      {showStatusModal && (
+        <StatusModal
+          setShowStatusModal={setShowStatusModal}
+          courseId={courseId}
+          setRender={setRender}
+          render={render}
+        />
+      )}
     </div>
   );
 }
 
-export default UnActiveCourse;
+export default AdminListaRefreshCourse;
 
 const SanitariosModal = ({ setShowSanitariosModal, direttoreCorso }) => {
   return (
@@ -188,6 +311,7 @@ const SanitariosModal = ({ setShowSanitariosModal, direttoreCorso }) => {
   );
 };
 const InstuctorModal = ({ setShowInstructorModal, instructorDetails }) => {
+  console.log('instructorDetails: ', instructorDetails);
   return (
     <div className='modal modal-xl show d-block' tabIndex='-1'>
       <div className='modal-dialog'>
@@ -239,6 +363,10 @@ const InstuctorModal = ({ setShowInstructorModal, instructorDetails }) => {
 };
 
 const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
   return (
     <div className='modal modal-xl show d-block' tabIndex='-1'>
       <div className='modal-dialog'>
@@ -268,8 +396,10 @@ const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
                   {giornateDetails?.length > 0 ? (
                     giornateDetails.map((giornate, index) => (
                       <tr key={index}>
-                        <td>{giornate.dataInizio}</td>
-                        <td>{giornate.dataFine}</td>
+                        <td>
+                          {formatDate(giornate?.dataInizio?.split('T')[0])}
+                        </td>
+                        <td>{formatDate(giornate?.dataFine?.split('T')[0])}</td>
                         <td>{giornate.oraInizio}</td>
                         <td>{giornate.oraFine}</td>
                       </tr>
@@ -282,6 +412,85 @@ const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
+  const [status, setStatus] = useState('active');
+  const [showApproveConfirmModal, setShowApproveConfirmModal] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Do you want to Change the status of the Course?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .patch(
+            `http://localhost:5000/api/corsi/courses/${courseId}/status`,
+            {
+              status: status,
+            },
+            {
+              headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+            }
+          )
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+              setRender(!render);
+              setShowStatusModal(false);
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
+  };
+
+  return (
+    <div className='modal modal-xl show d-block' tabIndex='-1'>
+      <div className='modal-dialog'>
+        <div className='modal-content'>
+          <div className='modal-header'>
+            <h5 className='modal-title'>Change Status</h5>
+            <button
+              type='button'
+              className='close'
+              onClick={() => setShowStatusModal(false)}
+            >
+              <span>&times;</span>
+            </button>
+          </div>
+          <div className='modal-body'>
+            <form onSubmit={handleSubmit}>
+              <select
+                className='col-12 form-control'
+                onChange={(e) => setStatus(e.target.value)}
+                name=''
+                id=''
+              >
+                <option value='active'>Active</option>
+                <option value='unActive'>Un Active</option>
+              </select>
+              <button
+                type='submit'
+                className='btn btn-primary'
+              >
+                Change Status
+              </button>
+            </form>
           </div>
         </div>
       </div>

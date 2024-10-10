@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function AdminProductsPage() {
+function AdminRefreshKit() {
   const [products, setProducts] = useState([]);
   const [showApproveConfirmModal , setShowApproveConfirmModal] = useState(false)
   const [quantities, setQuantities] = useState({});
@@ -174,10 +174,10 @@ function AdminProductsPage() {
 
   return (
     <div className='container mt-4'>
-      <h2>Acquista Kit</h2>
+      <h2>Acquista Refersh Kit</h2>
       <div className='row'>
-        {Array.isArray(products) && products.length > 0 ? (
-          products?.filter((items)=>items?.isRefreshKit!==true).map((product) => (
+        {Array.isArray(products) && products?.filter((items)=>items?.isRefreshKit==true)?.length > 0 ? (
+          products?.filter((items)=>items?.isRefreshKit==true).map((product) => (
             <div key={product._id} className='col-md-4 mb-4'>
               <div className='card h-100'>
                 <div className='card-body d-flex flex-column'>
@@ -455,4 +455,4 @@ function AdminProductsPage() {
   );
 }
 
-export default AdminProductsPage;
+export default AdminRefreshKit;

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 
-function CreateCorso() {
+function CreateRefreshCourse() {
   const token = localStorage.getItem('token');
   const decodedToken = jwtDecode(token);
   const [data, setData] = useState(null);
@@ -22,7 +22,7 @@ function CreateCorso() {
     numeroDiscenti: '',
     istruttori: [],
     direttoriCorso: [],
-    isRefreshCourse:false,
+    isRefreshCourse:true,
   });
 
   const [availableKits, setAvailableKits] = useState(0); 
@@ -226,7 +226,7 @@ function CreateCorso() {
 
   return (
     <div className='container mt-4'>
-      <h2>Crea Corso</h2>
+      <h2>Crea Refresh Corso</h2>
       <form onSubmit={handleSubmit}>
         <div className='row'>
           <div className='col-md-6 mb-3'>
@@ -239,7 +239,7 @@ function CreateCorso() {
               required
             >
               <option value=''>Seleziona una tipologia</option>
-              {tipologiaProdotti?.filter((items)=>items?.isRefreshKit!==true).map((prodotto) => (
+              {tipologiaProdotti?.filter((items)=>items?.isRefreshKit==true)?.map((prodotto) => (
                 <option key={prodotto._id} value={prodotto._id}>
                   {prodotto.title} (Disponibili: {prodotto.quantity})
                 </option>
@@ -439,4 +439,4 @@ function CreateCorso() {
   );
 }
 
-export default CreateCorso;
+export default CreateRefreshCourse;

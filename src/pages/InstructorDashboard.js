@@ -39,6 +39,9 @@ const InstructorDashboard = () => {
   const goToViewKits = () => {
     navigate('/view-kits');
   };
+  const goToViewRefreshKits = () => {
+    navigate('/view-refresh-kits');
+  };
 
   const goToViewProfile = () => {
     navigate('/instructor/view-profile');
@@ -72,6 +75,14 @@ const InstructorDashboard = () => {
                   onClick={goToViewKits}
                 >
                   Visualizza Kit
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={goToViewRefreshKits}
+                >
+                  Visualizza Refresh Kit
                 </button>
               </li>
               <li className='nav-item mb-2'>
@@ -121,6 +132,14 @@ const InstructorDashboard = () => {
                   Crea Corso
                 </button>
               </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/create-referesh-corso')}
+                >
+                  Crea Refresh Corso
+                </button>
+              </li>
 
               {/* Bottone per visualizzare il magazzino (i miei kit) */}
               <li className='nav-item mb-2'>
@@ -140,12 +159,29 @@ const InstructorDashboard = () => {
                   Lista Corso
                 </button>
               </li>
+
               <li className='nav-item mb-2'>
                 <button
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/unactive-corso')}
                 >
                   Unactive Lista Corso
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/refresh-corso')}
+                >
+                  Lista Refresh Corso
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/unactive-refresh-corso')}
+                >
+                 Unactive Lista Refresh Corso
                 </button>
               </li>
             </ul>

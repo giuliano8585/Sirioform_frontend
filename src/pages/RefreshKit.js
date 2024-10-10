@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function ProductsPage() {
+function RrefreshKit() {
   const [products, setProducts] = useState([]);
   const [quantities, setQuantities] = useState({});
   const navigate = useNavigate();
@@ -65,7 +65,7 @@ function ProductsPage() {
       <h2>Acquista Kit</h2>
       <div className='row'>
         {Array.isArray(products) && products.length > 0 ? (
-          products?.filter((items)=>items?.isRefreshKit!==true).map((product) => (
+          products?.filter((items)=>items?.isRefreshKit==true).map((product) => (
             <div key={product._id} className='col-md-4 mb-4'>
               <div className='card h-100'>
                 <div className='card-body d-flex flex-column'>
@@ -114,4 +114,4 @@ function ProductsPage() {
   );
 }
 
-export default ProductsPage;
+export default RrefreshKit;
