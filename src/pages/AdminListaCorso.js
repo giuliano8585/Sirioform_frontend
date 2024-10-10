@@ -158,8 +158,8 @@ function AdminListaCorso() {
           </tr>
         </thead>
         <tbody>
-          {filteredCorso?.filter((item)=>item?.status=='active')?.length > 0 ? (
-            filteredCorso?.filter((item)=>item?.status=='active').map((corsoItem) => (
+          {filteredCorso?.filter((item)=>item?.status=='active'&&item?.isRefreshCourse!==true)?.length > 0 ? (
+            filteredCorso?.filter((item)=>item?.status=='active'&&item?.isRefreshCourse!==true).map((corsoItem) => (
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>

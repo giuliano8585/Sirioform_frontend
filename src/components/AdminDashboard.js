@@ -73,8 +73,23 @@ const AdminDashboard = () => {
                 </Link>
               </li>
               <li className="nav-item mb-2">
+                <Link to="/admin/all-refresh-corso" className=" btn btn-primary w-100 btn-lg">
+                  Lista Refresh corso
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/unactive-refresh-corso" className=" btn btn-primary w-100 btn-lg">
+                  Un Active Lista Refresh corso
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
                 <Link to="/admin/view-kits" className=" btn btn-primary w-100 btn-lg">
                   Lista Kits
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/view-refresh-kits" className=" btn btn-primary w-100 btn-lg">
+                  Lista Refresh Kits
                 </Link>
               </li>
               <li className="nav-item mb-2">

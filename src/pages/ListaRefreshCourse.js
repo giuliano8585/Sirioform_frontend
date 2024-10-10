@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-function ListaCorso() {
+function ListaRefreshCourse() {
   const [corso, setCorso] = useState([]);
   const [showSanitariosModal, setShowSanitariosModal] = useState(false);
   const [selectedDirettoreCorso, setSelectedDirettoreCorso] = useState([]);
@@ -81,7 +81,7 @@ function ListaCorso() {
 
   return (
     <div className='container mt-4'>
-      <h2>Lista corso</h2>
+      <h2>Lista Refresh corso</h2>
       <table className='table table-hover'>
         <thead>
           <tr>
@@ -98,9 +98,9 @@ function ListaCorso() {
           </tr>
         </thead>
         <tbody>
-          {corso?.filter((item) => item?.status == 'active'&&item?.isRefreshCourse!==true)?.length > 0 ? (
+          {corso?.filter((item) => item?.status == 'active'&&item?.isRefreshCourse==true)?.length > 0 ? (
             corso
-              .filter((item) => item?.status == 'active'&&item?.isRefreshCourse!==true)
+              .filter((item) => item?.status == 'active'&&item?.isRefreshCourse==true)
               .map((corsoItem) => (
                 <tr key={corsoItem._id}>
                   <td>{corsoItem.città}</td>
@@ -211,7 +211,7 @@ function ListaCorso() {
   );
 }
 
-export default ListaCorso;
+export default ListaRefreshCourse;
 
 const SanitariosModal = ({ setShowSanitariosModal, direttoreCorso }) => {
   return (

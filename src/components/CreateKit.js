@@ -6,6 +6,7 @@ const CreateKit = () => {
   const [kitData, setKitData] = useState({
     code: '',
     type: '',
+    isRefreshKit:false,
     description: '',
     cost1: '',
     cost2: '',
@@ -24,12 +25,17 @@ const CreateKit = () => {
     setKitData({ ...kitData, profileImage: e.target.files[0] });
   };
 
+  const handleRadioChange = (e) => {
+    setKitData({ ...kitData, isRefreshKit: e.target.value === 'true' });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
 
     formData.append('code', kitData.code);
     formData.append('type', kitData.type);
+    formData.append('isRefreshKit', kitData.isRefreshKit);
     formData.append('description', kitData.description);
     formData.append('cost1', kitData.cost1);
     formData.append('cost2', kitData.cost2);
@@ -65,6 +71,31 @@ const CreateKit = () => {
     <div className='container mt-5'>
       <h1 className='mb-4'>Crea Kit</h1>
       <form encType='multipart/form-data'>
+      <div className='form-group mb-3 d-flex gap-4 align-items-center'>
+          <label>Is Refresh Kit?</label>
+          <div>
+            <input
+              type='radio'
+              id='refreshKitFalse'
+              name='isRefreshKit'
+              value='false'
+              checked={kitData.isRefreshKit === false}
+              onChange={handleRadioChange}
+            />
+            <label htmlFor='refreshKitFalse'>No</label>
+          </div>
+          <div>
+            <input
+              type='radio'
+              id='refreshKitTrue'
+              name='isRefreshKit'
+              value='true'
+              checked={kitData.isRefreshKit === true}
+              onChange={handleRadioChange}
+            />
+            <label htmlFor='refreshKitTrue'>Yes</label>
+          </div>
+        </div>
         <div className='form-group mb-3'>
           <label htmlFor='code'>Codice Kit</label>
           <input

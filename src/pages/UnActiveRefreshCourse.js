@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function UnActiveCourse() {
+function UnActiveRefreshCourse() {
   const [corso, setCorso] = useState([]);
   const [showSanitariosModal, setShowSanitariosModal] = useState(false);
   const [selectedDirettoreCorso, setSelectedDirettoreCorso] = useState([]);
@@ -61,8 +61,8 @@ function UnActiveCourse() {
           </tr>
         </thead>
         <tbody>
-          {corso?.filter((item) => item?.status == 'unactive'&&item?.isRefreshCourse!==true).length > 0 ? (
-            corso?.filter((item)=>item?.status=='unactive'&&item?.isRefreshCourse!==true).map((corsoItem) => (
+          {corso?.filter((item) => item?.status == 'unactive'&&item?.isRefreshCourse==true).length > 0 ? (
+            corso?.filter((item)=>item?.status=='unactive'&&item?.isRefreshCourse==true).map((corsoItem) => (
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
@@ -135,7 +135,7 @@ function UnActiveCourse() {
   );
 }
 
-export default UnActiveCourse;
+export default UnActiveRefreshCourse;
 
 const SanitariosModal = ({ setShowSanitariosModal, direttoreCorso }) => {
   return (
