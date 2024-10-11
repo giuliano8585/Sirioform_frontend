@@ -159,8 +159,8 @@ function AdminUnActiveCourses() {
           </tr>
         </thead>
         <tbody>
-          {filteredCorso?.filter((items)=>items?.status=='unactive'&&items?.isRefreshCourse!==true)?.length > 0 ? (
-            filteredCorso?.filter((items)=>items?.status=='unactive'&&items?.isRefreshCourse!==true)?.map((corsoItem) => (
+          {filteredCorso?.filter((items)=>items?.status!=='active'&&items?.isRefreshCourse!==true)?.length > 0 ? (
+            filteredCorso?.filter((items)=>items?.status!=='active'&&items?.isRefreshCourse!==true)?.map((corsoItem) => (
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
@@ -484,6 +484,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
               >
                 <option value='active'>Active</option>
                 <option value='unActive'>Un Active</option>
+                <option value='update'>Update</option>
               </select>
               <button
                 type='submit'
