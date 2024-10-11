@@ -9,6 +9,7 @@ function UpdateCorso() {
   const id = location?.state?.id; 
   const loactionData = location?.state?.data; 
   const [data, setData] = useState(null);
+  console.log('data: ', data);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const token = localStorage.getItem('token');
@@ -24,6 +25,7 @@ function UpdateCorso() {
     istruttore: [],
     direttoreCorso: [],
   });
+  console.log('corso: ', corso);
   
   const navigate = useNavigate();
 
@@ -83,8 +85,6 @@ function UpdateCorso() {
 
   const handleIstruttoreChange = (e) => {
     const selectedIstruttore = e.target.value;
-    console.log('selectedIstruttore: ', selectedIstruttore);
-    console.log('corso: ', corso);
     if (!corso.istruttore.includes(selectedIstruttore)) {
       setCorso({ ...corso, istruttore: [...corso.istruttore, selectedIstruttore] });
     }
@@ -214,8 +214,8 @@ function UpdateCorso() {
             <ul>
               {corso?.direttoreCorso?.map((direttore, index) => (
                 <li key={index}>
-                  {data?.sanitarios?.find(san => san._id === direttore?._id)?.firstName + ' ' +
-                    data?.sanitarios?.find(san => san._id === direttore?._id)?.lastName}
+                  {data?.sanitarios?.find(san => san._id === direttore)?.firstName + ' ' +
+                    data?.sanitarios?.find(san => san._id === direttore)?.lastName}
                   <button type="button" onClick={() => removeDirettore(direttore)}>Remove</button>
                 </li>
               ))}
