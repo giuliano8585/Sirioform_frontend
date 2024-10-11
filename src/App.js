@@ -59,6 +59,7 @@ import ListaRefreshCourse from './pages/ListaRefreshCourse';
 import UnActiveRefreshCourse from './pages/UnActiveRefreshCourse';
 import AdminListaRefreshCourse from './pages/AdminListaRefreshCourse';
 import AdminUnActiveRefreshCourse from './pages/AdminUnActiveRefreshCourse';
+import UpdateCorso from './pages/UpdateCorso';
 
 const App = () => {
   return (
@@ -369,6 +370,14 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
                 <CreateCorso />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/update-course'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <UpdateCorso />
               </ProtectedRoute>
             }
           />

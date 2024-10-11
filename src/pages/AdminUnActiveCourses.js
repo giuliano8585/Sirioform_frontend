@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import jsPDF from 'jspdf';
 
 function AdminUnActiveCourses() {
   const [render, setRender] = useState(false);
@@ -102,6 +103,63 @@ function AdminUnActiveCourses() {
     setFilters({ ...filters, [name]: value });
   };
 
+
+  const handleDeleteCourse = async (id) => {
+    Swal.fire({
+      title: 'Are you sure want to Delete the Course?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(
+            `http://localhost:5000/api/corsi/courses/${id}`,
+            {
+              headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+            }
+          )
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+              setRender(!render);
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
+  };
+
+  const handleDownloadPdf = (corsoItem) => {
+    const doc = new jsPDF();
+
+    doc.text(`Course Details`, 10, 10);
+    doc.text(`Città: ${corsoItem.città}`, 10, 20);
+    doc.text(`Via: ${corsoItem.via}`, 10, 30);
+    doc.text(
+      `Created By: ${corsoItem.userId?.role === 'center' ? corsoItem.userId?.name : corsoItem.userId?.firstName + ' ' + corsoItem.userId?.lastName}`,
+      10, 40
+    );
+    doc.text(`Course Type: ${corsoItem?.tipologia?.type}`, 10, 50);
+    doc.text(`Status: ${corsoItem?.status}`, 10, 60);
+    doc.text(`Numero Discenti: ${corsoItem?.numeroDiscenti}`, 10, 70);
+    doc.text(`dataFine: ${corsoItem?.giornate[0]?.dataFine?.split('T')[0]}`, 10, 80);
+    doc.text(`dataInizio: ${corsoItem?.giornate[0]?.dataInizio?.split('T')[0]}`, 10, 90);
+    doc.text(`oraFine: ${corsoItem?.giornate[0]?.oraFine}`, 10, 100);
+    doc.text(`oraInizio: ${corsoItem?.giornate[0]?.oraInizio}`, 10, 110);
+    doc.text(`istruttore: ${corsoItem?.istruttore?.map((items)=> `instructor Name : ${items?.firstName +" "+items?.lastName} `)}`, 10, 120);
+    doc.text(`direttoreCorso: ${corsoItem?.direttoreCorso?.map((items)=> `director Name : ${items?.firstName +" "+items?.lastName} `)}`, 10, 130);
+    doc.text(`progressiveNumber: ${corsoItem?.progressiveNumber}`, 10, 140);
+
+    // Save the PDF
+    doc.save(`${corsoItem.città}_course_details.pdf`);
+  }
+
   return (
     <div className='container mt-4'>
       <div className='d-flex align-items-center justify-content-between'>
@@ -159,8 +217,8 @@ function AdminUnActiveCourses() {
           </tr>
         </thead>
         <tbody>
-          {filteredCorso?.filter((items)=>items?.status=='unactive'&&items?.isRefreshCourse!==true)?.length > 0 ? (
-            filteredCorso?.filter((items)=>items?.status=='unactive'&&items?.isRefreshCourse!==true)?.map((corsoItem) => (
+          {filteredCorso?.filter((items)=>items?.status!=='active'&&items?.isRefreshCourse!==true)?.length > 0 ? (
+            filteredCorso?.filter((items)=>items?.status!=='active'&&items?.isRefreshCourse!==true)?.map((corsoItem) => (
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
@@ -211,6 +269,24 @@ function AdminUnActiveCourses() {
                     onClick={() => handleOpenCourseModal(corsoItem?._id)}
                   >
                     Change Status
+                  </button>
+                </td>
+                <td>
+                  <button
+                    type='button'
+                    className='btn btn-danger'
+                    onClick={() => handleDeleteCourse(corsoItem?._id)}
+                  >
+                    Delete Course
+                  </button>
+                </td>
+                <td>
+                <button
+                    type='button'
+                    className='btn btn-secondary ml-2'
+                    onClick={() => handleDownloadPdf(corsoItem)}
+                  >
+                    Download PDF
                   </button>
                 </td>
               </tr>
@@ -425,7 +501,6 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    e.preventDefault();
     Swal.fire({
       title: 'Do you want to Change the status of the Course?',
       showCancelButton: true,
@@ -484,6 +559,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
               >
                 <option value='active'>Active</option>
                 <option value='unActive'>Un Active</option>
+                <option value='update'>Update</option>
               </select>
               <button
                 type='submit'

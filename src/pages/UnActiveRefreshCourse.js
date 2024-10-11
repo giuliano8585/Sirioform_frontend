@@ -97,6 +97,19 @@ function UnActiveRefreshCourse() {
                     Giornate Details
                   </button>
                 </td>
+                {corsoItem?.status == 'update' && (
+                    <td>
+                      <button
+                        type='button'
+                        className='btn btn-primary'
+                        onClick={() =>
+                          navigate('/update-course',{state:{id:corsoItem._id,data:corsoItem}})
+                        }
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  )}
               </tr>
             ))
           ) : (
