@@ -155,8 +155,6 @@ function AdminUnActiveCourses() {
     doc.text(`istruttore: ${corsoItem?.istruttore?.map((items)=> `instructor Name : ${items?.firstName +" "+items?.lastName} `)}`, 10, 120);
     doc.text(`direttoreCorso: ${corsoItem?.direttoreCorso?.map((items)=> `director Name : ${items?.firstName +" "+items?.lastName} `)}`, 10, 130);
     doc.text(`progressiveNumber: ${corsoItem?.progressiveNumber}`, 10, 140);
-
-    // Save the PDF
     doc.save(`${corsoItem.città}_course_details.pdf`);
   }
 
