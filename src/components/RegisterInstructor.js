@@ -5,13 +5,13 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterInstructor = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     fiscalCode: '',
     brevetNumber: '',
-    qualifications: [{ name: '', expirationDate: '' }], 
+    qualifications: [{ name: '', expirationDate: '' }],
     piva: '',
     address: '',
     city: '',
@@ -38,6 +38,8 @@ const RegisterInstructor = () => {
     }
   };
 
+  const qualificationOptions = ['BLSK', 'BLS', 'BLSD']; 
+
   const handleQualificationChange = (index, e) => {
     const newQualifications = [...formData.qualifications];
     newQualifications[index][e.target.name] = e.target.value;
@@ -61,10 +63,13 @@ const RegisterInstructor = () => {
     setFormData({ ...formData, qualifications: newQualifications });
   };
 
+  const selectedQualifications = formData.qualifications.map(q => q.name);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const fiscalCodePattern = /^[A-Z]{6}[0-9]{2}[A-EHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/;
+    const fiscalCodePattern =
+      /^[A-Z]{6}[0-9]{2}[A-EHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/;
 
     if (!fiscalCodePattern.test(formData.fiscalCode)) {
       alert('Invalid Fiscal Code');
@@ -203,62 +208,71 @@ const RegisterInstructor = () => {
           </div>
 
           {/* Qualification Fields */}
-          {formData.qualifications.map((qualification, index) => (
-            <>
-              <div key={index} className='col-md-12 mb-3'>
-                <div className='row'>
-                  <div className='col-md-5'>
-                    <label
-                      htmlFor={`qualification-name-${index}`}
-                      className='form-label'
-                    >
-                      Qualification
-                    </label>
-                    <select
-                      class='form-select'
-                      aria-label='Default select example'
-                      id={`qualification-name-${index}`}
-                      name='name'
-                      value={qualification.name}
-                      onChange={(e) => handleQualificationChange(index, e)}
-                      placeholder='Qualification'
-                    >
-                      <option selected>Select Qualification</option>
-                      <option value='blsk'>BLSK</option>
-                      <option value='bls'>BLS</option>
-                      <option value='blsd'>BLSD</option>
-                    </select>
-                  </div>
-                  <div className='col-md-5'>
-                    <label
-                      htmlFor={`expirationDate-${index}`}
-                      className='form-label'
-                    >
-                      Expiration Date
-                    </label>
-                    <input
-                      type='date'
-                      className='form-control'
-                      id={`expirationDate-${index}`}
-                      name='expirationDate'
-                      value={qualification.expirationDate}
-                      onChange={(e) => handleQualificationChange(index, e)}
-                      required
-                    />
-                  </div>
-                  <div className='col-md-2 d-flex align-items-end'>
-                    <button
-                      type='button'
-                      className='btn btn-danger'
-                      onClick={() => handleRemoveQualification(index)}
-                    >
-                      Remove
-                    </button>
+          {formData.qualifications.map((qualification, index) => {
+            const availableOptions = qualificationOptions.filter(
+              (option) =>
+                !selectedQualifications.includes(option) ||
+                option === qualification.name
+            );
+            return (
+              <>
+                <div key={index} className='col-md-12 mb-3'>
+                  <div className='row'>
+                    <div className='col-md-5'>
+                      <label
+                        htmlFor={`qualification-name-${index}`}
+                        className='form-label'
+                      >
+                        Qualification
+                      </label>
+                      <select
+                        class='form-select'
+                        aria-label='Default select example'
+                        id={`qualification-name-${index}`}
+                        name='name'
+                        value={qualification.name}
+                        onChange={(e) => handleQualificationChange(index, e)}
+                        placeholder='Qualification'
+                      >
+                        <option selected>Select Qualification</option>
+                        {availableOptions.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className='col-md-5'>
+                      <label
+                        htmlFor={`expirationDate-${index}`}
+                        className='form-label'
+                      >
+                        Expiration Date
+                      </label>
+                      <input
+                        type='date'
+                        className='form-control'
+                        id={`expirationDate-${index}`}
+                        name='expirationDate'
+                        value={qualification.expirationDate}
+                        onChange={(e) => handleQualificationChange(index, e)}
+                        required
+                      />
+                    </div>
+                    <div className='col-md-2 d-flex align-items-end'>
+                      <button
+                        type='button'
+                        className='btn btn-danger'
+                        onClick={() => handleRemoveQualification(index)}
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </>
-          ))}
+              </>
+            );
+          })}
 
           <div className='col-md-12 mb-3 text-end'>
             <button

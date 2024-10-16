@@ -142,9 +142,14 @@ function UpdateCorso() {
     }
   };
 
+  // const formatDate = (dateString) => {
+  //   const date = new Date(dateString);
+  //   return date?.toLocaleDateString('it-IT');
+  // };
+
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date?.toLocaleDateString('it-IT');
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
   };
 
   if (loading) return <div>Loading...</div>;
@@ -264,7 +269,7 @@ function UpdateCorso() {
                 type='date'
                 className='form-control'
                 name='dataInizio'
-                value={formatDate(giornata?.dataInizio)}
+                value={giornata?.dataInizio?.split('T')[0]}
                 onChange={(e) => handleGiornataChange(index, e)}
                 required
               />
@@ -272,7 +277,7 @@ function UpdateCorso() {
                 type='date'
                 className='form-control'
                 name='dataFine'
-                value={formatDate(giornata?.dataFine)}
+                value={giornata?.dataFine?.split('T')[0]}
                 onChange={(e) => handleGiornataChange(index, e)}
                 required
               />
@@ -304,6 +309,12 @@ function UpdateCorso() {
           </button>
         </div>
       </form>
+          <button
+            className='btn btn-secondary mt-4'
+            onClick={() => navigate(-1)}
+          >
+            Torna alla Dashboard
+          </button>
     </div>
   );
 }
