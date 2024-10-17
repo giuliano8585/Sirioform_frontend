@@ -43,7 +43,7 @@ function ListaRefreshCourse() {
     const fetchSelectedCorsoData = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/corsi/user-courses/${selectedCourse}`,
+          `http://localhost:5000/api/corsi/user-course/${selectedCourse}`,
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -61,7 +61,7 @@ function ListaRefreshCourse() {
     setSelectedCourse(courseId);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/corsi/user-courses/${courseId}`,
+        `http://localhost:5000/api/corsi/user-course/${courseId}`,
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }
