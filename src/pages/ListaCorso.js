@@ -14,9 +14,11 @@ function ListaCorso() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [allDiscente, setAllDiscente] = useState([]);
   const [allCourseDiscente, setAllCourseDiscente] = useState([]);
+  const [allCourseProgressiveNumber, setAllCourseProgressiveNumber] = useState([]);
   const [showDiscenteModal, setShowDiscenteModal] = useState(false);
   const [render, setRender] = useState(false);
   const [showCourseDiscenteModal, setShowCourseDiscenteModal] = useState(false);
+  const [showCourseProgressiveModal, setShowCourseProgressiveModal] = useState(false);
   const [selectedGiornate, setSelecteGiornate] = useState([]);
 
   const navigate = useNavigate();
@@ -65,8 +67,23 @@ function ListaCorso() {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }
       );
-      setAllCourseDiscente(res.data?.discente);
+      setAllCourseDiscente(res.data?.course?.discente);
       setShowCourseDiscenteModal(true);
+    } catch (err) {
+      console.error('Error fetching instructors:', err);
+    }
+  };
+  const handleProgressiveNumber = async (courseId) => {
+    setSelectedCourse(courseId);
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/corsi/user-course/${courseId}`,
+        {
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+        }
+      );
+      setAllCourseProgressiveNumber(res.data?.progressiveNumbers);
+      setShowCourseProgressiveModal(true);
     } catch (err) {
       console.error('Error fetching instructors:', err);
     }
@@ -182,6 +199,15 @@ function ListaCorso() {
                       All Discente
                     </button>
                   </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleProgressiveNumber(corsoItem?._id)}
+                    >
+                      final course
+                    </button>
+                  </td>
                 </tr>
               ))
           ) : (
@@ -224,6 +250,16 @@ function ListaCorso() {
         <CourseDiscenteModal
           setShowCourseDiscenteModal={setShowCourseDiscenteModal}
           allCoursediscente={allCourseDiscente}
+          selectedCorsoData={selectedCorsoData}
+          selectedCourse={selectedCourse}
+          setRender={setRender}
+          render={render}
+        />
+      )}
+      {showCourseProgressiveModal && (
+        <CourseProgressiveNumber
+          setShowCourseDiscenteModal={setShowCourseProgressiveModal}
+          allCoursediscente={allCourseProgressiveNumber}
           selectedCorsoData={selectedCorsoData}
           selectedCourse={selectedCourse}
           setRender={setRender}
@@ -545,6 +581,112 @@ const CourseDiscenteModal = ({
                            Remove Discente
                           </button>
                         </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan='5'>No Direttore Corso found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+const CourseProgressiveNumber = ({
+  setShowCourseDiscenteModal,
+  allCoursediscente,
+  selectedCourse,
+  setRender,
+  render,
+
+}) => {
+
+  const handleremoveDiscente = (discenteId) => {
+    if (!discenteId) return;
+    Swal.fire({
+      title: 'Do you want to save the changes?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .patch(
+            'http://localhost:5000/api/corsi/remove-discente',
+            {
+              courseId: selectedCourse,
+              discenteId: discenteId,
+            },
+            {
+              headers: {
+                'x-auth-token': localStorage.getItem('token'),
+              },
+            }
+          )
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+              setRender(!render);
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
+  };
+
+  return (
+    <div className='modal modal-xl show d-block' tabIndex='-1'>
+      <div className='modal-dialog'>
+        <div className='modal-content'>
+          <div className='modal-header'>
+            <h5 className='modal-title'>Assign Discente</h5>
+            <button
+              type='button'
+              className='close'
+              onClick={() => setShowCourseDiscenteModal(false)}
+            >
+              <span>&times;</span>
+            </button>
+          </div>
+          <div className='modal-body'>
+            <div className='table-responsive'>
+              <table className='table table-striped table-bordered'>
+                <thead className='thead-dark'>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>E-Mail</th>
+                    <th>Indirizzo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allCoursediscente?.length > 0 ? (
+                    allCoursediscente?.map((discente, index) => (
+                      <tr key={index}>
+                        <td>{discente}</td>
+                        {/* <td>{discente?.cognome}</td>
+                        <td>{discente?.email}</td>
+                        <td>{discente?.indirizzo}</td> */}
+                        {/* <td>
+                          {' '}
+                          <button
+                            type='button'
+                            className='btn btn-danger'
+                            onClick={() => handleremoveDiscente(discente?._id)}
+                          >
+                           Remove Discente
+                          </button>
+                        </td> */}
                       </tr>
                     ))
                   ) : (
