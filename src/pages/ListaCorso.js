@@ -82,12 +82,33 @@ function ListaCorso() {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }
       );
-      setAllCourseProgressiveNumber(res.data?.progressiveNumbers);
+      setAllCourseProgressiveNumber(res.data);
       setShowCourseProgressiveModal(true);
     } catch (err) {
       console.error('Error fetching instructors:', err);
     }
   };
+
+  useEffect(()=>{
+if(render){
+  const handleProgressiveNumber = async (selectedCourse) => {
+    setSelectedCourse(selectedCourse);
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/corsi/user-course/${selectedCourse}`,
+        {
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+        }
+      );
+      setAllCourseProgressiveNumber(res.data);
+      setShowCourseProgressiveModal(true);
+    } catch (err) {
+      console.error('Error fetching instructors:', err);
+    }
+  };
+  handleProgressiveNumber()
+}
+  },[render])
 
   const handleAllDiscente = async (courseId) => {
     setSelectedCourse(courseId);
@@ -605,9 +626,18 @@ const CourseProgressiveNumber = ({
   render,
 
 }) => {
+  const [patentNumbers, setPatentNumbers] = useState({});
+  console.log('patentNumbers: ', patentNumbers);
 
-  const handleremoveDiscente = (discenteId) => {
-    if (!discenteId) return;
+  const handleChangeValue = (discenteId, value) => {
+    setPatentNumbers((prev) => ({
+      ...prev,
+      [discenteId]: value, 
+    }));
+  }
+
+  const handleAssignProgressiveNumber = (id,patentNumber) => {
+    if (!id) return;
     Swal.fire({
       title: 'Do you want to save the changes?',
       showCancelButton: true,
@@ -617,10 +647,9 @@ const CourseProgressiveNumber = ({
       if (result.isConfirmed) {
         axios
           .patch(
-            'http://localhost:5000/api/corsi/remove-discente',
+            `http://localhost:5000/api/discenti/${id}`,
             {
-              courseId: selectedCourse,
-              discenteId: discenteId,
+              patentNumber: patentNumber,
             },
             {
               headers: {
@@ -649,7 +678,7 @@ const CourseProgressiveNumber = ({
       <div className='modal-dialog'>
         <div className='modal-content'>
           <div className='modal-header'>
-            <h5 className='modal-title'>Assign Discente</h5>
+            <h5 className='modal-title'>Assign Progressive Number</h5>
             <button
               type='button'
               className='close'
@@ -670,23 +699,38 @@ const CourseProgressiveNumber = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {allCoursediscente?.length > 0 ? (
-                    allCoursediscente?.map((discente, index) => (
+                  {allCoursediscente?.course?.discente?.length > 0 ? (
+                    allCoursediscente?.course?.discente?.map((discente, index) => (
                       <tr key={index}>
-                        <td>{discente}</td>
-                        {/* <td>{discente?.cognome}</td>
+                        <td>{discente?.nome}</td>
+                        <td>{discente?.cognome}</td>
                         <td>{discente?.email}</td>
-                        <td>{discente?.indirizzo}</td> */}
-                        {/* <td>
-                          {' '}
-                          <button
-                            type='button'
-                            className='btn btn-danger'
-                            onClick={() => handleremoveDiscente(discente?._id)}
+                        <td>
+                        <select
+                            className='form-select'
+                            aria-label='Select Patent Number'
+                            name='patentNumber'
+                            value={patentNumbers[discente._id] || ''} 
+                            onChange={(e) => handleChangeValue(discente._id, e.target.value)} 
                           >
-                           Remove Discente
+                            <option value=''>Select Patent Number</option>
+                            {allCoursediscente?.progressiveNumbers?.map((option) => (
+                              <option key={option} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td>
+                          <button
+                          disabled={!patentNumbers[discente._id]}
+                            type='button'
+                            className='btn btn-primary'
+                            onClick={() => handleAssignProgressiveNumber(discente?._id,patentNumbers[discente._id])}
+                          >
+                           Assign Patent Number
                           </button>
-                        </td> */}
+                        </td>
                       </tr>
                     ))
                   ) : (
