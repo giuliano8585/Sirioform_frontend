@@ -434,6 +434,7 @@ const DiscenteModal = ({
             if (res?.status === 200) {
               Swal.fire('Saved!', '', 'success');
               setRender(!render);
+              setShowDiscenteModal(false)
             } else {
               Swal.fire('Something went wrong', '', 'info');
             }
@@ -695,7 +696,7 @@ const CourseProgressiveNumber = ({
                     <th>Nome</th>
                     <th>Cognome</th>
                     <th>E-Mail</th>
-                    <th>Indirizzo</th>
+                    <th>patent Number</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -705,6 +706,7 @@ const CourseProgressiveNumber = ({
                         <td>{discente?.nome}</td>
                         <td>{discente?.cognome}</td>
                         <td>{discente?.email}</td>
+                        <td>{discente?.patentNumber?.map((i)=><p className="">{i}</p>)}</td>
                         <td>
                         <select
                             className='form-select'
@@ -728,7 +730,7 @@ const CourseProgressiveNumber = ({
                             className='btn btn-primary'
                             onClick={() => handleAssignProgressiveNumber(discente?._id,patentNumbers[discente._id])}
                           >
-                           Assign Patent Number
+                           Assign kit Number
                           </button>
                         </td>
                       </tr>
