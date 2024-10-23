@@ -12,7 +12,7 @@ function CreateDiscente() {
     regione: '',
     email: '',
     telefono: '',
-     patentNumber: ''
+    patentNumber: null
   });
 
   const navigate = useNavigate();

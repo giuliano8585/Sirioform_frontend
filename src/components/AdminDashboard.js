@@ -97,6 +97,16 @@ const AdminDashboard = () => {
                   Lista Descente
                 </Link>
               </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/end-corso" className=" btn btn-primary w-100 btn-lg">
+                  Finished Courses
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/complete-corso" className=" btn btn-primary w-100 btn-lg">
+                  Complete Courses
+                </Link>
+              </li>
             </ul>
           </div>
         </nav>

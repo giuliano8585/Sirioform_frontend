@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 function ListaDiscentiPage() {
   const [discenti, setDiscenti] = useState([]);
+  console.log('discenti: ', discenti);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,18 +40,18 @@ function ListaDiscentiPage() {
           </tr>
         </thead>
         <tbody>
-          {discenti.length > 0 ? (
-            discenti.map((discente) => (
-              <tr key={discente._id}>
-                <td>{discente.nome}</td>
-                <td>{discente.cognome}</td>
-                <td>{discente.codiceFiscale}</td>
-                <td>{discente.indirizzo}</td>
-                <td>{discente.città}</td>
-                <td>{discente.regione}</td>
-                <td>{discente.email}</td>
-                <td>{discente.telefono}</td>
-                <td>{discente.patentNumber}</td>
+          {discenti?.length > 0 ? (
+            discenti?.map((discente) => (
+              <tr key={discente?._id}>
+                <td>{discente?.nome}</td>
+                <td>{discente?.cognome}</td>
+                <td>{discente?.codiceFiscale}</td>
+                <td>{discente?.indirizzo}</td>
+                <td>{discente?.città}</td>
+                <td>{discente?.regione}</td>
+                <td>{discente?.email}</td>
+                <td>{discente?.telefono}</td>
+                <td>{discente?.patentNumber!==null?discente?.patentNumber[0]:discente?.patentNumber}</td>
               </tr>
             ))
           ) : (

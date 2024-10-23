@@ -40,23 +40,22 @@ function ListaCorso() {
 
     fetchCorso();
   }, []);
-  useEffect(() => {
-    const fetchSelectedCorsoData = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:5000/api/corsi/user-course/${selectedCourse}`,
-          {
-            headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-          }
-        );
-        setSelectedCorsoData(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchSelectedCorsoData();
-  }, [selectedCourse, render]);
+  // useEffect(() => {
+  //   const fetchSelectedCorsoData = async () => {
+  //     try {
+  //       const res = await axios.get(
+  //         `http://localhost:5000/api/corsi/user-course/${selectedCourse}`,
+  //         {
+  //           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+  //         }
+  //       );
+  //       setSelectedCorsoData(res.data);
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   };
+  // fetchSelectedCorsoData();
+  // }, [selectedCourse, render]);
 
   const handleDiscente = async (courseId) => {
     setSelectedCourse(courseId);
@@ -123,6 +122,41 @@ if(render){
     }
   };
 
+  const handleEndCourse = (courseId) => {
+    if (!courseId) return;
+    Swal.fire({
+      title: 'Do you want to End the Course?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .patch(
+            `http://localhost:5000/api/corsi/courses/${courseId}/status`,
+            {
+              status: 'end',
+            },
+            {
+              headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+            }
+          )
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+              setRender(!render);
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
+  };
+
   const handleOpenModal = (direttoreCorso) => {
     setSelectedDirettoreCorso(direttoreCorso || []);
     setShowSanitariosModal(true);
@@ -150,6 +184,7 @@ if(render){
             <th>direttore </th>
             <th>Istruttori</th>
             <th>Giornate</th>
+            <th></th>
             <th></th>
             <th></th>
           </tr>
@@ -227,6 +262,15 @@ if(render){
                       onClick={() => handleProgressiveNumber(corsoItem?._id)}
                     >
                       final course
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-danger'
+                      onClick={() => handleEndCourse(corsoItem?._id)}
+                    >
+                      End Course
                     </button>
                   </td>
                 </tr>
@@ -440,8 +484,8 @@ const DiscenteModal = ({
             }
           })
           .catch((err) => {
-            console.error('Error assigning sanitario:', err);
-            Swal.fire('Something went wrong', '', 'info');
+            console.log('Error assigning sanitario:', err);
+            Swal.fire(err?.response?.data?.error, '', 'info');
           });
       }
     });
@@ -451,7 +495,7 @@ const DiscenteModal = ({
       <div className='modal-dialog'>
         <div className='modal-content'>
           <div className='modal-header'>
-            <h5 className='modal-title'>Assign Discente</h5>
+            <h5 className='modal-title'>Assign Discente Modal</h5>
             <button
               type='button'
               className='close'
@@ -476,7 +520,7 @@ const DiscenteModal = ({
                     alldiscente
                       ?.filter(
                         (item) =>
-                          !selectedCorsoData?.discente?.some(
+                          !selectedCorsoData?.course?.discente?.some(
                             (descente) => descente._id === item._id
                           )
                       )
