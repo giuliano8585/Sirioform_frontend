@@ -60,6 +60,10 @@ import UnActiveRefreshCourse from './pages/UnActiveRefreshCourse';
 import AdminListaRefreshCourse from './pages/AdminListaRefreshCourse';
 import AdminUnActiveRefreshCourse from './pages/AdminUnActiveRefreshCourse';
 import UpdateCorso from './pages/UpdateCorso';
+import AdminEndCourse from './pages/AdminEndCourse';
+import AdminCompleteCourse from './pages/AdminCompleteCourse';
+import FinishCourses from './pages/FinishCourses';
+import CompleteCourses from './pages/CompleteCourses';
 
 const App = () => {
   return (
@@ -293,6 +297,22 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path='/admin/end-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminEndCourse />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/complete-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminCompleteCourse />
+              </ProtectedRoute>
+            }
+          />
             <Route
               path='/admin/all-refresh-corso'
               element={
@@ -410,6 +430,22 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
                 <UnActiveCourse />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/finish-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <FinishCourses />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/complete-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <CompleteCourses />
               </ProtectedRoute>
             }
           />

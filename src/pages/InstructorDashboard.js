@@ -184,6 +184,22 @@ const InstructorDashboard = () => {
                  Unactive Lista Refresh Corso
                 </button>
               </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/finish-corso')}
+                >
+                 Finish Course
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/complete-corso')}
+                >
+                 complete Course
+                </button>
+              </li>
             </ul>
           </div>
         </nav>
