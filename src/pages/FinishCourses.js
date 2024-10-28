@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function FinishCourses() {
   const [corso, setCorso] = useState([]);
@@ -31,6 +32,40 @@ function FinishCourses() {
     fetchCorso();
   }, []);
 
+  const handleEndCourse = (courseId) => {
+    if (!courseId) return;
+    Swal.fire({
+      title: 'Do you want to End the Course?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .patch(
+            `http://localhost:5000/api/corsi/courses/${courseId}/status`,
+            {
+              status: 'end',
+            },
+            {
+              headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+            }
+          )
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
+  };
+
   const handleOpenModal = (direttoreCorso) => {
     setSelectedDirettoreCorso(direttoreCorso || []);
     setShowSanitariosModal(true);
@@ -58,17 +93,17 @@ function FinishCourses() {
             <th>direttore </th>
             <th>Istruttori</th>
             <th>Giornate</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {corso?.filter(
-            (item) =>
-              item?.status == 'end'
+            (item) => item?.status == 'end' || item?.status == 'finalUpdate'
           ).length > 0 ? (
             corso
               ?.filter(
-                (item) =>
-                  item?.status == 'end'
+                (item) => item?.status == 'end' || item?.status == 'finalUpdate'
               )
               .map((corsoItem) => (
                 <tr key={corsoItem._id}>
@@ -110,16 +145,29 @@ function FinishCourses() {
                       Giornate Details
                     </button>
                   </td>
-                  {corsoItem?.status == 'update' && (
+                  {corsoItem?.status == 'finalUpdate' && (
                     <td>
                       <button
                         type='button'
                         className='btn btn-primary'
                         onClick={() =>
-                          navigate('/update-course',{state:{id:corsoItem._id,data:corsoItem}})
+                          navigate('/update-course', {
+                            state: { id: corsoItem._id, data: corsoItem },
+                          })
                         }
                       >
                         Edit
+                      </button>
+                    </td>
+                  )}
+                  {corsoItem?.status == 'finalUpdate' && (
+                    <td>
+                      <button
+                        type='button'
+                        className='btn btn-danger'
+                        onClick={() => handleEndCourse(corsoItem?._id)}
+                      >
+                        End again
                       </button>
                     </td>
                   )}

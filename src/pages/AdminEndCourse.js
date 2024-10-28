@@ -217,8 +217,8 @@ import jsPDF from 'jspdf';
           </tr>
         </thead>
         <tbody>
-          {filteredCorso?.filter((items)=>items?.status=='end'&&items?.isRefreshCourse!==true)?.length > 0 ? (
-            filteredCorso?.filter((items)=>items?.status=='end'&&items?.isRefreshCourse!==true)?.map((corsoItem) => (
+          {filteredCorso?.filter((items)=>(items?.status=='end'||items?.status=='finalUpdate')&&items?.isRefreshCourse!==true)?.length > 0 ? (
+            filteredCorso?.filter((items)=>(items?.status=='end'||items?.status=='finalUpdate')&&items?.isRefreshCourse!==true)?.map((corsoItem) => (
               <tr key={corsoItem._id}>
                 <td>{corsoItem.città}</td>
                 <td>{corsoItem.via}</td>
@@ -557,7 +557,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
                 id=''
               >
                 <option value='complete'>Complete</option>
-                <option value='update'>Update</option>
+                <option value='finalUpdate'>Update</option>
               </select>
               <button
                 type='submit'
