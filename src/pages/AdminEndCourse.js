@@ -15,6 +15,7 @@ import jsPDF from 'jspdf';
   const [selectedInstructor, setSelectedInstructor] = useState([]);
   const [showGiornateModal, setShowGiornateModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showDiscenteModal, setShowDiscenteModal] = useState(false);
   const [courseId, setCourseId] = useState(false);
   const [selectedGiornate, setSelecteGiornate] = useState([]);
 
@@ -59,6 +60,10 @@ import jsPDF from 'jspdf';
   const handleOpenCourseModal = (courseId) => {
     setCourseId(courseId);
     setShowStatusModal(true);
+};
+  const handleOpenDiscenteModal = (courseId) => {
+    setCourseId(courseId);
+    setShowDiscenteModal(true);
 };
 
   useEffect(() => {
@@ -274,6 +279,15 @@ import jsPDF from 'jspdf';
                 <td>
                   <button
                     type='button'
+                    className='btn btn-primary'
+                    onClick={() => handleOpenDiscenteModal(corsoItem?._id)}
+                  >
+                    All Discente
+                  </button>
+                </td>
+                <td>
+                  <button
+                    type='button'
                     className='btn btn-danger'
                     onClick={() => handleDeleteCourse(corsoItem?._id)}
                   >
@@ -326,6 +340,14 @@ import jsPDF from 'jspdf';
       {showStatusModal && (
         <StatusModal
           setShowStatusModal={setShowStatusModal}
+          courseId={courseId}
+          setRender={setRender}
+          render={render}
+        />
+      )}
+      {showDiscenteModal && (
+        <DiscenteModal
+          setShowDiscenteModal={setShowDiscenteModal}
           courseId={courseId}
           setRender={setRender}
           render={render}
@@ -566,6 +588,85 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
                 Change Status
               </button>
             </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+const DiscenteModal = ({ setShowDiscenteModal, courseId, setRender, render }) => {
+  const [data, setData] = useState();
+
+  useEffect(()=>{
+    const handleData = async (e) => {
+      axios.get(
+        `http://localhost:5000/api/corsi/user-course/${courseId}/`,
+        {
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+        }
+      )
+      .then((res) => {
+        if (res?.status === 200) {
+          setData(res?.data?.course?.discente)
+        } else {
+          Swal.fire('Something went wrong', '', 'info');
+        }
+      })
+      .catch((err) => {
+        console.error('Error assigning sanitario:', err);
+        Swal.fire('Something went wrong', '', 'info');
+      });
+    };
+    handleData()
+  },[courseId])
+
+  return (
+    <div className='modal modal-xl show d-block' tabIndex='-1'>
+      <div className='modal-dialog'>
+        <div className='modal-content'>
+          <div className='modal-header'>
+            <h5 className='modal-title'>Discente</h5>
+            <button
+              type='button'
+              className='close'
+              onClick={() => setShowDiscenteModal(false)}
+            >
+              <span>&times;</span>
+            </button>
+          </div>
+          <div className='modal-body'>
+          <div className='table-responsive'>
+              <table className='table table-striped table-bordered'>
+                <thead className='thead-dark'>
+                  <tr>
+                    <th>nome</th>
+                    <th>cognome</th>
+                    <th>email</th>
+                    <th>telefono</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data?.length > 0 ? (
+                    data.map((data, index) => (
+                      <tr key={index}>
+                        <td>
+                          {data?.nome}
+                        </td>
+                        <td>{data?.cognome}</td>
+                        <td>{data?.email}</td>
+                        <td>{data?.telefono}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan='5'>No Direttore Corso found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
