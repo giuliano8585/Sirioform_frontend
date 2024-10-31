@@ -299,7 +299,7 @@ const AdminCompleteCourse = () => {
                       className='btn btn-primary'
                       onClick={() => handleOpenCourseModal(corsoItem?._id)}
                     >
-                      Change Status
+                      All Discente
                     </button>
                   </td>
                   <td>
@@ -527,50 +527,37 @@ const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
 };
 
 const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
-  const [status, setStatus] = useState('complete');
+  const [data, setData] = useState();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    Swal.fire({
-      title: 'Do you want to Change the status of the Course?',
-      showCancelButton: true,
-      confirmButtonText: 'Save',
-      denyButtonText: `Don't save`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .patch(
-            `http://localhost:5000/api/corsi/courses/${courseId}/status`,
-            {
-              status: status,
-            },
-            {
-              headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-            }
-          )
-          .then((res) => {
-            if (res?.status === 200) {
-              Swal.fire('Saved!', '', 'success');
-              setRender(!render);
-              setShowStatusModal(false);
-            } else {
-              Swal.fire('Something went wrong', '', 'info');
-            }
-          })
-          .catch((err) => {
-            console.error('Error assigning sanitario:', err);
-            Swal.fire('Something went wrong', '', 'info');
-          });
-      }
-    });
-  };
+  useEffect(()=>{
+    const handleData = async (e) => {
+      axios.get(
+        `http://localhost:5000/api/corsi/user-course/${courseId}/`,
+        {
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+        }
+      )
+      .then((res) => {
+        if (res?.status === 200) {
+          setData(res?.data?.course?.discente)
+        } else {
+          Swal.fire('Something went wrong', '', 'info');
+        }
+      })
+      .catch((err) => {
+        console.error('Error assigning sanitario:', err);
+        Swal.fire('Something went wrong', '', 'info');
+      });
+    };
+    handleData()
+  },[courseId])
 
   return (
     <div className='modal modal-xl show d-block' tabIndex='-1'>
       <div className='modal-dialog'>
         <div className='modal-content'>
           <div className='modal-header'>
-            <h5 className='modal-title'>Change Status</h5>
+            <h5 className='modal-title'>Discente</h5>
             <button
               type='button'
               className='close'
@@ -580,23 +567,40 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
             </button>
           </div>
           <div className='modal-body'>
-            <form onSubmit={handleSubmit}>
-              <select
-                className='col-12 form-control'
-                onChange={(e) => setStatus(e.target.value)}
-                name=''
-                id=''
-              >
-                <option value='complete'>Complete</option>
-                <option value='update'>Update</option>
-              </select>
-              <button type='submit' className='btn btn-primary'>
-                Change Status
-              </button>
-            </form>
+          <div className='table-responsive'>
+              <table className='table table-striped table-bordered'>
+                <thead className='thead-dark'>
+                  <tr>
+                    <th>nome</th>
+                    <th>cognome</th>
+                    <th>email</th>
+                    <th>telefono</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data?.length > 0 ? (
+                    data.map((data, index) => (
+                      <tr key={index}>
+                        <td>
+                          {data?.nome}
+                        </td>
+                        <td>{data?.cognome}</td>
+                        <td>{data?.email}</td>
+                        <td>{data?.telefono}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan='5'>No Direttore Corso found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
+

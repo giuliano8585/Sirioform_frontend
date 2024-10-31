@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 function ListaCorso() {
   const [corso, setCorso] = useState([]);
@@ -14,11 +16,14 @@ function ListaCorso() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [allDiscente, setAllDiscente] = useState([]);
   const [allCourseDiscente, setAllCourseDiscente] = useState([]);
-  const [allCourseProgressiveNumber, setAllCourseProgressiveNumber] = useState([]);
+  const [allCourseProgressiveNumber, setAllCourseProgressiveNumber] = useState(
+    []
+  );
   const [showDiscenteModal, setShowDiscenteModal] = useState(false);
   const [render, setRender] = useState(false);
   const [showCourseDiscenteModal, setShowCourseDiscenteModal] = useState(false);
-  const [showCourseProgressiveModal, setShowCourseProgressiveModal] = useState(false);
+  const [showCourseProgressiveModal, setShowCourseProgressiveModal] =
+    useState(false);
   const [selectedGiornate, setSelecteGiornate] = useState([]);
 
   const navigate = useNavigate();
@@ -88,26 +93,26 @@ function ListaCorso() {
     }
   };
 
-  useEffect(()=>{
-if(render){
-  const handleProgressiveNumber = async (selectedCourse) => {
-    setSelectedCourse(selectedCourse);
-    try {
-      const res = await axios.get(
-        `http://localhost:5000/api/corsi/user-course/${selectedCourse}`,
-        {
-          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+  useEffect(() => {
+    if (render) {
+      const handleProgressiveNumber = async (selectedCourse) => {
+        setSelectedCourse(selectedCourse);
+        try {
+          const res = await axios.get(
+            `http://localhost:5000/api/corsi/user-course/${selectedCourse}`,
+            {
+              headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+            }
+          );
+          setAllCourseProgressiveNumber(res.data);
+          setShowCourseProgressiveModal(true);
+        } catch (err) {
+          console.error('Error fetching instructors:', err);
         }
-      );
-      setAllCourseProgressiveNumber(res.data);
-      setShowCourseProgressiveModal(true);
-    } catch (err) {
-      console.error('Error fetching instructors:', err);
+      };
+      handleProgressiveNumber();
     }
-  };
-  handleProgressiveNumber()
-}
-  },[render])
+  }, [render]);
 
   const handleAllDiscente = async (courseId) => {
     setSelectedCourse(courseId);
@@ -151,7 +156,7 @@ if(render){
           })
           .catch((err) => {
             console.error('Error assigning sanitario:', err);
-            Swal.fire('Something went wrong', '', 'info');
+            Swal.fire(err?.response?.data?.message, '', 'info');
           });
       }
     });
@@ -478,7 +483,7 @@ const DiscenteModal = ({
             if (res?.status === 200) {
               Swal.fire('Saved!', '', 'success');
               setRender(!render);
-              setShowDiscenteModal(false)
+              setShowDiscenteModal(false);
             } else {
               Swal.fire('Something went wrong', '', 'info');
             }
@@ -563,8 +568,40 @@ const CourseDiscenteModal = ({
   selectedCourse,
   setRender,
   render,
-
 }) => {
+  const handleDownloadDiscente = (discenteData) => {
+    const doc = new jsPDF();
+    doc.text('Discente List', 14, 10);
+
+    const headers = [
+      'Nome',
+      'Cognome',
+      'Codice Fiscale',
+      'Indirizzo',
+      'Città',
+      'Regione',
+      'Email',
+      'Telefono',
+    ];
+
+    const bodyData = discenteData.map((discente) => [
+      discente.nome,
+      discente.cognome,
+      discente.codiceFiscale,
+      discente.indirizzo,
+      discente.città,
+      discente.regione,
+      discente.email,
+      discente.telefono,
+    ]);
+
+    doc.autoTable({
+      head: [headers],
+      body: bodyData,
+      startY: 20,
+    });
+    doc.save('Discente_List.pdf');
+  };
 
   const handleremoveDiscente = (discenteId) => {
     if (!discenteId) return;
@@ -618,6 +655,14 @@ const CourseDiscenteModal = ({
               <span>&times;</span>
             </button>
           </div>
+          <div className='d-flex align-items-center justify-content-end'>
+            <button
+              className='btn btn-primary'
+              onClick={() => handleDownloadDiscente(allCoursediscente)}
+            >
+              Download
+            </button>
+          </div>
           <div className='modal-body'>
             <div className='table-responsive'>
               <table className='table table-striped table-bordered'>
@@ -644,7 +689,7 @@ const CourseDiscenteModal = ({
                             className='btn btn-danger'
                             onClick={() => handleremoveDiscente(discente?._id)}
                           >
-                           Remove Discente
+                            Remove Discente
                           </button>
                         </td>
                       </tr>
@@ -669,7 +714,6 @@ const CourseProgressiveNumber = ({
   selectedCourse,
   setRender,
   render,
-
 }) => {
   const [patentNumbers, setPatentNumbers] = useState({});
   console.log('patentNumbers: ', patentNumbers);
@@ -677,11 +721,11 @@ const CourseProgressiveNumber = ({
   const handleChangeValue = (discenteId, value) => {
     setPatentNumbers((prev) => ({
       ...prev,
-      [discenteId]: value, 
+      [discenteId]: value,
     }));
-  }
+  };
 
-  const handleAssignProgressiveNumber = (id,patentNumber) => {
+  const handleAssignProgressiveNumber = (id, patentNumber) => {
     if (!id) return;
     Swal.fire({
       title: 'Do you want to save the changes?',
@@ -703,16 +747,17 @@ const CourseProgressiveNumber = ({
             }
           )
           .then((res) => {
+          console.log('res: ', res);
             if (res?.status === 200) {
               Swal.fire('Saved!', '', 'success');
               setRender(!render);
             } else {
-              Swal.fire('Something went wrong', '', 'info');
+              Swal.fire(res?.message, '', 'info');
             }
           })
           .catch((err) => {
             console.error('Error assigning sanitario:', err);
-            Swal.fire('Something went wrong', '', 'info');
+            Swal.fire(err?.response?.data?.message, '', 'info');
           });
       }
     });
@@ -745,40 +790,66 @@ const CourseProgressiveNumber = ({
                 </thead>
                 <tbody>
                   {allCoursediscente?.course?.discente?.length > 0 ? (
-                    allCoursediscente?.course?.discente?.map((discente, index) => (
-                      <tr key={index}>
-                        <td>{discente?.nome}</td>
-                        <td>{discente?.cognome}</td>
-                        <td>{discente?.email}</td>
-                        <td>{discente?.patentNumber?.map((i)=><p className="">{i}</p>)}</td>
-                        <td>
-                        <select
-                            className='form-select'
-                            aria-label='Select Patent Number'
-                            name='patentNumber'
-                            value={patentNumbers[discente._id] || ''} 
-                            onChange={(e) => handleChangeValue(discente._id, e.target.value)} 
-                          >
-                            <option value=''>Select Patent Number</option>
-                            {allCoursediscente?.progressiveNumbers?.map((option) => (
-                              <option key={option} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
-                        <td>
-                          <button
-                          disabled={!patentNumbers[discente._id]}
-                            type='button'
-                            className='btn btn-primary'
-                            onClick={() => handleAssignProgressiveNumber(discente?._id,patentNumbers[discente._id])}
-                          >
-                           Assign kit Number
-                          </button>
-                        </td>
-                      </tr>
-                    ))
+                    allCoursediscente?.course?.discente?.map(
+                      (discente, index) => (
+                        <tr key={index}>
+                          <td>{discente?.nome}</td>
+                          <td>{discente?.cognome}</td>
+                          <td>{discente?.email}</td>
+                          <td>
+                            {discente?.patentNumber?.length === 1 ? (
+                              <p className=''>{discente.patentNumber[0]}</p>
+                            ) : discente?.patentNumber?.length > 1 ? (
+                              <>
+                                <p className=''>{discente.patentNumber[0]}</p>
+                                <p className=''>
+                                  {
+                                    discente.patentNumber[
+                                      discente.patentNumber.length - 1
+                                    ]
+                                  }
+                                </p>
+                              </>
+                            ) : null}
+                          </td>
+                          <td>
+                            <select
+                              className='form-select'
+                              aria-label='Select Patent Number'
+                              name='patentNumber'
+                              value={patentNumbers[discente._id] || ''}
+                              onChange={(e) =>
+                                handleChangeValue(discente._id, e.target.value)
+                              }
+                            >
+                              <option value=''>Select Patent Number</option>
+                              {allCoursediscente?.progressiveNumbers?.map(
+                                (option) => (
+                                  <option key={option} value={option}>
+                                    {option}
+                                  </option>
+                                )
+                              )}
+                            </select>
+                          </td>
+                          <td>
+                            <button
+                              disabled={!patentNumbers[discente._id]}
+                              type='button'
+                              className='btn btn-primary'
+                              onClick={() =>
+                                handleAssignProgressiveNumber(
+                                  discente?._id,
+                                  patentNumbers[discente._id]
+                                )
+                              }
+                            >
+                              Assign kit Number
+                            </button>
+                          </td>
+                        </tr>
+                      )
+                    )
                   ) : (
                     <tr>
                       <td colSpan='5'>No Direttore Corso found</td>
