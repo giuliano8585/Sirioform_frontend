@@ -15,7 +15,9 @@ function ListaCorso() {
   const [showGiornateModal, setShowGiornateModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [allDiscente, setAllDiscente] = useState([]);
+  const [editQuantityModal, setEditQuantityModal] = useState(false);
   const [allCourseDiscente, setAllCourseDiscente] = useState([]);
+  const [courseId, setCourseId] = useState(null);
   const [allCourseProgressiveNumber, setAllCourseProgressiveNumber] = useState(
     []
   );
@@ -174,6 +176,10 @@ function ListaCorso() {
     setSelecteGiornate(direttoreCorso || []);
     setShowGiornateModal(true);
   };
+  const handleEditQuantity = (id) => {
+    setCourseId(id)
+    setEditQuantityModal(true);
+  };
 
   return (
     <div className='container mt-4'>
@@ -278,6 +284,15 @@ function ListaCorso() {
                       End Course
                     </button>
                   </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleEditQuantity(corsoItem?._id)}
+                    >
+                      Add Quantity
+                    </button>
+                  </td>
                 </tr>
               ))
           ) : (
@@ -340,6 +355,12 @@ function ListaCorso() {
         <GiornateModal
           setShowGiornateModal={setShowGiornateModal}
           giornateDetails={selectedGiornate}
+        />
+      )}
+      {editQuantityModal && (
+        <EditQuantityModal
+          editQuantityModal={setEditQuantityModal}
+          id={courseId}
         />
       )}
     </div>
@@ -747,7 +768,7 @@ const CourseProgressiveNumber = ({
             }
           )
           .then((res) => {
-          console.log('res: ', res);
+            console.log('res: ', res);
             if (res?.status === 200) {
               Swal.fire('Saved!', '', 'success');
               setRender(!render);
@@ -909,6 +930,62 @@ const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const EditQuantityModal = ({ editQuantityModal, id}) => {
+  const [value, setValue] = useState('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.patch(
+        `http://localhost:5000/api/corsi/courses/add-quatity/${id}`,
+        {
+          numeroDiscenti:value,
+        },
+        { headers: { 'x-auth-token': localStorage.getItem('token') } }
+      );
+      Swal.fire('Course updated successfully!', '', 'success');
+    } catch (error) {
+      Swal.fire(error?.response?.data?.message, '', 'error');
+    }
+  };
+  return (
+    <div className='modal modal-xl show d-block' tabIndex='-1'>
+      <div className='modal-dialog'>
+        <div className='modal-content'>
+          <div className='modal-header'>
+            <h5 className='modal-title'>Edit Quantity</h5>
+            <button
+              type='button'
+              className='close'
+              onClick={() => editQuantityModal(false)}
+            >
+              <span>&times;</span>
+            </button>
+          </div>
+          <div className='modal-body'>
+            <form onSubmit={handleSubmit}>
+              <div class='form-group'>
+                <label for='exampleInputEmail1'>Add Quantity</label>
+                <input
+                  type='text'
+                  class='form-control'
+                  id='exampleInputEmail1'
+                  aria-describedby='emailHelp'
+                  placeholder='Add Quantity'
+                  onChange={(e)=>setValue(e.target.value)}
+                  value={value}
+                />
+              </div>
+              <button type='submit' class='btn btn-primary'>
+                Submit
+              </button>
+            </form>
           </div>
         </div>
       </div>
