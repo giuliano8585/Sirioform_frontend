@@ -132,6 +132,7 @@ const AdminCompleteCourse = () => {
   };
 
   const handleDownloadPdf = (corsoItem) => {
+    console.log('corsoItem: ', corsoItem);
     const doc = new jsPDF();
 
     doc.text(`Course Details`, 10, 10);
@@ -178,6 +179,9 @@ const AdminCompleteCourse = () => {
       130
     );
     doc.text(`progressiveNumber: ${corsoItem?.progressiveNumber}`, 10, 140);
+    
+      doc.text(`discente details: ${corsoItem?.discente?.map((items)=>('discente :'+ items?.nome + items?.cognome + items?.email))}`, 10, 150);
+    
     doc.save(`${corsoItem.città}_course_details.pdf`);
   };
 
