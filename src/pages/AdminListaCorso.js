@@ -106,29 +106,58 @@ function AdminListaCorso() {
 
 
   const handleDownloadPdf = (corsoItem) => {
+    console.log('corsoItem: ', corsoItem);
     const doc = new jsPDF();
 
     doc.text(`Course Details`, 10, 10);
     doc.text(`Città: ${corsoItem.città}`, 10, 20);
     doc.text(`Via: ${corsoItem.via}`, 10, 30);
     doc.text(
-      `Created By: ${corsoItem.userId?.role === 'center' ? corsoItem.userId?.name : corsoItem.userId?.firstName + ' ' + corsoItem.userId?.lastName}`,
-      10, 40
+      `Created By: ${
+        corsoItem.userId?.role === 'center'
+          ? corsoItem.userId?.name
+          : corsoItem.userId?.firstName + ' ' + corsoItem.userId?.lastName
+      }`,
+      10,
+      40
     );
     doc.text(`Course Type: ${corsoItem?.tipologia?.type}`, 10, 50);
     doc.text(`Status: ${corsoItem?.status}`, 10, 60);
     doc.text(`Numero Discenti: ${corsoItem?.numeroDiscenti}`, 10, 70);
-    doc.text(`dataFine: ${corsoItem?.giornate[0]?.dataFine?.split('T')[0]}`, 10, 80);
-    doc.text(`dataInizio: ${corsoItem?.giornate[0]?.dataInizio?.split('T')[0]}`, 10, 90);
+    doc.text(
+      `dataFine: ${corsoItem?.giornate[0]?.dataFine?.split('T')[0]}`,
+      10,
+      80
+    );
+    doc.text(
+      `dataInizio: ${corsoItem?.giornate[0]?.dataInizio?.split('T')[0]}`,
+      10,
+      90
+    );
     doc.text(`oraFine: ${corsoItem?.giornate[0]?.oraFine}`, 10, 100);
     doc.text(`oraInizio: ${corsoItem?.giornate[0]?.oraInizio}`, 10, 110);
-    doc.text(`istruttore: ${corsoItem?.istruttore?.map((items)=> `instructor Name : ${items?.firstName +" "+items?.lastName} `)}`, 10, 120);
-    doc.text(`direttoreCorso: ${corsoItem?.direttoreCorso?.map((items)=> `director Name : ${items?.firstName +" "+items?.lastName} `)}`, 10, 130);
+    doc.text(
+      `istruttore: ${corsoItem?.istruttore?.map(
+        (items) =>
+          `instructor Name : ${items?.firstName + ' ' + items?.lastName} `
+      )}`,
+      10,
+      120
+    );
+    doc.text(
+      `direttoreCorso: ${corsoItem?.direttoreCorso?.map(
+        (items) =>
+          `director Name : ${items?.firstName + ' ' + items?.lastName} `
+      )}`,
+      10,
+      130
+    );
     doc.text(`progressiveNumber: ${corsoItem?.progressiveNumber}`, 10, 140);
-
-    // Save the PDF
+    
+      doc.text(`discente details: ${corsoItem?.discente?.map((items)=>('discente :'+ items?.nome + items?.cognome + items?.email))}`, 10, 150);
+    
     doc.save(`${corsoItem.città}_course_details.pdf`);
-  }
+  };
 
   return (
     <div className='container mt-4'>

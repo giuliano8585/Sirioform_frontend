@@ -53,6 +53,11 @@ const AdminDashboard = () => {
                 </button>
               </li>
               <li className="nav-item mb-2">
+                <Link to="/create-instructor-kit" className=" btn btn-primary w-100 btn-lg">
+                  Create Instructor kit
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
                 <button className=" btn btn-primary w-100 btn-lg" onClick={goToCreateSanitario}>
                   Crea Sanitario
                 </button>
@@ -90,6 +95,16 @@ const AdminDashboard = () => {
               <li className="nav-item mb-2">
                 <Link to="/admin/view-refresh-kits" className=" btn btn-primary w-100 btn-lg">
                   Lista Refresh Kits
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/view-instructor-kits" className=" btn btn-primary w-100 btn-lg">
+                  Lista Instrcutor Kits
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/view-instructor-refresh-kits" className=" btn btn-primary w-100 btn-lg">
+                  Lista Instrcutor Refresh Kits
                 </Link>
               </li>
               <li className="nav-item mb-2">

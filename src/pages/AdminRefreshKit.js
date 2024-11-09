@@ -177,7 +177,7 @@ function AdminRefreshKit() {
       <h2>Acquista Refersh Kit</h2>
       <div className='row'>
         {Array.isArray(products) && products?.filter((items)=>items?.isRefreshKit==true)?.length > 0 ? (
-          products?.filter((items)=>items?.isRefreshKit==true).map((product) => (
+          products?.filter((items)=>items?.isRefreshKit==true&&items?.isForInstructor!==true).map((product) => (
             <div key={product._id} className='col-md-4 mb-4'>
               <div className='card h-100'>
                 <div className='card-body d-flex flex-column'>

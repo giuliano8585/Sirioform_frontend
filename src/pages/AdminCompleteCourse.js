@@ -579,6 +579,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
                     <th>cognome</th>
                     <th>email</th>
                     <th>telefono</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -591,6 +592,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
                         <td>{data?.cognome}</td>
                         <td>{data?.email}</td>
                         <td>{data?.telefono}</td>
+                        <td>{data?.patentNumber[0]==''?data?.patentNumber[1]:data?.patentNumber[0]}</td>
                       </tr>
                     ))
                   ) : (
