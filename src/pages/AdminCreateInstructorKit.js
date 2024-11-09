@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const CreateKit = () => {
+const AdminCreateInstructorKit = () => {
   const [kitData, setKitData] = useState({
     code: '',
     type: '',
     isRefreshKit:false,
-    isForInstructor:false,
+    isForInstructor:true,
     description: '',
     cost1: '',
     cost2: '',
@@ -236,4 +236,4 @@ const CreateKit = () => {
   );
 };
 
-export default CreateKit;
+export default AdminCreateInstructorKit;

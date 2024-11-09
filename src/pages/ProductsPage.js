@@ -17,7 +17,7 @@ function ProductsPage() {
 
         const initialQuantities = {};
         res.data.forEach((product) => {
-          initialQuantities[product._id] = 1;
+          initialQuantities[product._id] = 6;
         });
         setQuantities(initialQuantities);
       } catch (err) {
@@ -29,9 +29,10 @@ function ProductsPage() {
   }, []);
 
   const handleQuantityChange = (productId, value) => {
+    const newValue = Math.max(6, Math.ceil(value / 6) * 6);
     setQuantities({
       ...quantities,
-      [productId]: value,
+      [productId]: newValue,
     });
   };
 
@@ -46,7 +47,7 @@ function ProductsPage() {
   };
 
   const handlePurchase = (productId, productName) => {
-    const quantity = quantities[productId] || 1;
+    const quantity = quantities[productId] || 6;
     navigate('/payment', {
       state: {
         productName: productName,
@@ -65,44 +66,49 @@ function ProductsPage() {
       <h2>Acquista Kit</h2>
       <div className='row'>
         {Array.isArray(products) && products.length > 0 ? (
-          products?.filter((items)=>items?.isRefreshKit!==true).map((product) => (
-            <div key={product._id} className='col-md-4 mb-4'>
-              <div className='card h-100'>
-                <div className='card-body d-flex flex-column'>
-                  <img
-                    src={`http://localhost:5000/${product?.profileImage}`}
-                    alt=''
-                  />
-                  <h5 className='card-title'>{product.code}</h5>
-                  <h5 className='card-title'>{product.type}</h5>
-                  <p className='card-text'>{product.description}</p>
-                  <p className='card-text'>
-                    <strong>
-                      €{calculatePrice(product, quantities[product._id] || 1)}
-                    </strong>
-                  </p>
-                  <input
-                    type='number'
-                    min='1'
-                    value={quantities[product._id] || 1}
-                    onChange={(e) =>
-                      handleQuantityChange(
-                        product._id,
-                        parseInt(e.target.value)
-                      )
-                    }
-                    className='form-control mb-3'
-                  />
-                  <button
-                    onClick={() => handlePurchase(product?._id, product?.type)}
-                    className='btn btn-primary mt-auto'
-                  >
-                    Acquista
-                  </button>
+          products
+            ?.filter((items) => items?.isRefreshKit !== true && items?.isForInstructor !==true)
+            .map((product) => (
+              <div key={product._id} className='col-md-4 mb-4'>
+                <div className='card h-100'>
+                  <div className='card-body d-flex flex-column'>
+                    <img
+                      src={`http://localhost:5000/${product?.profileImage}`}
+                      alt=''
+                    />
+                    <h5 className='card-title'>{product.code}</h5>
+                    <h5 className='card-title'>{product.type}</h5>
+                    <p className='card-text'>{product.description}</p>
+                    <p className='card-text'>
+                      <strong>
+                        €{calculatePrice(product, quantities[product._id] || 6)}
+                      </strong>
+                    </p>
+                    <input
+                      type='number'
+                      min='6'
+                      step='6'
+                      value={quantities[product._id] || 6}
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          product._id,
+                          parseInt(e.target.value)
+                        )
+                      }
+                      className='form-control mb-3'
+                    />
+                    <button
+                      onClick={() =>
+                        handlePurchase(product?._id, product?.type)
+                      }
+                      className='btn btn-primary mt-auto'
+                    >
+                      Acquista
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))
         ) : (
           <p className='text-muted'>Nessun prodotto disponibile.</p>
         )}

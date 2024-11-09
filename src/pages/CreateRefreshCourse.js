@@ -239,7 +239,7 @@ function CreateRefreshCourse() {
               required
             >
               <option value=''>Seleziona una tipologia</option>
-              {tipologiaProdotti?.filter((items)=>items?.isRefreshKit==true&&items?.quantity!==0)?.map((prodotto) => (
+              {tipologiaProdotti?.filter((items)=>items?.isRefreshKit==true&&items?.quantity!==0&&items?.isForInstructor!==true)?.map((prodotto) => (
                 <option key={prodotto._id} value={prodotto._id}>
                   {prodotto.title} (Disponibili: {prodotto.quantity})
                 </option>

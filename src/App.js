@@ -64,6 +64,10 @@ import AdminEndCourse from './pages/AdminEndCourse';
 import AdminCompleteCourse from './pages/AdminCompleteCourse';
 import FinishCourses from './pages/FinishCourses';
 import CompleteCourses from './pages/CompleteCourses';
+import SiriformDashboard from './pages/SiriformDashboard';
+import AdminCreateInstructorKit from './pages/AdminCreateInstructorKit';
+import AdminViewInstructorKit from './pages/AdminViewInstructorKit';
+import AdminViewInstructorRefreshKit from './pages/AdminViewInstructorRefreshKit';
 
 const App = () => {
   return (
@@ -87,6 +91,14 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={['center']}>
                 <CenterDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/siriform'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <SiriformDashboard />
               </ProtectedRoute>
             }
           />
@@ -123,6 +135,14 @@ const App = () => {
             }
           />
           <Route
+            path='/create-instructor-kit'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminCreateInstructorKit />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path='/view-kits'
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
@@ -131,10 +151,26 @@ const App = () => {
             }
           />
           <Route
+            path='/admin/view-instructor-kits'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <AdminViewInstructorKit />{' '}
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path='/view-refresh-kits'
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
                 <RrefreshKit />{' '}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/view-instructor-refresh-kits'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <AdminViewInstructorRefreshKit />{' '}
               </ProtectedRoute>
             }
           />

@@ -19,6 +19,7 @@ function CreateCorso() {
     tipologia: '',
     città: '',
     via: '',
+    presso:'',
     numeroDiscenti: '',
     istruttori: [],
     direttoriCorso: [],
@@ -239,7 +240,7 @@ function CreateCorso() {
               required
             >
               <option value=''>Seleziona una tipologia</option>
-              {tipologiaProdotti?.filter((items)=>items?.isRefreshKit!==true&&items?.quantity!==0).map((prodotto) => (
+              {tipologiaProdotti?.filter((items)=>items?.isRefreshKit!==true&&items?.quantity!==0&&items?.isForInstructor!==true).map((prodotto) => (
                 <option key={prodotto._id} value={prodotto._id}>
                   {prodotto.title} (Disponibili: {prodotto.quantity})
                 </option>
@@ -275,6 +276,17 @@ function CreateCorso() {
               className='form-control'
               name='via'
               value={corso.via}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className='col-md-6 mb-3'>
+            <label>presso:</label>
+            <input
+              type='text'
+              className='form-control'
+              name='presso'
+              value={corso.presso}
               onChange={handleInputChange}
               required
             />
