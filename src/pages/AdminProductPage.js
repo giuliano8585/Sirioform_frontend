@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 function AdminProductsPage() {
   const [products, setProducts] = useState([]);
-  const [showApproveConfirmModal , setShowApproveConfirmModal] = useState(false)
+  const [showApproveConfirmModal, setShowApproveConfirmModal] = useState(false);
   const [quantities, setQuantities] = useState({});
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -30,7 +30,7 @@ function AdminProductsPage() {
 
         const initialQuantities = {};
         res.data.forEach((product) => {
-          initialQuantities[product._id] = 1;
+          initialQuantities[product._id] = 6;
         });
         setQuantities(initialQuantities);
       } catch (err) {
@@ -42,9 +42,10 @@ function AdminProductsPage() {
   }, []);
 
   const handleQuantityChange = (productId, value) => {
+    const newValue = Math.max(6, Math.ceil(value / 6) * 6);
     setQuantities({
       ...quantities,
-      [productId]: value,
+      [productId]: newValue,
     });
   };
 
@@ -59,7 +60,7 @@ function AdminProductsPage() {
   };
 
   const handlePurchase = (productId, productName) => {
-    const quantity = quantities[productId] || 1;
+    const quantity = quantities[productId] || 6;
     navigate('/payment', {
       state: {
         productName: productName,
@@ -149,26 +150,29 @@ function AdminProductsPage() {
       );
       alert('Kit aggiornato con successo!');
       handleCloseModal();
-      setShowApproveConfirmModal(false)
+      setShowApproveConfirmModal(false);
     } catch (err) {
       console.error(err);
-      alert('Errore nell\'aggiornamento del kit.');
+      alert("Errore nell'aggiornamento del kit.");
     }
   };
 
   // Handle Delete
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/kits/${selectedProduct._id}`, {
-        headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-      });
+      await axios.delete(
+        `http://localhost:5000/api/kits/${selectedProduct._id}`,
+        {
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+        }
+      );
       // Remove from products state
       setProducts(products.filter((prod) => prod._id !== selectedProduct._id));
       alert('Kit eliminato con successo!');
       handleCloseModal();
     } catch (err) {
       console.error(err);
-      alert('Errore nell\'eliminazione del kit.');
+      alert("Errore nell'eliminazione del kit.");
     }
   };
 
@@ -177,61 +181,69 @@ function AdminProductsPage() {
       <h2>Acquista Kit</h2>
       <div className='row'>
         {Array.isArray(products) && products.length > 0 ? (
-          products?.filter((items)=>items?.isRefreshKit!==true&&items?.isForInstructor!==true).map((product) => (
-            <div key={product._id} className='col-md-4 mb-4'>
-              <div className='card h-100'>
-                <div className='card-body d-flex flex-column'>
-                  <img
-                    src={`http://localhost:5000/${product?.profileImage}`}
-                    alt={product.type}
-                    className='img-fluid mb-3'
-                  />
-                  <h5 className='card-title'>{product.code}</h5>
-                  <h5 className='card-title'>{product.type}</h5>
-                  <p className='card-text'>{product.description}</p>
-                  <p className='card-text'>
-                    <strong>
-                      €{calculatePrice(product, quantities[product._id] || 1)}
-                    </strong>
-                  </p>
-                  <input
-                    type='number'
-                    min='1'
-                    value={quantities[product._id] || 1}
-                    onChange={(e) =>
-                      handleQuantityChange(
-                        product._id,
-                        parseInt(e.target.value)
-                      )
-                    }
-                    className='form-control mb-3'
-                  />
-                  <button
-                    onClick={() => handlePurchase(product?._id, product?.type)}
-                    className='btn btn-primary mt-auto mb-2'
-                  >
-                    Acquista
-                  </button>
-                  <div className='d-flex justify-content-between'>
+          products
+            ?.filter(
+              (items) =>
+                items?.isRefreshKit !== true && items?.isForInstructor !== true
+            )
+            .map((product) => (
+              <div key={product._id} className='col-md-4 mb-4'>
+                <div className='card h-100'>
+                  <div className='card-body d-flex flex-column'>
+                    <img
+                      src={`http://localhost:5000/${product?.profileImage}`}
+                      alt={product.type}
+                      className='img-fluid mb-3'
+                    />
+                    <h5 className='card-title'>{product.code}</h5>
+                    <h5 className='card-title'>{product.type}</h5>
+                    <p className='card-text'>{product.description}</p>
+                    <p className='card-text'>
+                      <strong>
+                        €{calculatePrice(product, quantities[product._id] || 6)}
+                      </strong>
+                    </p>
+                    <input
+                      type='number'
+                      min='6'
+                      step='6'
+                      value={quantities[product._id] || 6}
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          product._id,
+                          parseInt(e.target.value)
+                        )
+                      }
+                      className='form-control mb-3'
+                    />
                     <button
-                      type='button'
-                      className='btn btn-warning'
-                      onClick={() => handleShowModal(product, 'edit')}
+                      onClick={() =>
+                        handlePurchase(product?._id, product?.type)
+                      }
+                      className='btn btn-primary mt-auto mb-2'
                     >
-                      Edit
+                      Acquista
                     </button>
-                    <button
-                      type='button'
-                      className='btn btn-danger'
-                      onClick={() => handleShowModal(product, 'delete')}
-                    >
-                      Delete
-                    </button>
+                    <div className='d-flex justify-content-between'>
+                      <button
+                        type='button'
+                        className='btn btn-warning'
+                        onClick={() => handleShowModal(product, 'edit')}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type='button'
+                        className='btn btn-danger'
+                        onClick={() => handleShowModal(product, 'delete')}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))
         ) : (
           <p className='text-muted'>Nessun prodotto disponibile.</p>
         )}
@@ -268,7 +280,7 @@ function AdminProductsPage() {
               </div>
               <div className='modal-body'>
                 {modalType === 'edit' && (
-                  <form  encType="multipart/form-data">
+                  <form encType='multipart/form-data'>
                     <div className='form-group mb-3'>
                       <label htmlFor='code'>Codice Kit</label>
                       <input
@@ -353,10 +365,14 @@ function AdminProductsPage() {
                         className='form-control'
                         id='editProfileImage'
                         onChange={handleEditFileChange}
-                        accept="image/*"
+                        accept='image/*'
                       />
                     </div>
-                    <button onClick={()=>setShowApproveConfirmModal(true)} type='button' className='btn btn-primary me-2'>
+                    <button
+                      onClick={() => setShowApproveConfirmModal(true)}
+                      type='button'
+                      className='btn btn-primary me-2'
+                    >
                       Aggiorna
                     </button>
                     <button
@@ -367,62 +383,59 @@ function AdminProductsPage() {
                       Annulla
                     </button>
                     {showApproveConfirmModal && (
-                            <div
-                              className='modal modal-xl show d-block'
-                              tabIndex='-1'
-                            >
-                              <div className='modal-dialog'>
-                                <div className='modal-content'>
-                                  <div className='modal-header'>
-                                    <h5 className='modal-title'>
-                                      Confirm
-                                    </h5>
-                                    <button
-                                      type='button'
-                                      className='close'
-                                      onClick={() =>
-                                        setShowApproveConfirmModal(
-                                          false
-                                        )
-                                      }
-                                    >
-                                      <span>&times;</span>
-                                    </button>
-                                  </div>
-                                  <div className='modal-body'>
-                                    <div className='table-responsive'>
-                                      <p className='text-center'>
-                                        are you sure want to Edit Kit
-                                      </p>
-                                      <div className='d-flex align-items-center justify-content-center gap-4'>
-                                        <button
-                                          onClick={() =>
-                                            setShowApproveConfirmModal(
-                                              false
-                                            )
-                                          }
-                                          className='btn btn-info btn-sm'
-                                        >
-                                          No
-                                        </button>
-                                        <button
-                                          onClick={handleUpdate}
-                                          className='btn btn-primary btn-sm'
-                                        >
-                                          Yes
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
+                      <div
+                        className='modal modal-xl show d-block'
+                        tabIndex='-1'
+                      >
+                        <div className='modal-dialog'>
+                          <div className='modal-content'>
+                            <div className='modal-header'>
+                              <h5 className='modal-title'>Confirm</h5>
+                              <button
+                                type='button'
+                                className='close'
+                                onClick={() =>
+                                  setShowApproveConfirmModal(false)
+                                }
+                              >
+                                <span>&times;</span>
+                              </button>
+                            </div>
+                            <div className='modal-body'>
+                              <div className='table-responsive'>
+                                <p className='text-center'>
+                                  are you sure want to Edit Kit
+                                </p>
+                                <div className='d-flex align-items-center justify-content-center gap-4'>
+                                  <button
+                                    onClick={() =>
+                                      setShowApproveConfirmModal(false)
+                                    }
+                                    className='btn btn-info btn-sm'
+                                  >
+                                    No
+                                  </button>
+                                  <button
+                                    onClick={handleUpdate}
+                                    className='btn btn-primary btn-sm'
+                                  >
+                                    Yes
+                                  </button>
                                 </div>
                               </div>
                             </div>
-                          )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </form>
                 )}
                 {modalType === 'delete' && (
                   <div>
-                    <p>Sei sicuro di voler eliminare il kit <strong>{selectedProduct.type}</strong>?</p>
+                    <p>
+                      Sei sicuro di voler eliminare il kit{' '}
+                      <strong>{selectedProduct.type}</strong>?
+                    </p>
                   </div>
                 )}
               </div>

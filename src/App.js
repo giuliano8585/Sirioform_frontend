@@ -16,7 +16,6 @@ import InstructorsList from './components/InstructorList';
 import InstructorDashboard from './pages/InstructorDashboard';
 import CenterDashboard from './pages/CenterDashboard';
 import CreateKit from './components/CreateKit';
-import ViewKits from './components/ViewKits';
 import UnapprovedCenters from './pages/UnapprovedCenters';
 import UnapprovedInstructors from './pages/UnapprovedInstructors';
 import CreateSanitario from './pages/CreateSanitario';
@@ -68,6 +67,10 @@ import SiriformDashboard from './pages/SiriformDashboard';
 import AdminCreateInstructorKit from './pages/AdminCreateInstructorKit';
 import AdminViewInstructorKit from './pages/AdminViewInstructorKit';
 import AdminViewInstructorRefreshKit from './pages/AdminViewInstructorRefreshKit';
+import CreateInstructorCourse from './pages/CreateInstructorCourse';
+import CreateInstructorRefreshCourse from './pages/CreateInstructorRefreshCourse';
+import ListaInstructorCourses from './pages/ListaInstructorCourses';
+import ListaInstructorRefreshCourses from './pages/ListaInstructorRefreshCourses';
 
 const App = () => {
   return (
@@ -151,26 +154,10 @@ const App = () => {
             }
           />
           <Route
-            path='/admin/view-instructor-kits'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <AdminViewInstructorKit />{' '}
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path='/view-refresh-kits'
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
                 <RrefreshKit />{' '}
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/admin/view-instructor-refresh-kits'
-            element={
-              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
-                <AdminViewInstructorRefreshKit />{' '}
               </ProtectedRoute>
             }
           />
@@ -349,14 +336,14 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-            <Route
-              path='/admin/all-refresh-corso'
-              element={
-                <ProtectedRoute allowedRoles={['admin']}>
-                  <AdminListaRefreshCourse />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path='/admin/all-refresh-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminListaRefreshCourse />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path='/admin/unactive-refresh-corso'
             element={
@@ -378,6 +365,22 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <AdminRefreshKit />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/view-instructor-kits'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <AdminViewInstructorKit />{' '}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/view-instructor-refresh-kits'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <AdminViewInstructorRefreshKit />{' '}
               </ProtectedRoute>
             }
           />
@@ -430,6 +433,14 @@ const App = () => {
             }
           />
           <Route
+            path='/create-instructor-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <CreateInstructorCourse />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path='/update-course'
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
@@ -446,6 +457,14 @@ const App = () => {
             }
           />
           <Route
+            path='/create-instructor-referesh-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <CreateInstructorRefreshCourse />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path='/corso'
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
@@ -458,6 +477,22 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
                 <ListaRefreshCourse />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/instructor-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <ListaInstructorCourses />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/instructor-refresh-corso'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
+                <ListaInstructorRefreshCourses />
               </ProtectedRoute>
             }
           />

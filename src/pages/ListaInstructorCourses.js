@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
-function ListaCorso() {
+function ListaInstructorCourses() {
   const [corso, setCorso] = useState([]);
   const [showSanitariosModal, setShowSanitariosModal] = useState(false);
   const [selectedDirettoreCorso, setSelectedDirettoreCorso] = useState([]);
@@ -205,14 +205,14 @@ function ListaCorso() {
             (item) =>
               item?.status == 'active' &&
               item?.isRefreshCourse !== true &&
-              item?.isForInstructor == true
+              item?.isForInstructor !== true
           )?.length > 0 ? (
             corso
               .filter(
                 (item) =>
                   item?.status == 'active' &&
                   item?.isRefreshCourse !== true &&
-                  item?.isForInstructor == true
+                  item?.isForInstructor !== true
               )
               .map((corsoItem) => (
                 <tr key={corsoItem._id}>
@@ -372,7 +372,7 @@ function ListaCorso() {
   );
 }
 
-export default ListaCorso;
+export default ListaInstructorCourses;
 
 const SanitariosModal = ({ setShowSanitariosModal, direttoreCorso }) => {
   return (
