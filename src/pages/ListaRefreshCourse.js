@@ -119,12 +119,12 @@ function ListaRefreshCourse() {
         </thead>
         <tbody>
           {corso?.filter(
-            (item) => item?.status == 'active' && item?.isRefreshCourse == true
+            (item) => item?.status == 'active' && item?.isRefreshCourse == true && item?.isForInstructor ==true
           )?.length > 0 ? (
             corso
               .filter(
                 (item) =>
-                  item?.status == 'active' && item?.isRefreshCourse == true
+                  item?.status == 'active' && item?.isRefreshCourse == true && item?.isForInstructor ==true
               )
               .map((corsoItem) => (
                 <tr key={corsoItem._id}>

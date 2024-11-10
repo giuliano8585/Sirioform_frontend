@@ -89,6 +89,22 @@ const SiriformDashboard = () => {
               <li className='nav-item mb-2'>
                 <button
                   className='btn btn-primary w-100'
+                  onClick={() => navigate('/admin/view-instructor-kits')}
+                >
+                  Visualizza Instructor Kit
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/admin/view-instructor-refresh-kits')}
+                >
+                  Visualizza Instructor refresh Kit
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
                   onClick={goToSanitarios}
                 >
                   Visualizza Sanitari Associati
@@ -146,7 +162,23 @@ const SiriformDashboard = () => {
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/create-referesh-corso')}
                 >
-                  Crea Refresh Corso
+                  Creat Refresh Corso
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/create-instructor-corso')}
+                >
+                  Creat Instructor Corso
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/create-instructor-referesh-corso')}
+                >
+                  Creat Instructor Refresh Corso
                 </button>
               </li>
 
@@ -168,21 +200,36 @@ const SiriformDashboard = () => {
                   Lista Corso
                 </button>
               </li>
-              
-              <li className='nav-item mb-2'>
-                <button
-                  className='btn btn-primary w-100'
-                  onClick={() => navigate('/unactive-corso')}
-                >
-                 Unactive Lista Corso
-                </button>
-              </li>
               <li className='nav-item mb-2'>
                 <button
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/refresh-corso')}
                 >
                   Lista Refresh Corso
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/instructor-corso')}
+                >
+                  Lista instructor Corso
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/instructor-refresh-corso')}
+                >
+                  Lista Instructor Refresh Corso
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/unactive-corso')}
+                >
+                 Unactive Lista Corso
                 </button>
               </li>
               <li className='nav-item mb-2'>
