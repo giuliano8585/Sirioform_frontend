@@ -98,7 +98,7 @@ const App = () => {
             }
           />
           <Route
-            path='/siriform'
+            path='/sirioform'
             element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <SiriformDashboard />
