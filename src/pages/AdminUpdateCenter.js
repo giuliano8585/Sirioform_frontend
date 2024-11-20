@@ -198,7 +198,7 @@ const centerId = location?.state?.centerId
           Update
         </button>
       </form>
-        <button type='button' onClick={()=>navigate('/admin-dashboard')} className='btn btn-info mt-3'>
+        <button type='button' onClick={()=>navigate('/centers-list')} className='btn btn-info mt-3'>
           Back
         </button>
     </div>
