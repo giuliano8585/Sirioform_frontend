@@ -52,7 +52,7 @@ const InstructorList = () => {
       try {
         const res = await axios.get('http://localhost:5000/api/instructors');
         setInstructors(res.data);
-        setFilteredInstructors(res?.data)
+        setFilteredInstructors(res?.data);
       } catch (err) {
         console.error('Error fetching instructors:', err);
       }
@@ -160,10 +160,42 @@ const InstructorList = () => {
     });
   };
 
+  const handleDeleteInstructor = async (id) => {
+    Swal.fire({
+      title: 'Are you sure want to Delete the Instructor?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`http://localhost:5000/api/instructors/${id}`, {
+            headers: {
+              'x-auth-token': localStorage.getItem('token'),
+            },
+          })
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+              setRender(!render);
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
+  };
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     const filtered = instructors.filter((instructor) => {
-      const fullName = `${instructor?.firstName || ''} ${instructor?.lastName || ''}`.toLowerCase();
+      const fullName = `${instructor?.firstName || ''} ${
+        instructor?.lastName || ''
+      }`.toLowerCase();
       const region = instructor?.region?.toLowerCase() || '';
       const searchValue = e.target.value.toLowerCase();
 
@@ -238,9 +270,7 @@ const InstructorList = () => {
                   </button>
                   <button
                     className='btn btn-danger'
-                    onClick={() =>
-                      setShowDeleteCenterModal(!showDeleteCenterModal)
-                    }
+                    onClick={() => handleDeleteInstructor(instructor?._id)}
                   >
                     Elimina
                   </button>
@@ -301,31 +331,35 @@ const InstructorList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredSanitariosData?.filter(
+                      {filteredSanitariosData
+                        ?.filter(
                           (item) =>
                             !selectedInstructorData?.sanitarios?.some(
                               (sanatrio) => sanatrio?._id === item._id
                             )
-                        )?.map((sanitarios) => (
-                        <tr key={sanitarios._id}>
-                          <td>{sanitarios.firstName}</td>
-                          <td>{sanitarios.lastName}</td>
-                          <td>{sanitarios.email}</td>
-                          <td>
-                            {sanitarios.address}, {sanitarios.city},{' '}
-                            {sanitarios.region}
-                          </td>
-                          <td>
-                            <button
-                              type='button'
-                              className='btn  btn-primary'
-                              onClick={() => handleAddSanitario(sanitarios._id)}
-                            >
-                              Assegna
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                        )
+                        ?.map((sanitarios) => (
+                          <tr key={sanitarios._id}>
+                            <td>{sanitarios.firstName}</td>
+                            <td>{sanitarios.lastName}</td>
+                            <td>{sanitarios.email}</td>
+                            <td>
+                              {sanitarios.address}, {sanitarios.city},{' '}
+                              {sanitarios.region}
+                            </td>
+                            <td>
+                              <button
+                                type='button'
+                                className='btn  btn-primary'
+                                onClick={() =>
+                                  handleAddSanitario(sanitarios._id)
+                                }
+                              >
+                                Assegna
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>

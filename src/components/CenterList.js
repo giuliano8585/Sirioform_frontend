@@ -155,7 +155,35 @@ const CenterList = () => {
     }
   };
 
-  const handleDeleteCenter = async () => {};
+  const handleDeleteCenter = async (centerId) => {
+    Swal.fire({
+      title: 'Are you sure want to Delete the center?',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`http://localhost:5000/api/centers/${centerId}`, {
+            headers: {
+              'x-auth-token': localStorage.getItem('token'),
+            },
+          })
+          .then((res) => {
+            if (res?.status === 200) {
+              Swal.fire('Saved!', '', 'success');
+              setRender(!render);
+            } else {
+              Swal.fire('Something went wrong', '', 'info');
+            }
+          })
+          .catch((err) => {
+            console.error('Error assigning sanitario:', err);
+            Swal.fire('Something went wrong', '', 'info');
+          });
+      }
+    });
+  };
 
   const handleRemoveSanitario = async (sanitarioId) => {
     Swal.fire({
@@ -356,9 +384,7 @@ const CenterList = () => {
                     <button className='btn btn-primary mb-2'>Abilita</button>
                     <button
                       className='btn btn-danger mb-2'
-                      onClick={() =>
-                        setShowDeleteCenterModal(!showDeleteCenterModal)
-                      }
+                      onClick={() => handleDeleteCenter(center?._id)}
                     >
                       Elimina
                     </button>
@@ -500,33 +526,35 @@ const CenterList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredInstructors?.filter(
+                      {filteredInstructors
+                        ?.filter(
                           (item) =>
                             !selectedCenterData?.instructors?.some(
                               (center) => center === item._id
                             )
-                        )?.map((instructor) => (
-                        <tr key={instructor._id}>
-                          <td>{instructor.firstName}</td>
-                          <td>{instructor.lastName}</td>
-                          <td>{instructor.email}</td>
-                          <td>
-                            {instructor.address}, {instructor.city},{' '}
-                            {instructor.region}
-                          </td>
-                          <td>
-                            <button
-                              type='button'
-                              className='btn btn-primary'
-                              onClick={() =>
-                                handleAddInstructor(instructor._id)
-                              }
-                            >
-                              Assegna
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                        )
+                        ?.map((instructor) => (
+                          <tr key={instructor._id}>
+                            <td>{instructor.firstName}</td>
+                            <td>{instructor.lastName}</td>
+                            <td>{instructor.email}</td>
+                            <td>
+                              {instructor.address}, {instructor.city},{' '}
+                              {instructor.region}
+                            </td>
+                            <td>
+                              <button
+                                type='button'
+                                className='btn btn-primary'
+                                onClick={() =>
+                                  handleAddInstructor(instructor._id)
+                                }
+                              >
+                                Assegna
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
