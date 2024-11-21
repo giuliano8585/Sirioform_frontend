@@ -31,6 +31,29 @@ const RegisterInstructor = () => {
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{12,}$/;
 
+    const regionOptions = [
+      'ABRUZZO',
+      'BASILICATA',
+      'CALABRIA',
+      'CAMPANIA',
+      'EMILIA-ROMAGNA',
+      'FRIULI-VENEZIA GIULIA',
+      'LAZIO',
+      'LIGURIA',
+      'LOMBARDIA',
+      'MARCHE',
+      'MOLISE',
+      'PIEMONTE',
+      'PUGLIA',
+      'SARDEGNA',
+      'SICILIA',
+      'TOSCANA',
+      'TRENTINO-ALTO ADIGE',
+      'UMBRIA',
+      'VALLE D\'AOSTA',
+      'VENETO',
+    ];
+
   const validateForm = () => {
     const newErrors = {};
     for (const [key, value] of Object.entries(formData)) {
@@ -179,7 +202,6 @@ const RegisterInstructor = () => {
       )}
       <form onSubmit={handleSubmit}>
         <div className='row'>
-          {/* Render all fields except qualifications */}
           {Object.entries(formData).map(([key, value]) => {
             if (
               key === 'qualifications' ||
@@ -195,7 +217,23 @@ const RegisterInstructor = () => {
                     .replace(/([A-Z])/g, ' $1')
                     .replace(/^./, (str) => str.toUpperCase())}
                 </label>
-                <input
+                {key === 'region' ? (
+                  <select
+                    id={key}
+                    name={key}
+                    className="form-select"
+                    value={value}
+                    onChange={(e) => handleChange(e)}
+                  >
+                    <option value="">Select Region</option>
+                    {regionOptions.map((region) => (
+                      <option key={region} value={region}>
+                        {region}
+                      </option>
+                    ))}
+                  </select>
+                ) :(
+                  <input
                   type={key === 'email' ? 'email' : 'text'}
                   className='form-control'
                   id={key}
@@ -204,6 +242,7 @@ const RegisterInstructor = () => {
                   onChange={handleChange}
                   placeholder={key}
                 />
+              )}
                 {errors[key] && (
                   <div className='text-danger'>{errors[key]}</div>
                 )}

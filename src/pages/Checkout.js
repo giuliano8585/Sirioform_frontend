@@ -19,6 +19,10 @@ const Checkout = () => {
         <p>
           <strong>10</strong>
         </p>
+        <h4>Item Price : </h4>
+        <p>
+          <strong>{Number(location?.state?.totalPrice)}</strong>
+        </p>
         <h4>Total Price : </h4>
         <p>
           <strong>{Number(location?.state?.totalPrice)*Number(location?.state?.quantity)+10}</strong>
