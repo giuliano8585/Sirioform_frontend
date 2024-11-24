@@ -55,8 +55,8 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
       const res = await axios.post(
         'http://localhost:5000/api/orders',
         {
-          productIds: [productId],
-          quantities: [quantity],
+          productIds: Array.isArray(productId)?productId:[productId],
+          quantities: Array.isArray(quantity)?quantity:[quantity],
         },
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
@@ -73,6 +73,7 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
       );
       setShowApproveConfirmModal(false)
     } catch (err) {
+      console.log('err: ', err);
       alert('Error placing the order');
     }
   };

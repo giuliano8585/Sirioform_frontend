@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 function ProductsPage() {
   const [products, setProducts] = useState([]);
-  const [quantities, setQuantities] = useState({});
+  const [quantities, setQuantities] = useState();
+  console.log('quantities: ', quantities);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,13 +62,34 @@ function ProductsPage() {
     });
   };
 
+  const handleAddToCart = async (itemId) => {
+    const quantity = quantities[itemId] || 6;
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/cart/',
+        { itemId, quantity },
+        {
+          headers: {
+            'x-auth-token': localStorage.getItem('token'),
+          },
+        }
+      );
+      console.log('Item added to cart:', res.data);
+    } catch (err) {
+      console.log('err: ', err);
+    }
+  };
+
   return (
     <div className='container mt-4'>
       <h2>Acquista Kit</h2>
       <div className='row'>
         {Array.isArray(products) && products.length > 0 ? (
           products
-            ?.filter((items) => items?.isRefreshKit !== true && items?.isForInstructor !==true)
+            ?.filter(
+              (items) =>
+                items?.isRefreshKit !== true && items?.isForInstructor !== true
+            )
             .map((product) => (
               <div key={product._id} className='col-md-4 mb-4'>
                 <div className='card h-100'>
@@ -97,6 +119,12 @@ function ProductsPage() {
                       }
                       className='form-control mb-3'
                     />
+                    <button
+                      onClick={() => handleAddToCart(product?._id)}
+                      className='btn btn-info mt-auto mb-2'
+                    >
+                      Add to Cart
+                    </button>
                     <button
                       onClick={() =>
                         handlePurchase(product?._id, product?.type)
