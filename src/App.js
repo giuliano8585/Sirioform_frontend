@@ -71,6 +71,7 @@ import CreateInstructorCourse from './pages/CreateInstructorCourse';
 import CreateInstructorRefreshCourse from './pages/CreateInstructorRefreshCourse';
 import ListaInstructorCourses from './pages/ListaInstructorCourses';
 import ListaInstructorRefreshCourses from './pages/ListaInstructorRefreshCourses';
+import CartPage from './pages/CartPage';
 
 const App = () => {
   return (
@@ -110,6 +111,14 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={['instructor']}>
                 <InstructorDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/cart'
+            element={
+              <ProtectedRoute allowedRoles={['admin','instructor','center']}>
+                <CartPage />
               </ProtectedRoute>
             }
           />

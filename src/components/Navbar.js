@@ -1,16 +1,18 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const token = localStorage.getItem('token');
   const decodedToken = jwtDecode(token);
-
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [centerAccount, setCenterAccount] = useState(false);
   const [render, setRender] = useState(false);
   const [instructorAccount, setInstructorAccount] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -29,6 +31,25 @@ const Navbar = () => {
 
     fetchNotifications();
   }, [render]);
+
+  useEffect(() => {
+    const fetchCartData = async () => {
+      try {
+        const { data } = await axios.get('http://localhost:5000/api/cart/', {
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+        });
+        setCartData(data?.items);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+
+    fetchCartData();
+  }, [render]);
+
+  const handleCart = () => {
+    navigate('/cart', { state: { data: cartData } });
+  };
 
   const handleMarkAsRead = async (id) => {
     try {
@@ -324,6 +345,30 @@ const Navbar = () => {
                 )}
               </div>
             )}
+          </div>
+          <div className='position-relative'>
+            <div
+              className='position-absolute'
+              style={{
+                width: '24px',
+                height: '24px',
+                top: -10,
+                right: -10,
+                fontSize: '18px',
+                fontWeight: '500',
+                color: 'red',
+                backgroundColor: 'orange',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {cartData?.length}
+            </div>
+            <button className='btn btn-primary' onClick={handleCart}>
+              Cart
+            </button>
           </div>
         </div>
       </nav>

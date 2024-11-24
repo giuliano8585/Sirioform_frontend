@@ -8,6 +8,7 @@ const stripePromise = loadStripe(
 );
 
 export default function Strip({ productId, quantity }) {
+  console.log('quantity strip: ', quantity);
   const [clientSecret, setClientSecret] = useState('');
 
   useEffect(() => {
@@ -18,8 +19,8 @@ export default function Strip({ productId, quantity }) {
         'x-auth-token': `${localStorage.getItem('token')}`,
       },
       body: JSON.stringify({
-        productIds: [productId],
-        quantities: [quantity],
+        productIds: Array.isArray(productId)?productId:[productId],
+        quantities: Array.isArray(quantity)?quantity:[quantity],
       }),
     })
       .then((res) => res.json())
