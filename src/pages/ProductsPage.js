@@ -58,6 +58,7 @@ function ProductsPage() {
           products.find((p) => p._id === productId),
           quantity
         ),
+        fromCart:false,
       },
     });
   };

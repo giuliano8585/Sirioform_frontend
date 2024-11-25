@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
-const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
+const CheckoutForm = ({ productId, quantity, onOrderSuccess,fromCart }) => {
   const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
@@ -40,7 +40,7 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
       result.paymentIntent.status === 'succeeded'
     ) {
       setMessage('Payment successful!');
-      handlePurchase(productId, quantity);
+      handlePurchase(productId, quantity,fromCart);
     } else {
       setMessage(`Payment status: ${result.paymentIntent.status}`);
     }
@@ -48,7 +48,7 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
     setIsProcessing(false);
   };
 
-  const handlePurchase = async (productId, quantity) => {
+  const handlePurchase = async (productId, quantity,fromCart) => {
     const token = localStorage.getItem('token');
     const decodedToken = jwtDecode(token);
     try {
@@ -57,6 +57,7 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess }) => {
         {
           productIds: Array.isArray(productId)?productId:[productId],
           quantities: Array.isArray(quantity)?quantity:[quantity],
+          fromCart,
         },
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },

@@ -48,7 +48,7 @@ const Navbar = () => {
   }, [render]);
 
   const handleCart = () => {
-    navigate('/cart', { state: { data: cartData } });
+    navigate('/cart', { state: { data: {...cartData , fromCart:true} } });
   };
 
   const handleMarkAsRead = async (id) => {
