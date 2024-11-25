@@ -23,7 +23,7 @@ const CartPage = () => {
 
   const handleProceedToPayment = () => {
     // const totalItems = cartData.reduce((sum, item) => sum + item.quantity, 0);
-    const totalItems = cartData.map((item) =>item.quantity);
+    const totalItems = cartData.map((item) => item.quantity);
     console.log('totalItems: ', totalItems);
     const totalPrice = cartData.map((item) => item.item.cost1);
 
@@ -34,8 +34,20 @@ const CartPage = () => {
         quantity: totalItems,
         totalPrice,
         shippingCost: 10,
+        fromCart: true,
       },
     });
+  };
+
+  const handleRemove = async (itemId) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/cart/${itemId}`, {
+        headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+      });
+      setCartData(cartData?.filter((a) => a?._id !== itemId));
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
   };
 
   return (
@@ -47,6 +59,7 @@ const CartPage = () => {
             <th>code</th>
             <th>isRefreshKit</th>
             <th>quantity</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -57,6 +70,62 @@ const CartPage = () => {
                 <td>{corsoItem?.item?.code}</td>
                 <td>{corsoItem.item.isRefreshKit ? 'True' : 'False'}</td>
                 <td>{corsoItem.quantity}</td>
+                <td>
+                  <button onClick={() => handleRemove(corsoItem?._id)}>
+                    <svg
+                      width='24px'
+                      height='24px'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      xmlns='http://www.w3.org/2000/svg'
+                    >
+                      <g id='SVGRepo_bgCarrier' stroke-width='0'></g>
+                      <g
+                        id='SVGRepo_tracerCarrier'
+                        stroke-linecap='round'
+                        stroke-linejoin='round'
+                      ></g>
+                      <g id='SVGRepo_iconCarrier'>
+                        {' '}
+                        <path
+                          d='M10 11V17'
+                          stroke='#FF0000'
+                          stroke-width='2'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                        ></path>{' '}
+                        <path
+                          d='M14 11V17'
+                          stroke='#FF0000'
+                          stroke-width='2'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                        ></path>{' '}
+                        <path
+                          d='M4 7H20'
+                          stroke='#FF0000'
+                          stroke-width='2'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                        ></path>{' '}
+                        <path
+                          d='M6 7H12H18V18C18 19.6569 16.6569 21 15 21H9C7.34315 21 6 19.6569 6 18V7Z'
+                          stroke='#FF0000'
+                          stroke-width='2'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                        ></path>{' '}
+                        <path
+                          d='M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z'
+                          stroke='#FF0000'
+                          stroke-width='2'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                        ></path>{' '}
+                      </g>
+                    </svg>
+                  </button>
+                </td>
               </tr>
             ))
           ) : (

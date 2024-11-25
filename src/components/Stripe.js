@@ -7,7 +7,7 @@ const stripePromise = loadStripe(
   'pk_test_51Pv1mPP9Idf6ukG6NA9Rg7vu859L39i6ndnarIV33AI21xAyu2rkARBjBCkzbMuBN3h8F7gzf02muEJIvMN5JY7G00pyGjmQLX'
 );
 
-export default function Strip({ productId, quantity }) {
+export default function Strip({ productId, quantity,fromCart }) {
   console.log('quantity strip: ', quantity);
   const [clientSecret, setClientSecret] = useState('');
 
@@ -39,7 +39,7 @@ export default function Strip({ productId, quantity }) {
   return (
     clientSecret && (
       <Elements stripe={stripePromise} options={options}>
-        <CheckoutForm productId={productId} quantity={quantity} onOrderSuccess={handleOrderSuccess} />
+        <CheckoutForm productId={productId} quantity={quantity} onOrderSuccess={handleOrderSuccess} fromCart={fromCart}/>
       </Elements>
     )
   );
