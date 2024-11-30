@@ -530,78 +530,160 @@ const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
   );
 };
 
-const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
-  const [data, setData] = useState();
 
-  useEffect(()=>{
-    const handleData = async (e) => {
-      axios.get(
-        `http://localhost:5000/api/corsi/user-course/${courseId}/`,
-        {
-          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-        }
-      )
-      .then((res) => {
+const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
+  const [data, setData] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  console.log('selectedUsers: ', selectedUsers);
+  const [selectAll, setSelectAll] = useState(false);
+  console.log('selectAll: ', selectAll);
+
+  // Fetch data on mount
+  useEffect(() => {
+    const handleData = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/corsi/user-course/${courseId}/`,
+          {
+            headers: { "x-auth-token": `${localStorage.getItem("token")}` },
+          }
+        );
         if (res?.status === 200) {
-          setData(res?.data?.course?.discente)
+          setData(res?.data?.course?.discente || []);
         } else {
-          Swal.fire('Something went wrong', '', 'info');
+          Swal.fire("Something went wrong", "", "info");
         }
-      })
-      .catch((err) => {
-        console.error('Error assigning sanitario:', err);
-        Swal.fire('Something went wrong', '', 'info');
-      });
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        Swal.fire("Something went wrong", "", "info");
+      }
     };
-    handleData()
-  },[courseId])
+    handleData();
+  }, [courseId]);
+
+  // Handle individual checkbox change
+  const handleCheckboxChange = (userId) => {
+    setSelectedUsers((prev) =>
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId]
+    );
+  };
+
+  // Handle "Select All" checkbox change
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedUsers([]); // Deselect all
+    } else {
+      setSelectedUsers(data.map((user) => user._id)); // Select all
+    }
+    setSelectAll(!selectAll);
+  };
+
+  // Send certificates to selected users
+  const sendCertificates = async (isForAll) => {
+    try {
+      const payload = {
+        courseId,
+        recipients: isForAll ? "all" : selectedUsers,
+      };
+
+      const res = await axios.post(
+        `http://localhost:5000/api/corsi/courses/${courseId}/send-email`,
+        payload,
+        {
+          headers: { "x-auth-token": `${localStorage.getItem("token")}` },
+        }
+      );
+
+      if (res.status === 200) {
+        Swal.fire("Certificates Sent!", res.data.message, "success");
+        setSelectedUsers([]);
+        setSelectAll(false);
+      }
+    } catch (err) {
+      console.error("Error sending certificates:", err);
+      Swal.fire("Error", "Unable to send certificates", "error");
+    }
+  };
 
   return (
-    <div className='modal modal-xl show d-block' tabIndex='-1'>
-      <div className='modal-dialog'>
-        <div className='modal-content'>
-          <div className='modal-header'>
-            <h5 className='modal-title'>Discente</h5>
+    <div className="modal modal-xl show d-block" tabIndex="-1">
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Discente</h5>
             <button
-              type='button'
-              className='close'
+              type="button"
+              className="close"
               onClick={() => setShowStatusModal(false)}
             >
               <span>&times;</span>
             </button>
           </div>
-          <div className='modal-body'>
-          <div className='table-responsive'>
-              <table className='table table-striped table-bordered'>
-                <thead className='thead-dark'>
+          <div className="modal-body">
+            <div className="table-responsive">
+              <table className="table table-striped table-bordered">
+                <thead className="thead-dark">
                   <tr>
-                    <th>nome</th>
-                    <th>cognome</th>
-                    <th>email</th>
-                    <th>telefono</th>
-                    <th></th>
+                    <th>
+                      <input
+                        type="checkbox"
+                        checked={selectAll}
+                        onChange={handleSelectAll}
+                      />
+                    </th>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                    <th>Patent Number</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data?.length > 0 ? (
-                    data.map((data, index) => (
+                    data.map((user, index) => (
                       <tr key={index}>
                         <td>
-                          {data?.nome}
+                          <input
+                            type="checkbox"
+                            checked={selectedUsers.includes(user._id)}
+                            onChange={() => handleCheckboxChange(user._id)}
+                          />
                         </td>
-                        <td>{data?.cognome}</td>
-                        <td>{data?.email}</td>
-                        <td>{data?.telefono}</td>
-                        <td>{data?.patentNumber[0]==''?data?.patentNumber[1]:data?.patentNumber[0]}</td>
+                        <td>{user?.nome}</td>
+                        <td>{user?.cognome}</td>
+                        <td>{user?.email}</td>
+                        <td>{user?.telefono}</td>
+                        <td>
+                          {user?.patentNumber[0] === ""
+                            ? user?.patentNumber[1]
+                            : user?.patentNumber[0]}
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan='5'>No Direttore Corso found</td>
+                      <td colSpan="6">No Direttore Corso found</td>
                     </tr>
                   )}
                 </tbody>
               </table>
+            </div>
+            <div className="mt-3 d-flex justify-content-end">
+              <button
+                className="btn btn-primary mr-2"
+                onClick={() => sendCertificates(false)}
+                disabled={selectedUsers.length === 0}
+              >
+                Send to Selected
+              </button>
+              <button
+                className="btn btn-success"
+                onClick={() => sendCertificates(true)}
+              >
+                Send to All
+              </button>
             </div>
           </div>
         </div>
@@ -609,4 +691,6 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
     </div>
   );
 };
+
+
 
