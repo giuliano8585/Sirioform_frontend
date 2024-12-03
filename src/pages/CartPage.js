@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const CartPage = () => {
   const navigate = useNavigate();
   const [cartData, setCartData] = useState();
+  const [render, setRender] = useState(false);
   useEffect(() => {
     const handleAddToCart = async () => {
       try {
@@ -19,7 +21,7 @@ const CartPage = () => {
       }
     };
     handleAddToCart();
-  }, []);
+  }, [render]);
 
   const handleProceedToPayment = () => {
     // const totalItems = cartData.reduce((sum, item) => sum + item.quantity, 0);
@@ -50,6 +52,24 @@ const CartPage = () => {
     }
   };
 
+  const handleAddToCart = async (itemId,quantity) => {
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/cart/',
+        { itemId, quantity },
+        {
+          headers: {
+            'x-auth-token': localStorage.getItem('token'),
+          },
+        }
+      );
+      Swal.fire(`Add the Changes`, '', 'success');
+      setRender(!render)
+    } catch (err) {
+      console.log('err: ', err);
+    }
+  };
+
   return (
     <div className='container'>
       <table className='table table-hover'>
@@ -69,7 +89,7 @@ const CartPage = () => {
                 <td>{corsoItem?.item?.type}</td>
                 <td>{corsoItem?.item?.code}</td>
                 <td>{corsoItem.item.isRefreshKit ? 'True' : 'False'}</td>
-                <td>{corsoItem.quantity}</td>
+                <td><button disabled={corsoItem?.quantity <= 6} onClick={()=>handleAddToCart(corsoItem?.item?._id,-6)} className='btn btn-primary'>-</button> {corsoItem?.quantity} <button onClick={()=>handleAddToCart(corsoItem?.item?._id,6)} className='btn btn-primary'>+</button></td>
                 <td>
                   <button onClick={() => handleRemove(corsoItem?._id)}>
                     <svg
@@ -137,6 +157,12 @@ const CartPage = () => {
           )}
         </tbody>
       </table>
+      <button
+          className='btn btn-info mt-4'
+          onClick={()=>navigate(-1)}
+        >
+          back
+        </button>
       {cartData?.length > 0 && (
         <button
           className='btn btn-primary mt-4'
@@ -145,6 +171,7 @@ const CartPage = () => {
           Proceed to Payment
         </button>
       )}
+
     </div>
   );
 };
