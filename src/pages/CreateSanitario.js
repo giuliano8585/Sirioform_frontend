@@ -137,7 +137,7 @@ const CreateSanitario = () => {
           <label htmlFor='region' className='form-label'>
             Regione
           </label>
-          <input
+          {/* <input
             type='text'
             className='form-control'
             id='region'
@@ -146,7 +146,36 @@ const CreateSanitario = () => {
             onChange={handleChange}
             placeholder='Regione'
             required
-          />
+          /> */}
+            <select
+            className={`form-select`}
+            id="region"
+            name="region"
+            value={formData.region}
+            onChange={handleChange}
+          >
+            <option selected>Select</option>
+             <option value="ABRUZZO">ABRUZZO</option>
+             <option value="BASILICATA">BASILICATA</option>
+             <option value="CALABRIA">CALABRIA</option>
+             <option value="CAMPANIA">CAMPANIA</option>
+             <option value="EMILIA-ROMAGNA">EMILIA-ROMAGNA</option>
+             <option value="FRIULI-VENEZIA GIULIA">FRIULI-VENEZIA GIULIA</option>
+             <option value="LAZIO">LAZIO</option>
+             <option value="LIGURIA">LIGURIA</option>
+             <option value="LOMBARDIA">LOMBARDIA</option>
+             <option value="MARCHE">MARCHE</option>
+             <option value="MOLISE">MOLISE</option>
+             <option value="PIEMONTE">PIEMONTE</option>
+             <option value="PUGLIA">PUGLIA</option>
+             <option value="SARDEGNA">SARDEGNA</option>
+             <option value="SICILIA">SICILIA</option>
+             <option value="TOSCANA">TOSCANA</option>
+             <option value="TRENTINO-ALTO ADIGE">TRENTINO-ALTO ADIGE</option>
+             <option value="UMBRIA">UMBRIA</option>
+             <option value="VALLE D'AOSTA">VALLE D'AOSTA</option>
+             <option value="VENETO">VENETO</option>
+          </select>
         </div>
         <div className='mb-3'>
           <label htmlFor='email' className='form-label'>

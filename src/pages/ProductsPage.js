@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -63,8 +64,9 @@ function ProductsPage() {
     });
   };
 
-  const handleAddToCart = async (itemId) => {
+  const handleAddToCart = async (itemId,type) => {
     const quantity = quantities[itemId] || 6;
+    console.log('quantity handle add: ', quantity);
     try {
       const res = await axios.post(
         'http://localhost:5000/api/cart/',
@@ -76,6 +78,7 @@ function ProductsPage() {
         }
       );
       console.log('Item added to cart:', res.data);
+      Swal.fire(`${type} added to the cart`, '', 'success');
     } catch (err) {
       console.log('err: ', err);
     }
@@ -121,7 +124,7 @@ function ProductsPage() {
                       className='form-control mb-3'
                     />
                     <button
-                      onClick={() => handleAddToCart(product?._id)}
+                      onClick={() => handleAddToCart(product?._id,product?.type)}
                       className='btn btn-info mt-auto mb-2'
                     >
                       Add to Cart

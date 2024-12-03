@@ -13,7 +13,7 @@ const AdminCompleteCourse = () => {
   const [selectedInstructor, setSelectedInstructor] = useState([]);
   const [showGiornateModal, setShowGiornateModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
-  const [courseId, setCourseId] = useState(false);
+  const [courseId, setCourseId] = useState();
   const [selectedGiornate, setSelecteGiornate] = useState([]);
 
   const navigate = useNavigate();

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function CompleteCourses() {
   const [corso, setCorso] = useState([]);
@@ -9,7 +10,10 @@ function CompleteCourses() {
   const [showInstructorModal, setShowInstructorModal] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState([]);
   const [showGiornateModal, setShowGiornateModal] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
   const [selectedGiornate, setSelecteGiornate] = useState([]);
+  const [courseId, setCourseId] = useState();
+
 
   const navigate = useNavigate();
 
@@ -42,6 +46,10 @@ function CompleteCourses() {
   const handleOpenGiornateModal = (direttoreCorso) => {
     setSelecteGiornate(direttoreCorso || []);
     setShowGiornateModal(true);
+  };
+  const handleOpenCourseModal = (courseId) => {
+    setCourseId(courseId);
+    setShowStatusModal(true);
   };
 
   return (
@@ -110,6 +118,15 @@ function CompleteCourses() {
                       Giornate Details
                     </button>
                   </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleOpenCourseModal(corsoItem?._id)}
+                    >
+                      All Discente
+                    </button>
+                  </td>
                   {corsoItem?.status == 'update' && (
                     <td>
                       <button
@@ -155,6 +172,14 @@ function CompleteCourses() {
         <GiornateModal
           setShowGiornateModal={setShowGiornateModal}
           giornateDetails={selectedGiornate}
+        />
+      )}
+      {showStatusModal && (
+        <StatusModal
+          setShowStatusModal={setShowStatusModal}
+          courseId={courseId}
+          // setRender={setRender}
+          // render={render}
         />
       )}
     </div>
@@ -307,6 +332,167 @@ const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
+  const [data, setData] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  console.log('selectedUsers: ', selectedUsers);
+  const [selectAll, setSelectAll] = useState(false);
+  console.log('selectAll: ', selectAll);
+
+  // Fetch data on mount
+  useEffect(() => {
+    const handleData = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/corsi/user-course/${courseId}/`,
+          {
+            headers: { "x-auth-token": `${localStorage.getItem("token")}` },
+          }
+        );
+        if (res?.status === 200) {
+          setData(res?.data?.course?.discente || []);
+        } else {
+          Swal.fire("Something went wrong", "", "info");
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        Swal.fire("Something went wrong", "", "info");
+      }
+    };
+    handleData();
+  }, [courseId]);
+
+  // Handle individual checkbox change
+  const handleCheckboxChange = (userId) => {
+    setSelectedUsers((prev) =>
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId]
+    );
+  };
+
+  // Handle "Select All" checkbox change
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedUsers([]); // Deselect all
+    } else {
+      setSelectedUsers(data.map((user) => user._id)); // Select all
+    }
+    setSelectAll(!selectAll);
+  };
+
+  // Send certificates to selected users
+  const sendCertificates = async (isForAll) => {
+    try {
+      const payload = {
+        courseId,
+        recipients: isForAll ? "all" : selectedUsers,
+      };
+
+      const res = await axios.post(
+        `http://localhost:5000/api/corsi/courses/${courseId}/send-email`,
+        payload,
+        {
+          headers: { "x-auth-token": `${localStorage.getItem("token")}` },
+        }
+      );
+
+      if (res.status === 200) {
+        Swal.fire("Certificates Sent!", res.data.message, "success");
+        setSelectedUsers([]);
+        setSelectAll(false);
+      }
+    } catch (err) {
+      console.error("Error sending certificates:", err);
+      Swal.fire("Error", "Unable to send certificates", "error");
+    }
+  };
+
+  return (
+    <div className="modal modal-xl show d-block" tabIndex="-1">
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Discente</h5>
+            <button
+              type="button"
+              className="close"
+              onClick={() => setShowStatusModal(false)}
+            >
+              <span>&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <div className="table-responsive">
+              <table className="table table-striped table-bordered">
+                <thead className="thead-dark">
+                  <tr>
+                    <th>
+                      <input
+                        type="checkbox"
+                        checked={selectAll}
+                        onChange={handleSelectAll}
+                      />
+                    </th>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                    <th>Patent Number</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data?.length > 0 ? (
+                    data.map((user, index) => (
+                      <tr key={index}>
+                        <td>
+                          <input
+                            type="checkbox"
+                            checked={selectedUsers.includes(user._id)}
+                            onChange={() => handleCheckboxChange(user._id)}
+                          />
+                        </td>
+                        <td>{user?.nome}</td>
+                        <td>{user?.cognome}</td>
+                        <td>{user?.email}</td>
+                        <td>{user?.telefono}</td>
+                        <td>
+                          {user?.patentNumber[0] === ""
+                            ? user?.patentNumber[1]
+                            : user?.patentNumber[0]}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6">No Direttore Corso found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-3 d-flex justify-content-end">
+              <button
+                className="btn btn-primary mr-2"
+                onClick={() => sendCertificates(false)}
+                disabled={selectedUsers.length === 0}
+              >
+                Send to Selected
+              </button>
+              <button
+                className="btn btn-success"
+                onClick={() => sendCertificates(true)}
+              >
+                Send to All
+              </button>
             </div>
           </div>
         </div>
