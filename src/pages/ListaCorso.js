@@ -46,7 +46,7 @@ function ListaCorso() {
     };
 
     fetchCorso();
-  }, []);
+  }, [render]);
   // useEffect(() => {
   //   const fetchSelectedCorsoData = async () => {
   //     try {
@@ -366,6 +366,8 @@ function ListaCorso() {
         <EditQuantityModal
           editQuantityModal={setEditQuantityModal}
           id={courseId}
+          setRender={setRender}
+          render={render}
         />
       )}
     </div>
@@ -942,7 +944,7 @@ const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
   );
 };
 
-const EditQuantityModal = ({ editQuantityModal, id }) => {
+const EditQuantityModal = ({ editQuantityModal, id,render,setRender }) => {
   const [value, setValue] = useState('');
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -955,6 +957,7 @@ const EditQuantityModal = ({ editQuantityModal, id }) => {
         { headers: { 'x-auth-token': localStorage.getItem('token') } }
       );
       Swal.fire('Course updated successfully!', '', 'success');
+      setRender(!render)
     } catch (error) {
       Swal.fire(error?.response?.data?.message, '', 'error');
     }
