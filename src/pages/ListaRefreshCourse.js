@@ -107,6 +107,7 @@ function ListaRefreshCourse() {
           <tr>
             <th>Città</th>
             <th>Via</th>
+            <th>report code</th>
             <th>Type</th>
             <th>Numero Discenti</th>
             <th>Data creazione</th>
@@ -130,6 +131,7 @@ function ListaRefreshCourse() {
                 <tr key={corsoItem._id}>
                   <td>{corsoItem.città}</td>
                   <td>{corsoItem.via}</td>
+                  <td>{corsoItem.progressiveNumber}</td>
                   <td>{corsoItem?.tipologia?.type}</td>
                   <td>{corsoItem.numeroDiscenti}</td>
                   <td>{corsoItem.createdAt?.split('T')[0]}</td>

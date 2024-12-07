@@ -203,6 +203,7 @@ function AdminUnActiveRefreshCourse() {
           <tr>
             <th>Città</th>
             <th>Via</th>
+            <th>report code</th>
             <th>Created By</th>
             <th>Course</th>
             <th>Numero Discenti</th>
@@ -226,6 +227,7 @@ function AdminUnActiveRefreshCourse() {
                 <tr key={corsoItem._id}>
                   <td>{corsoItem.città}</td>
                   <td>{corsoItem.via}</td>
+                  <td>{corsoItem.progressiveNumber}</td>
                   <td>
                     {corsoItem.userId?.role == 'center'
                       ? corsoItem.userId?.name
