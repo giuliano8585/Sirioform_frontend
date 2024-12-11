@@ -39,7 +39,7 @@ const Checkout = () => {
         </p>
         <h4>Product Quantity:</h4>
         <p>
-          <strong>{quantity?.map((i)=>i)?.join(",") || 0}</strong>
+          <strong>{Array?.isArray(quantity)?quantity?.map((i)=>i)?.join(",") || 0 : quantity}</strong>
         </p>
         <h4>Shipping Cost:</h4>
         <p>

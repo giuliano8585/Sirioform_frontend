@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
-function RrefreshKit() {
+function ProductsPage() {
   const [products, setProducts] = useState([]);
-  const [quantities, setQuantities] = useState({});
+  const [quantities, setQuantities] = useState();
+  console.log('quantities: ', quantities);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,7 +19,7 @@ function RrefreshKit() {
 
         const initialQuantities = {};
         res.data.forEach((product) => {
-          initialQuantities[product._id] = 1;
+          initialQuantities[product._id] = 6;
         });
         setQuantities(initialQuantities);
       } catch (err) {
@@ -29,9 +31,10 @@ function RrefreshKit() {
   }, []);
 
   const handleQuantityChange = (productId, value) => {
+    const newValue = Math.max(6, Math.ceil(value / 6) * 6);
     setQuantities({
       ...quantities,
-      [productId]: value,
+      [productId]: newValue,
     });
   };
 
@@ -46,7 +49,7 @@ function RrefreshKit() {
   };
 
   const handlePurchase = (productId, productName) => {
-    const quantity = quantities[productId] || 1;
+    const quantity = quantities[productId] || 6;
     navigate('/payment', {
       state: {
         productName: productName,
@@ -56,53 +59,83 @@ function RrefreshKit() {
           products.find((p) => p._id === productId),
           quantity
         ),
+        fromCart:false,
       },
     });
+  };
+
+  const handleAddToCart = async (itemId,type) => {
+    const quantity = quantities[itemId] || 6;
+    console.log('quantity handle add: ', quantity);
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/cart/',
+        { itemId, quantity },
+        {
+          headers: {
+            'x-auth-token': localStorage.getItem('token'),
+          },
+        }
+      );
+      console.log('Item added to cart:', res.data);
+      Swal.fire(`${type} added to the cart`, '', 'success');
+    } catch (err) {
+      console.log('err: ', err);
+    }
   };
 
   return (
     <div className='container mt-4'>
       <h2>Acquista Kit</h2>
       <div className='row'>
-        {Array.isArray(products) && products.length > 0 ? (
+      {Array.isArray(products) && products.length > 0 ? (
           products?.filter((items)=>items?.isRefreshKit==true&& items?.isForInstructor!==true).map((product) => (
-            <div key={product._id} className='col-md-4 mb-4'>
-              <div className='card h-100'>
-                <div className='card-body d-flex flex-column'>
-                  <img
-                    src={`http://localhost:5000/${product?.profileImage}`}
-                    alt=''
-                  />
-                  <h5 className='card-title'>{product.code}</h5>
-                  <h5 className='card-title'>{product.type}</h5>
-                  <p className='card-text'>{product.description}</p>
-                  <p className='card-text'>
-                    <strong>
-                      €{calculatePrice(product, quantities[product._id] || 1)}
-                    </strong>
-                  </p>
-                  <input
-                    type='number'
-                    min='1'
-                    value={quantities[product._id] || 1}
-                    onChange={(e) =>
-                      handleQuantityChange(
-                        product._id,
-                        parseInt(e.target.value)
-                      )
-                    }
-                    className='form-control mb-3'
-                  />
-                  <button
-                    onClick={() => handlePurchase(product?._id, product?.type)}
-                    className='btn btn-primary mt-auto'
-                  >
-                    Acquista
-                  </button>
+              <div key={product._id} className='col-md-4 mb-4'>
+                <div className='card h-100'>
+                  <div className='card-body d-flex flex-column'>
+                    <img
+                      src={`http://localhost:5000/${product?.profileImage}`}
+                      alt=''
+                    />
+                    <h5 className='card-title'>{product.code}</h5>
+                    <h5 className='card-title'>{product.type}</h5>
+                    <p className='card-text'>{product.description}</p>
+                    <p className='card-text'>
+                      <strong>
+                        €{calculatePrice(product, quantities[product._id] || 6)}
+                      </strong>
+                    </p>
+                    <input
+                      type='number'
+                      min='6'
+                      step='6'
+                      value={quantities[product._id] || 6}
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          product._id,
+                          parseInt(e.target.value)
+                        )
+                      }
+                      className='form-control mb-3'
+                    />
+                    <button
+                      onClick={() => handleAddToCart(product?._id,product?.type)}
+                      className='btn btn-info mt-auto mb-2'
+                    >
+                      Add to Cart
+                    </button>
+                    <button
+                      onClick={() =>
+                        handlePurchase(product?._id, product?.type)
+                      }
+                      className='btn btn-primary mt-auto'
+                    >
+                      Acquista
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))
         ) : (
           <p className='text-muted'>Nessun prodotto disponibile.</p>
         )}
@@ -114,4 +147,4 @@ function RrefreshKit() {
   );
 }
 
-export default RrefreshKit;
+export default ProductsPage;

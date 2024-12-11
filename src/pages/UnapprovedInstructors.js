@@ -59,6 +59,7 @@ const UnapprovedInstructors = () => {
             <tr>
               <th>Nome</th>
               <th>Cognome</th>
+              <th>brevet Number</th>
               <th>Email</th>
               <th>Telefono</th>
               <th>Azioni</th>
@@ -69,6 +70,7 @@ const UnapprovedInstructors = () => {
               <tr key={instructor._id}>
                 <td>{instructor.firstName}</td>
                 <td>{instructor.lastName}</td>
+                <td>{instructor.brevetNumber}</td>
                 <td>{instructor.email}</td>
                 <td>{instructor.phone}</td>
                 <td>
