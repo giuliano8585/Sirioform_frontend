@@ -88,6 +88,9 @@ function ListaDiscentiPage() {
       <button className='btn btn-secondary mt-4' onClick={() => navigate(-1)}>
         Torna alla Dashboard
       </button>
+      <button className='btn btn-primary mt-4 mx-2' onClick={() => navigate('/create-discente')}>
+        create Discente
+      </button>
       {completeCourseModal && (
         <CompleteCourseModal
           discenteId={discenteId}
@@ -140,6 +143,7 @@ const CompleteCourseModal = ({ discenteId, handleCompleteCourses }) => {
                 <thead className='thead-dark'>
                   <tr>
                     <th>Nome</th>
+                    <th>Type</th>
                     <th>completed At</th>
                   </tr>
                 </thead>
@@ -150,6 +154,7 @@ const CompleteCourseModal = ({ discenteId, handleCompleteCourses }) => {
                       .map((discente, index) => (
                         <tr key={index}>
                           <td>{discente.città}</td>
+                          <td>{discente?.tipologia?.type}</td>
                           <td>{discente.updatedAt?.split('T')[0]}</td>
                         </tr>
                       ))
