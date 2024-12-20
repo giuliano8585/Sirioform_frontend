@@ -17,7 +17,7 @@ const ViewProfile = () => {
       try {
         const token = localStorage.getItem('token');
         const res = await axios.get(
-          'http://localhost:5000/api/auth/centers/me',
+          'http://18.171.180.225/api/auth/centers/me',
           {
             headers: {
               'x-auth-token': token,

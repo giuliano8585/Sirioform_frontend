@@ -4,9 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const AdminUpdateCenter = () => {
-//   const { centerId } = useParams();
-const location = useLocation()
-const centerId = location?.state?.centerId
+  //   const { centerId } = useParams();
+  const location = useLocation();
+  const centerId = location?.state?.centerId;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
@@ -15,7 +15,7 @@ const centerId = location?.state?.centerId
     city: '',
     region: '',
     email: '',
-    phone: ''
+    phone: '',
   });
   const [message, setMessage] = useState('');
 
@@ -23,7 +23,9 @@ const centerId = location?.state?.centerId
   useEffect(() => {
     const fetchCenterData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/centers/${centerId}`);
+        const res = await axios.get(
+          `http://18.171.180.225/api/centers/${centerId}`
+        );
         setFormData(res.data); // Assuming the API returns an object with all the fields
       } catch (err) {
         console.error('Error fetching center data:', err);
@@ -42,7 +44,10 @@ const centerId = location?.state?.centerId
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.patch(`http://localhost:5000/api/centers/${centerId}`, formData);
+      const res = await axios.patch(
+        `http://18.171.180.225/api/centers/${centerId}`,
+        formData
+      );
       console.log(res.data);
       setMessage('Center updated successfully.');
     } catch (err) {
@@ -198,9 +203,13 @@ const centerId = location?.state?.centerId
           Update
         </button>
       </form>
-        <button type='button' onClick={()=>navigate('/centers-list')} className='btn btn-info mt-3'>
-          Back
-        </button>
+      <button
+        type='button'
+        onClick={() => navigate('/centers-list')}
+        className='btn btn-info mt-3'
+      >
+        Back
+      </button>
     </div>
   );
 };

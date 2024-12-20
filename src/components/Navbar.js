@@ -18,7 +18,7 @@ const Navbar = () => {
     const fetchNotifications = async () => {
       try {
         const { data } = await axios.get(
-          'http://localhost:5000/api/notifications',
+          'http://18.171.180.225/api/notifications',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -35,7 +35,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchCartData = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/cart/', {
+        const { data } = await axios.get('http://18.171.180.225/api/cart/', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setCartData(data?.items);
@@ -48,13 +48,13 @@ const Navbar = () => {
   }, [render]);
 
   const handleCart = () => {
-    navigate('/cart', { state: { data: {...cartData , fromCart:true} } });
+    navigate('/cart', { state: { data: { ...cartData, fromCart: true } } });
   };
 
   const handleMarkAsRead = async (id) => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/notifications/${id}/read`,
+        `http://18.171.180.225/api/notifications/${id}/read`,
         {},
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
@@ -69,7 +69,7 @@ const Navbar = () => {
   };
   const handleRemove = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/notifications/${id}`, {
+      await axios.delete(`http://18.171.180.225/api/notifications/${id}`, {
         headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
       });
       setNotifications(
@@ -84,7 +84,7 @@ const Navbar = () => {
   const handleRemoveByCategrory = async (category) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/notifications/delete-category/${category}`,
+        `http://18.171.180.225/api/notifications/delete-category/${category}`,
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }

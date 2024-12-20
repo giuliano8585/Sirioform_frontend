@@ -34,7 +34,7 @@ function ListaCorso() {
     const fetchCorso = async () => {
       try {
         const res = await axios.get(
-          'http://localhost:5000/api/corsi/user-courses',
+          'http://18.171.180.225/api/corsi/user-courses',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -51,7 +51,7 @@ function ListaCorso() {
   //   const fetchSelectedCorsoData = async () => {
   //     try {
   //       const res = await axios.get(
-  //         `http://localhost:5000/api/corsi/user-course/${selectedCourse}`,
+  //         `http://18.171.180.225/api/corsi/user-course/${selectedCourse}`,
   //         {
   //           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
   //         }
@@ -68,7 +68,7 @@ function ListaCorso() {
     setSelectedCourse(courseId);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/corsi/user-course/${courseId}`,
+        `http://18.171.180.225/api/corsi/user-course/${courseId}`,
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }
@@ -83,7 +83,7 @@ function ListaCorso() {
     setSelectedCourse(courseId);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/corsi/user-course/${courseId}`,
+        `http://18.171.180.225/api/corsi/user-course/${courseId}`,
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }
@@ -101,7 +101,7 @@ function ListaCorso() {
         setSelectedCourse(selectedCourse);
         try {
           const res = await axios.get(
-            `http://localhost:5000/api/corsi/user-course/${selectedCourse}`,
+            `http://18.171.180.225/api/corsi/user-course/${selectedCourse}`,
             {
               headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
             }
@@ -119,7 +119,7 @@ function ListaCorso() {
   const handleAllDiscente = async (courseId) => {
     setSelectedCourse(courseId);
     try {
-      const res = await axios.get('http://localhost:5000/api/discenti/', {
+      const res = await axios.get('http://18.171.180.225/api/discenti/', {
         headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
       });
       setAllDiscente(res.data);
@@ -140,7 +140,7 @@ function ListaCorso() {
       if (result.isConfirmed) {
         axios
           .patch(
-            `http://localhost:5000/api/corsi/courses/${courseId}/status`,
+            `http://18.171.180.225/api/corsi/courses/${courseId}/status`,
             {
               status: 'end',
             },
@@ -498,7 +498,7 @@ const DiscenteModal = ({
       if (result.isConfirmed) {
         axios
           .patch(
-            'http://localhost:5000/api/corsi/assign-discente',
+            'http://18.171.180.225/api/corsi/assign-discente',
             {
               courseId: selectedCourse,
               discenteId: discenteId,
@@ -644,7 +644,7 @@ const CourseDiscenteModal = ({
       if (result.isConfirmed) {
         axios
           .patch(
-            'http://localhost:5000/api/corsi/remove-discente',
+            'http://18.171.180.225/api/corsi/remove-discente',
             {
               courseId: selectedCourse,
               discenteId: discenteId,
@@ -766,7 +766,7 @@ const CourseProgressiveNumber = ({
       if (result.isConfirmed) {
         axios
           .patch(
-            `http://localhost:5000/api/discenti/${id}`,
+            `http://18.171.180.225/api/discenti/${id}`,
             {
               patentNumber: patentNumber,
             },
@@ -946,20 +946,20 @@ const GiornateModal = ({ setShowGiornateModal, giornateDetails }) => {
   );
 };
 
-const EditQuantityModal = ({ editQuantityModal, id,render,setRender }) => {
+const EditQuantityModal = ({ editQuantityModal, id, render, setRender }) => {
   const [value, setValue] = useState('');
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.patch(
-        `http://localhost:5000/api/corsi/courses/add-quatity/${id}`,
+        `http://18.171.180.225/api/corsi/courses/add-quatity/${id}`,
         {
           numeroDiscenti: value,
         },
         { headers: { 'x-auth-token': localStorage.getItem('token') } }
       );
       Swal.fire('Course updated successfully!', '', 'success');
-      setRender(!render)
+      setRender(!render);
     } catch (error) {
       Swal.fire(error?.response?.data?.message, '', 'error');
     }

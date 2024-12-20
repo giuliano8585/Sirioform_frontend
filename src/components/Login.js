@@ -5,11 +5,11 @@ import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
-    role: 'center'
+    role: 'center',
   });
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,9 +22,12 @@ const Login = () => {
     e.preventDefault();
     setLoading(true); // Imposta lo stato di caricamento
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const res = await axios.post(
+        'http://18.171.180.225/api/auth/login',
+        formData
+      );
       localStorage.setItem('token', res.data.token);
-      setLoading(false); 
+      setLoading(false);
       const decodedToken = jwtDecode(res.data.token);
       if (decodedToken.user.role === 'admin') {
         navigate('/admin-dashboard');
@@ -44,31 +47,31 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
-      <h2 className="my-4">Login</h2>
+    <div className='container'>
+      <h2 className='my-4'>Login</h2>
       <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Username</label>
-          <input 
-            type="text" 
-            className="form-control" 
-            name="username" 
-            value={formData.username} 
-            onChange={handleChange} 
-            placeholder="Username" 
-            required 
+        <div className='mb-3'>
+          <label className='form-label'>Username</label>
+          <input
+            type='text'
+            className='form-control'
+            name='username'
+            value={formData.username}
+            onChange={handleChange}
+            placeholder='Username'
+            required
           />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Password</label>
-          <input 
-            type="password" 
-            className="form-control" 
-            name="password" 
-            value={formData.password} 
-            onChange={handleChange} 
-            placeholder="Password" 
-            required 
+        <div className='mb-3'>
+          <label className='form-label'>Password</label>
+          <input
+            type='password'
+            className='form-control'
+            name='password'
+            value={formData.password}
+            onChange={handleChange}
+            placeholder='Password'
+            required
           />
         </div>
         {/* <div className="mb-3">
@@ -84,21 +87,15 @@ const Login = () => {
             <option value="admin">Admin</option>
           </select>
         </div> */}
-        <button type="submit" className="btn btn-primary">
+        <button type='submit' className='btn btn-primary'>
           {loading ? 'Loading...' : 'Login'}
         </button>
       </form>
       {errorMessage && (
-        <div className="alert alert-danger mt-3">
-          {errorMessage}
-        </div>
+        <div className='alert alert-danger mt-3'>{errorMessage}</div>
       )}
     </div>
   );
 };
 
 export default Login;
-
-
-
-

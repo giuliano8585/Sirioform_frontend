@@ -17,7 +17,7 @@ function UnActiveCourse() {
     const fetchCorso = async () => {
       try {
         const res = await axios.get(
-          'http://localhost:5000/api/corsi/user-courses',
+          'http://18.171.180.225/api/corsi/user-courses',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -118,7 +118,9 @@ function UnActiveCourse() {
                         type='button'
                         className='btn btn-primary'
                         onClick={() =>
-                          navigate('/update-course',{state:{id:corsoItem._id,data:corsoItem}})
+                          navigate('/update-course', {
+                            state: { id: corsoItem._id, data: corsoItem },
+                          })
                         }
                       >
                         Edit

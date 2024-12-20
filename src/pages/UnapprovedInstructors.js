@@ -5,18 +5,19 @@ import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 
 const UnapprovedInstructors = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [instructors, setInstructors] = useState([]);
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('token');
   const decodedToken = jwtDecode(token);
-  const [showApproveConfirmModal , setShowApproveConfirmModal] = useState(false)
-
+  const [showApproveConfirmModal, setShowApproveConfirmModal] = useState(false);
 
   useEffect(() => {
     const fetchUnapprovedInstructors = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/instructors/unapproved');
-        setInstructors(res.data.filter((item)=>item?.role=='instructor'));
+        const res = await axios.get(
+          'http://18.171.180.225/api/instructors/unapproved'
+        );
+        setInstructors(res.data.filter((item) => item?.role == 'instructor'));
       } catch (err) {
         console.error('Error fetching unapproved instructors:', err);
       }
@@ -33,11 +34,14 @@ const UnapprovedInstructors = () => {
       denyButtonText: `Don't save`,
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.put(`http://localhost:5000/api/instructors/approve/${id}`)
+        axios
+          .put(`http://18.171.180.225/api/instructors/approve/${id}`)
           .then((res) => {
             if (res?.status === 200) {
               Swal.fire('Saved!', '', 'success');
-              setInstructors(instructors.filter(instructor => instructor._id !== id));
+              setInstructors(
+                instructors.filter((instructor) => instructor._id !== id)
+              );
             } else {
               Swal.fire('Something went wrong', '', 'info');
             }
@@ -51,11 +55,11 @@ const UnapprovedInstructors = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h1 className="mb-4">Istruttori da Abilitare</h1>
-      <div className="table-responsive">
-        <table className="table table-striped table-bordered">
-          <thead className="thead-dark">
+    <div className='container mt-4'>
+      <h1 className='mb-4'>Istruttori da Abilitare</h1>
+      <div className='table-responsive'>
+        <table className='table table-striped table-bordered'>
+          <thead className='thead-dark'>
             <tr>
               <th>Nome</th>
               <th>Cognome</th>
@@ -74,14 +78,32 @@ const UnapprovedInstructors = () => {
                 <td>{instructor.email}</td>
                 <td>{instructor.phone}</td>
                 <td>
-                  <button className="btn btn-success mb-2" onClick={() => approveInstructor(instructor._id)}>Approva</button>
+                  <button
+                    className='btn btn-success mb-2'
+                    onClick={() => approveInstructor(instructor._id)}
+                  >
+                    Approva
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="btn btn-primary"  onClick={() => navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'instructor-dashboard')}>Back</div>
+      <div
+        className='btn btn-primary'
+        onClick={() =>
+          navigate(
+            decodedToken.user.role == 'admin'
+              ? '/admin-dashboard'
+              : decodedToken.user.role == 'center'
+              ? '/center-dashboard'
+              : 'instructor-dashboard'
+          )
+        }
+      >
+        Back
+      </div>
     </div>
   );
 };

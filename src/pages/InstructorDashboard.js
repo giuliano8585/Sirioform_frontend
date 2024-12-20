@@ -12,11 +12,14 @@ const InstructorDashboard = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/api/auth/instructors/me', {
-          headers: {
-            'x-auth-token': token
+        const res = await axios.get(
+          'http://18.171.180.225/api/auth/instructors/me',
+          {
+            headers: {
+              'x-auth-token': token,
+            },
           }
-        });
+        );
         setData(res.data);
         setLoading(false);
       } catch (err) {
@@ -181,7 +184,7 @@ const InstructorDashboard = () => {
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/unactive-refresh-corso')}
                 >
-                 Unactive Lista Refresh Corso
+                  Unactive Lista Refresh Corso
                 </button>
               </li>
               <li className='nav-item mb-2'>
@@ -189,7 +192,7 @@ const InstructorDashboard = () => {
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/finish-corso')}
                 >
-                 Finish Course
+                  Finish Course
                 </button>
               </li>
               <li className='nav-item mb-2'>
@@ -197,7 +200,7 @@ const InstructorDashboard = () => {
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/complete-corso')}
                 >
-                 complete Course
+                  complete Course
                 </button>
               </li>
             </ul>

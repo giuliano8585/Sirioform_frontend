@@ -16,9 +16,12 @@ const UserDashboard = () => {
           return;
         }
 
-        const res = await axios.get('http://localhost:5000/api/secure-endpoint', {
-          headers: { 'x-auth-token': token }
-        });
+        const res = await axios.get(
+          'http://18.171.180.225/api/secure-endpoint',
+          {
+            headers: { 'x-auth-token': token },
+          }
+        );
         setUser(res.data);
       } catch (err) {
         console.error(err);
@@ -35,8 +38,12 @@ const UserDashboard = () => {
     <div>
       <h1>Welcome to your dashboard</h1>
       <h2>User Details</h2>
-      <p><strong>ID:</strong> {user.user.id}</p>
-      <p><strong>Role:</strong> {user.user.role}</p>
+      <p>
+        <strong>ID:</strong> {user.user.id}
+      </p>
+      <p>
+        <strong>Role:</strong> {user.user.role}
+      </p>
       <h2>Protected Message</h2>
       <p>{user.message}</p>
     </div>
@@ -44,4 +51,3 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
-

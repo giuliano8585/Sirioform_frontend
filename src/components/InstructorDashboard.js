@@ -12,11 +12,14 @@ const InstructorDashboard = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/api/auth/instructors/me', {
-          headers: {
-            'x-auth-token': token
+        const res = await axios.get(
+          'http://18.171.180.225/api/auth/instructors/me',
+          {
+            headers: {
+              'x-auth-token': token,
+            },
           }
-        });
+        );
         setData(res.data);
         setLoading(false);
       } catch (err) {
@@ -43,7 +46,9 @@ const InstructorDashboard = () => {
   return (
     <div>
       <h1>Instructor Dashboard</h1>
-      <button onClick={() => alert(JSON.stringify(data, null, 2))}>Anagrafica</button>
+      <button onClick={() => alert(JSON.stringify(data, null, 2))}>
+        Anagrafica
+      </button>
       <button onClick={goToViewKits}>Visualizza Kit</button>
     </div>
   );

@@ -17,7 +17,7 @@ function UnActiveRefreshCourse() {
     const fetchCorso = async () => {
       try {
         const res = await axios.get(
-          'http://localhost:5000/api/corsi/user-courses',
+          'http://18.171.180.225/api/corsi/user-courses',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -62,58 +62,72 @@ function UnActiveRefreshCourse() {
           </tr>
         </thead>
         <tbody>
-          {corso?.filter((item) => item?.status == 'unactive'&&item?.isRefreshCourse==true).length > 0 ? (
-            corso?.filter((item)=>item?.status=='unactive'&&item?.isRefreshCourse==true).map((corsoItem) => (
-              <tr key={corsoItem._id}>
-                <td>{corsoItem.città}</td>
-                <td>{corsoItem.via}</td>
-                <td>{corsoItem.progressiveNumber}</td>
-                <td>{corsoItem?.tipologia?.type}</td>
-                <td>{corsoItem.numeroDiscenti}</td>
-                <td>{corsoItem.createdAt?.split('T')[0]}</td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenModal(corsoItem.direttoreCorso)}
-                  >
-                    direttore Details
-                  </button>
-                </td>
-                <td>
-                  {' '}
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenInstructorModal(corsoItem.istruttore)}
-                  >
-                    instruttore Details
-                  </button>
-                </td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenGiornateModal(corsoItem.giornate)}
-                  >
-                    Giornate Details
-                  </button>
-                </td>
-                {corsoItem?.status == 'update' && (
+          {corso?.filter(
+            (item) =>
+              item?.status == 'unactive' && item?.isRefreshCourse == true
+          ).length > 0 ? (
+            corso
+              ?.filter(
+                (item) =>
+                  item?.status == 'unactive' && item?.isRefreshCourse == true
+              )
+              .map((corsoItem) => (
+                <tr key={corsoItem._id}>
+                  <td>{corsoItem.città}</td>
+                  <td>{corsoItem.via}</td>
+                  <td>{corsoItem.progressiveNumber}</td>
+                  <td>{corsoItem?.tipologia?.type}</td>
+                  <td>{corsoItem.numeroDiscenti}</td>
+                  <td>{corsoItem.createdAt?.split('T')[0]}</td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleOpenModal(corsoItem.direttoreCorso)}
+                    >
+                      direttore Details
+                    </button>
+                  </td>
+                  <td>
+                    {' '}
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() =>
+                        handleOpenInstructorModal(corsoItem.istruttore)
+                      }
+                    >
+                      instruttore Details
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() =>
+                        handleOpenGiornateModal(corsoItem.giornate)
+                      }
+                    >
+                      Giornate Details
+                    </button>
+                  </td>
+                  {corsoItem?.status == 'update' && (
                     <td>
                       <button
                         type='button'
                         className='btn btn-primary'
                         onClick={() =>
-                          navigate('/update-course',{state:{id:corsoItem._id,data:corsoItem}})
+                          navigate('/update-course', {
+                            state: { id: corsoItem._id, data: corsoItem },
+                          })
                         }
                       >
                         Edit
                       </button>
                     </td>
                   )}
-              </tr>
-            ))
+                </tr>
+              ))
           ) : (
             <tr>
               <td colSpan='8' className='text-muted'>

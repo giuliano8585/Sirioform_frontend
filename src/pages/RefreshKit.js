@@ -12,7 +12,7 @@ function ProductsPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/kits', {
+        const res = await axios.get('http://18.171.180.225/api/kits', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setProducts(res.data);
@@ -59,17 +59,17 @@ function ProductsPage() {
           products.find((p) => p._id === productId),
           quantity
         ),
-        fromCart:false,
+        fromCart: false,
       },
     });
   };
 
-  const handleAddToCart = async (itemId,type) => {
+  const handleAddToCart = async (itemId, type) => {
     const quantity = quantities[itemId] || 6;
     console.log('quantity handle add: ', quantity);
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/cart/',
+        'http://18.171.180.225/api/cart/',
         { itemId, quantity },
         {
           headers: {
@@ -88,13 +88,18 @@ function ProductsPage() {
     <div className='container mt-4'>
       <h2>Acquista Kit</h2>
       <div className='row'>
-      {Array.isArray(products) && products.length > 0 ? (
-          products?.filter((items)=>items?.isRefreshKit==true&& items?.isForInstructor!==true).map((product) => (
+        {Array.isArray(products) && products.length > 0 ? (
+          products
+            ?.filter(
+              (items) =>
+                items?.isRefreshKit == true && items?.isForInstructor !== true
+            )
+            .map((product) => (
               <div key={product._id} className='col-md-4 mb-4'>
                 <div className='card h-100'>
                   <div className='card-body d-flex flex-column'>
                     <img
-                      src={`http://localhost:5000/${product?.profileImage}`}
+                      src={`http://18.171.180.225/${product?.profileImage}`}
                       alt=''
                     />
                     <h5 className='card-title'>{product.code}</h5>
@@ -119,7 +124,9 @@ function ProductsPage() {
                       className='form-control mb-3'
                     />
                     <button
-                      onClick={() => handleAddToCart(product?._id,product?.type)}
+                      onClick={() =>
+                        handleAddToCart(product?._id, product?.type)
+                      }
                       className='btn btn-info mt-auto mb-2'
                     >
                       Add to Cart

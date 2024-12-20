@@ -4,8 +4,8 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 function StoreDetails() {
   const { productId } = useParams();
-  const location = useLocation()
-  const data = location?.state?.data
+  const location = useLocation();
+  const data = location?.state?.data;
   console.log('data: ', data);
   const [orderItems, setOrderItems] = useState([]);
   console.log('orderItems: ', orderItems);
@@ -15,7 +15,7 @@ function StoreDetails() {
   //   // Recupera i dettagli degli ordini per il prodotto selezionato
   //   const fetchOrderDetails = async () => {
   //     try {
-  //       const res = await axios.get('http://localhost:5000/api/orders/acquistati', {
+  //       const res = await axios.get('http://18.171.180.225/api/orders/acquistati', {
   //         headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
   //       });
   //       // Trova il prodotto con l'ID selezionato
@@ -34,20 +34,23 @@ function StoreDetails() {
   // }, [productId]);
 
   return (
-    <div className="container mt-4">
+    <div className='container mt-4'>
       <h2>Dettagli Prodotto</h2>
       {data && data?.length === 0 ? (
         <p>Nessun dettaglio disponibile per questo prodotto.</p>
       ) : (
-        <ul className="list-group">
+        <ul className='list-group'>
           {data?.progressiveNumbers?.map((item, index) => (
-            <li key={index} className="list-group-item">
+            <li key={index} className='list-group-item'>
               Codici: {item ? item : 'Nessun codice disponibile'}
             </li>
           ))}
         </ul>
       )}
-      <button className="btn btn-secondary mt-3" onClick={() => navigate('/store')}>
+      <button
+        className='btn btn-secondary mt-3'
+        onClick={() => navigate('/store')}
+      >
         Torna allo Store
       </button>
     </div>

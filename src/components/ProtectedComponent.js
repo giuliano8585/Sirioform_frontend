@@ -11,11 +11,14 @@ const ProtectedComponent = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/api/protected/protected-endpoint', {
-          headers: {
-            'x-auth-token': token
+        const res = await axios.get(
+          'http://18.171.180.225/api/protected/protected-endpoint',
+          {
+            headers: {
+              'x-auth-token': token,
+            },
           }
-        });
+        );
         setData(res.data);
         setLoading(false);
       } catch (err) {

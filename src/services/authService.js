@@ -1,7 +1,7 @@
 // src/services/authService.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/auth/';
+const API_URL = 'http://18.171.180.225/api/auth/';
 
 const login = async (username, password, role) => {
   const res = await axios.post(API_URL + 'login', { username, password, role });
@@ -17,5 +17,5 @@ const logout = () => {
 
 export default {
   login,
-  logout
+  logout,
 };

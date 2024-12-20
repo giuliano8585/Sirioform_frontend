@@ -18,7 +18,7 @@ function FinishCourses() {
     const fetchCorso = async () => {
       try {
         const res = await axios.get(
-          'http://localhost:5000/api/corsi/user-courses',
+          'http://18.171.180.225/api/corsi/user-courses',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -43,7 +43,7 @@ function FinishCourses() {
       if (result.isConfirmed) {
         axios
           .patch(
-            `http://localhost:5000/api/corsi/courses/${courseId}/status`,
+            `http://18.171.180.225/api/corsi/courses/${courseId}/status`,
             {
               status: 'end',
             },

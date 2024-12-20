@@ -10,18 +10,21 @@ const ViewSanitarios = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
 
   useEffect(() => {
     const fetchSanitarios = async () => {
       try {
         const token = localStorage.getItem('token');
         console.log('Using token:', token); // Verifica il token nel client
-        const res = await axios.get(`http://localhost:5000/api/instructors/${location?.state?.instructorId}/sanitarios`, {
-          headers: {
-            'x-auth-token': token
+        const res = await axios.get(
+          `http://18.171.180.225/api/instructors/${location?.state?.instructorId}/sanitarios`,
+          {
+            headers: {
+              'x-auth-token': token,
+            },
           }
-        });
+        );
         setSanitarios(res.data);
         setLoading(false);
       } catch (err) {
@@ -42,11 +45,11 @@ const ViewSanitarios = () => {
   }
 
   return (
-    <div className="container mt-4">
-      <h1 className="mb-4">Lista Sanitari</h1>
-      <div className="table-responsive">
-        <table className="table table-striped table-bordered">
-          <thead className="thead-dark">
+    <div className='container mt-4'>
+      <h1 className='mb-4'>Lista Sanitari</h1>
+      <div className='table-responsive'>
+        <table className='table table-striped table-bordered'>
+          <thead className='thead-dark'>
             <tr>
               {/* <th>Numero Brevetto</th> */}
               <th>Nome</th>
@@ -65,13 +68,26 @@ const ViewSanitarios = () => {
                 <td>{sanitarios.email}</td>
                 <td>{sanitarios.phone}</td>
                 <td>{sanitarios.fiscalCode}</td>
-                <td>{sanitarios.address},{sanitarios.city},{sanitarios.region}</td>
+                <td>
+                  {sanitarios.address},{sanitarios.city},{sanitarios.region}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <button className="btn btn-secondary mt-4" onClick={() => navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard')}>
+      <button
+        className='btn btn-secondary mt-4'
+        onClick={() =>
+          navigate(
+            decodedToken.user.role == 'admin'
+              ? '/admin-dashboard'
+              : decodedToken.user.role == 'center'
+              ? '/center-dashboard'
+              : '/instructor-dashboard'
+          )
+        }
+      >
         Indietro
       </button>
     </div>
@@ -79,4 +95,3 @@ const ViewSanitarios = () => {
 };
 
 export default ViewSanitarios;
-

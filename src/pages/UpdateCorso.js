@@ -32,7 +32,7 @@ function UpdateCorso() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          'http://localhost:5000/api/auth/centers/me',
+          'http://18.171.180.225/api/auth/centers/me',
           { headers: { 'x-auth-token': token } }
         );
         setData(res.data);
@@ -49,7 +49,7 @@ function UpdateCorso() {
     const fetchCourseData = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/corsi/user-courses/${id}`,
+          `http://18.171.180.225/api/corsi/user-courses/${id}`,
           {
             headers: { 'x-auth-token': token },
           }
@@ -124,7 +124,7 @@ function UpdateCorso() {
     e.preventDefault();
     try {
       await axios.patch(
-        `http://localhost:5000/api/corsi/courses/${id}`,
+        `http://18.171.180.225/api/corsi/courses/${id}`,
         {
           ...corso,
           giornate,
@@ -309,12 +309,9 @@ function UpdateCorso() {
           </button>
         </div>
       </form>
-          <button
-            className='btn btn-secondary mt-4'
-            onClick={() => navigate(-1)}
-          >
-            Torna alla Dashboard
-          </button>
+      <button className='btn btn-secondary mt-4' onClick={() => navigate(-1)}>
+        Torna alla Dashboard
+      </button>
     </div>
   );
 }

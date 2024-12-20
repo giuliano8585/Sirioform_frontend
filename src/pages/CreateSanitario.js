@@ -27,7 +27,7 @@ const CreateSanitario = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/sanitarios/create',
+        'http://18.171.180.225/api/sanitarios/create',
         formData
       );
       setMessage('Sanitario creato con successo!');
@@ -41,8 +41,8 @@ const CreateSanitario = () => {
         email: '',
         phone: '',
       });
-      setShowApproveConfirmModal(false)
-      navigate('/admin-dashboard')
+      setShowApproveConfirmModal(false);
+      navigate('/admin-dashboard');
     } catch (err) {
       setMessage('Errore nella creazione del sanitario.');
       console.error('Error response:', err.response.data);
@@ -147,34 +147,34 @@ const CreateSanitario = () => {
             placeholder='Regione'
             required
           /> */}
-            <select
+          <select
             className={`form-select`}
-            id="region"
-            name="region"
+            id='region'
+            name='region'
             value={formData.region}
             onChange={handleChange}
           >
             <option selected>Select</option>
-             <option value="ABRUZZO">ABRUZZO</option>
-             <option value="BASILICATA">BASILICATA</option>
-             <option value="CALABRIA">CALABRIA</option>
-             <option value="CAMPANIA">CAMPANIA</option>
-             <option value="EMILIA-ROMAGNA">EMILIA-ROMAGNA</option>
-             <option value="FRIULI-VENEZIA GIULIA">FRIULI-VENEZIA GIULIA</option>
-             <option value="LAZIO">LAZIO</option>
-             <option value="LIGURIA">LIGURIA</option>
-             <option value="LOMBARDIA">LOMBARDIA</option>
-             <option value="MARCHE">MARCHE</option>
-             <option value="MOLISE">MOLISE</option>
-             <option value="PIEMONTE">PIEMONTE</option>
-             <option value="PUGLIA">PUGLIA</option>
-             <option value="SARDEGNA">SARDEGNA</option>
-             <option value="SICILIA">SICILIA</option>
-             <option value="TOSCANA">TOSCANA</option>
-             <option value="TRENTINO-ALTO ADIGE">TRENTINO-ALTO ADIGE</option>
-             <option value="UMBRIA">UMBRIA</option>
-             <option value="VALLE D'AOSTA">VALLE D'AOSTA</option>
-             <option value="VENETO">VENETO</option>
+            <option value='ABRUZZO'>ABRUZZO</option>
+            <option value='BASILICATA'>BASILICATA</option>
+            <option value='CALABRIA'>CALABRIA</option>
+            <option value='CAMPANIA'>CAMPANIA</option>
+            <option value='EMILIA-ROMAGNA'>EMILIA-ROMAGNA</option>
+            <option value='FRIULI-VENEZIA GIULIA'>FRIULI-VENEZIA GIULIA</option>
+            <option value='LAZIO'>LAZIO</option>
+            <option value='LIGURIA'>LIGURIA</option>
+            <option value='LOMBARDIA'>LOMBARDIA</option>
+            <option value='MARCHE'>MARCHE</option>
+            <option value='MOLISE'>MOLISE</option>
+            <option value='PIEMONTE'>PIEMONTE</option>
+            <option value='PUGLIA'>PUGLIA</option>
+            <option value='SARDEGNA'>SARDEGNA</option>
+            <option value='SICILIA'>SICILIA</option>
+            <option value='TOSCANA'>TOSCANA</option>
+            <option value='TRENTINO-ALTO ADIGE'>TRENTINO-ALTO ADIGE</option>
+            <option value='UMBRIA'>UMBRIA</option>
+            <option value="VALLE D'AOSTA">VALLE D'AOSTA</option>
+            <option value='VENETO'>VENETO</option>
           </select>
         </div>
         <div className='mb-3'>

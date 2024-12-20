@@ -11,7 +11,7 @@ function AdminAllDiscente() {
   useEffect(() => {
     const fetchDiscenti = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/discenti/all', {
+        const res = await axios.get('http://18.171.180.225/api/discenti/all', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setDiscenti(res.data);
@@ -130,7 +130,7 @@ const CompleteCourseModal = ({ discenteId, handleCompleteCourses }) => {
     const handleCompleteCourse = async (courseId) => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/corsi/discente-courses/${discenteId}`,
+          `http://18.171.180.225/api/corsi/discente-courses/${discenteId}`,
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }

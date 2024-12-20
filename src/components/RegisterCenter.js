@@ -29,7 +29,8 @@ const RegisterCenter = () => {
   };
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{12,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{12,}$/;
     return passwordRegex.test(password);
   };
 
@@ -46,7 +47,8 @@ const RegisterCenter = () => {
 
     // Password validation
     if (formData.password && !validatePassword(formData.password)) {
-      newErrors.password = 'Password must be at least 12 characters long, with a mix of uppercase, lowercase, numbers, and special characters';
+      newErrors.password =
+        'Password must be at least 12 characters long, with a mix of uppercase, lowercase, numbers, and special characters';
     }
 
     // Repeat password validation
@@ -66,7 +68,7 @@ const RegisterCenter = () => {
 
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/centers/register',
+        'http://18.171.180.225/api/centers/register',
         {
           ...formData,
           recaptchaToken,
@@ -94,29 +96,29 @@ const RegisterCenter = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">Register Center</h2>
+    <div className='container mt-5'>
+      <h2 className='mb-4'>Register Center</h2>
       {message && (
-        <div className="modal modal-xl show d-block" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Center Registered</h5>
+        <div className='modal modal-xl show d-block' tabIndex='-1'>
+          <div className='modal-dialog'>
+            <div className='modal-content'>
+              <div className='modal-header'>
+                <h5 className='modal-title'>Center Registered</h5>
                 <button
-                  type="button"
-                  className="close"
+                  type='button'
+                  className='close'
                   onClick={() => handleCloseModal(message)}
                 >
                   <span>&times;</span>
                 </button>
               </div>
-              <div className="modal-body">
-                <div className="table-responsive">
-                  <p className="text-center">{message}</p>
-                  <div className="d-flex align-items-center justify-content-center gap-4">
+              <div className='modal-body'>
+                <div className='table-responsive'>
+                  <p className='text-center'>{message}</p>
+                  <div className='d-flex align-items-center justify-content-center gap-4'>
                     <button
                       onClick={() => handleCloseModal(message)}
-                      className="btn btn-primary btn-sm"
+                      className='btn btn-primary btn-sm'
                     >
                       Okay
                     </button>
@@ -137,8 +139,8 @@ const RegisterCenter = () => {
           { label: 'Phone', name: 'phone', type: 'text' },
           { label: 'Username', name: 'username', type: 'text' },
         ].map(({ label, name, type }) => (
-          <div className="mb-3" key={name}>
-            <label htmlFor={name} className="form-label">
+          <div className='mb-3' key={name}>
+            <label htmlFor={name} className='form-label'>
               {label}
             </label>
             <input
@@ -151,85 +153,93 @@ const RegisterCenter = () => {
               placeholder={label}
             />
             {errors[name] && (
-              <div className="invalid-feedback">{errors[name]}</div>
+              <div className='invalid-feedback'>{errors[name]}</div>
             )}
           </div>
         ))}
 
-        <div className="mb-3">
-          <label htmlFor="region" className="form-label">
+        <div className='mb-3'>
+          <label htmlFor='region' className='form-label'>
             Region
           </label>
           <select
             className={`form-select ${errors.region ? 'is-invalid' : ''}`}
-            id="region"
-            name="region"
+            id='region'
+            name='region'
             value={formData.region}
             onChange={handleChange}
           >
             <option selected>Select</option>
-             <option value="ABRUZZO">ABRUZZO</option>
-             <option value="BASILICATA">BASILICATA</option>
-             <option value="CALABRIA">CALABRIA</option>
-             <option value="CAMPANIA">CAMPANIA</option>
-             <option value="EMILIA-ROMAGNA">EMILIA-ROMAGNA</option>
-             <option value="FRIULI-VENEZIA GIULIA">FRIULI-VENEZIA GIULIA</option>
-             <option value="LAZIO">LAZIO</option>
-             <option value="LIGURIA">LIGURIA</option>
-             <option value="LOMBARDIA">LOMBARDIA</option>
-             <option value="MARCHE">MARCHE</option>
-             <option value="MOLISE">MOLISE</option>
-             <option value="PIEMONTE">PIEMONTE</option>
-             <option value="PUGLIA">PUGLIA</option>
-             <option value="SARDEGNA">SARDEGNA</option>
-             <option value="SICILIA">SICILIA</option>
-             <option value="TOSCANA">TOSCANA</option>
-             <option value="TRENTINO-ALTO ADIGE">TRENTINO-ALTO ADIGE</option>
-             <option value="UMBRIA">UMBRIA</option>
-             <option value="VALLE D'AOSTA">VALLE D'AOSTA</option>
-             <option value="VENETO">VENETO</option>
+            <option value='ABRUZZO'>ABRUZZO</option>
+            <option value='BASILICATA'>BASILICATA</option>
+            <option value='CALABRIA'>CALABRIA</option>
+            <option value='CAMPANIA'>CAMPANIA</option>
+            <option value='EMILIA-ROMAGNA'>EMILIA-ROMAGNA</option>
+            <option value='FRIULI-VENEZIA GIULIA'>FRIULI-VENEZIA GIULIA</option>
+            <option value='LAZIO'>LAZIO</option>
+            <option value='LIGURIA'>LIGURIA</option>
+            <option value='LOMBARDIA'>LOMBARDIA</option>
+            <option value='MARCHE'>MARCHE</option>
+            <option value='MOLISE'>MOLISE</option>
+            <option value='PIEMONTE'>PIEMONTE</option>
+            <option value='PUGLIA'>PUGLIA</option>
+            <option value='SARDEGNA'>SARDEGNA</option>
+            <option value='SICILIA'>SICILIA</option>
+            <option value='TOSCANA'>TOSCANA</option>
+            <option value='TRENTINO-ALTO ADIGE'>TRENTINO-ALTO ADIGE</option>
+            <option value='UMBRIA'>UMBRIA</option>
+            <option value="VALLE D'AOSTA">VALLE D'AOSTA</option>
+            <option value='VENETO'>VENETO</option>
           </select>
-          {errors.region && <div className="invalid-feedback">{errors.region}</div>}
+          {errors.region && (
+            <div className='invalid-feedback'>{errors.region}</div>
+          )}
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
+        <div className='mb-3'>
+          <label htmlFor='password' className='form-label'>
             Password
           </label>
           <input
-            type="password"
+            type='password'
             className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-            id="password"
-            name="password"
+            id='password'
+            name='password'
             value={formData.password}
             onChange={handleChange}
-            placeholder="Password"
+            placeholder='Password'
           />
-          {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+          {errors.password && (
+            <div className='invalid-feedback'>{errors.password}</div>
+          )}
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="repeatPassword" className="form-label">
+        <div className='mb-3'>
+          <label htmlFor='repeatPassword' className='form-label'>
             Repeat Password
           </label>
           <input
-            type="password"
-            className={`form-control ${errors.repeatPassword ? 'is-invalid' : ''}`}
-            id="repeatPassword"
-            name="repeatPassword"
+            type='password'
+            className={`form-control ${
+              errors.repeatPassword ? 'is-invalid' : ''
+            }`}
+            id='repeatPassword'
+            name='repeatPassword'
             value={formData.repeatPassword}
             onChange={handleChange}
-            placeholder="Repeat Password"
+            placeholder='Repeat Password'
           />
-          {errors.repeatPassword && <div className="invalid-feedback">{errors.repeatPassword}</div>}
+          {errors.repeatPassword && (
+            <div className='invalid-feedback'>{errors.repeatPassword}</div>
+          )}
         </div>
 
         <ReCAPTCHA
-          sitekey="6LfhQhcqAAAAAHPx5jGmeyWyQLJIwLZwmbIk9iHp"
+          sitekey='6LfhQhcqAAAAAHPx5jGmeyWyQLJIwLZwmbIk9iHp'
           onChange={handleRecaptcha}
         />
 
-        <button type="submit" className="btn btn-primary mt-3">
+        <button type='submit' className='btn btn-primary mt-3'>
           Register
         </button>
       </form>
@@ -238,7 +248,6 @@ const RegisterCenter = () => {
 };
 
 export default RegisterCenter;
-
 
 // import React, { useState } from 'react';
 // import axios from 'axios';
@@ -277,7 +286,7 @@ export default RegisterCenter;
 
 //     try {
 //       const res = await axios.post(
-//         'http://localhost:5000/api/centers/register',
+//         'http://18.171.180.225/api/centers/register',
 //         {
 //           ...formData,
 //           recaptchaToken,

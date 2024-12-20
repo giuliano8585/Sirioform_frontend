@@ -25,7 +25,7 @@ function ListaRefreshCourse() {
     const fetchCorso = async () => {
       try {
         const res = await axios.get(
-          'http://localhost:5000/api/corsi/user-courses',
+          'http://18.171.180.225/api/corsi/user-courses',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -43,7 +43,7 @@ function ListaRefreshCourse() {
     const fetchSelectedCorsoData = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/corsi/user-course/${selectedCourse}`,
+          `http://18.171.180.225/api/corsi/user-course/${selectedCourse}`,
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -61,7 +61,7 @@ function ListaRefreshCourse() {
     setSelectedCourse(courseId);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/corsi/user-course/${courseId}`,
+        `http://18.171.180.225/api/corsi/user-course/${courseId}`,
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }
@@ -76,7 +76,7 @@ function ListaRefreshCourse() {
   const handleAllDiscente = async (courseId) => {
     setSelectedCourse(courseId);
     try {
-      const res = await axios.get('http://localhost:5000/api/discenti/', {
+      const res = await axios.get('http://18.171.180.225/api/discenti/', {
         headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
       });
       setAllDiscente(res.data);
@@ -120,12 +120,17 @@ function ListaRefreshCourse() {
         </thead>
         <tbody>
           {corso?.filter(
-            (item) => item?.status == 'active' && item?.isRefreshCourse == true && item?.isForInstructor ==true
+            (item) =>
+              item?.status == 'active' &&
+              item?.isRefreshCourse == true &&
+              item?.isForInstructor == true
           )?.length > 0 ? (
             corso
               .filter(
                 (item) =>
-                  item?.status == 'active' && item?.isRefreshCourse == true && item?.isForInstructor ==true
+                  item?.status == 'active' &&
+                  item?.isRefreshCourse == true &&
+                  item?.isForInstructor == true
               )
               .map((corsoItem) => (
                 <tr key={corsoItem._id}>
@@ -364,7 +369,7 @@ const DiscenteModal = ({
       if (result.isConfirmed) {
         axios
           .patch(
-            'http://localhost:5000/api/corsi/assign-discente',
+            'http://18.171.180.225/api/corsi/assign-discente',
             {
               courseId: selectedCourse,
               discenteId: discenteId,
@@ -417,28 +422,32 @@ const DiscenteModal = ({
                 </thead>
                 <tbody>
                   {alldiscente?.length > 0 ? (
-                    alldiscente ?.filter(
-                      (item) =>
-                        !selectedCorsoData?.discente?.some(
-                          (descente) => descente._id === item._id
-                        )
-                    )?.map((discente, index) => (
-                      <tr key={index}>
-                        <td>{discente.nome}</td>
-                        <td>{discente.cognome}</td>
-                        <td>{discente.email}</td>
-                        <td>{discente.indirizzo}</td>
-                        <td>
-                          <button
-                            type='button'
-                            className='btn btn-primary'
-                            onClick={() => handleAssignDiscente(discente?._id)}
-                          >
-                            Assign Discente
-                          </button>
-                        </td>
-                      </tr>
-                    ))
+                    alldiscente
+                      ?.filter(
+                        (item) =>
+                          !selectedCorsoData?.discente?.some(
+                            (descente) => descente._id === item._id
+                          )
+                      )
+                      ?.map((discente, index) => (
+                        <tr key={index}>
+                          <td>{discente.nome}</td>
+                          <td>{discente.cognome}</td>
+                          <td>{discente.email}</td>
+                          <td>{discente.indirizzo}</td>
+                          <td>
+                            <button
+                              type='button'
+                              className='btn btn-primary'
+                              onClick={() =>
+                                handleAssignDiscente(discente?._id)
+                              }
+                            >
+                              Assign Discente
+                            </button>
+                          </td>
+                        </tr>
+                      ))
                   ) : (
                     <tr>
                       <td colSpan='5'>No Direttore Corso found</td>
@@ -460,7 +469,6 @@ const CourseDiscenteModal = ({
   setRender,
   render,
 }) => {
-
   const handleremoveDiscente = (discenteId) => {
     if (!discenteId) return;
     Swal.fire({
@@ -472,7 +480,7 @@ const CourseDiscenteModal = ({
       if (result.isConfirmed) {
         axios
           .patch(
-            'http://localhost:5000/api/corsi/remove-discente',
+            'http://18.171.180.225/api/corsi/remove-discente',
             {
               courseId: selectedCourse,
               discenteId: discenteId,

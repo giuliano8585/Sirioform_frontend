@@ -8,28 +8,28 @@ const CenterDashboard = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-   useEffect(() => {
-     const fetchData = async () => {
-       try {
-         const token = localStorage.getItem('token');
-         const res = await axios.get(
-           'http://localhost:5000/api/auth/centers/me',
-           {
-             headers: {
-               'x-auth-token': token,
-             },
-           }
-         );
-         setData(res.data);
-         setLoading(false);
-       } catch (err) {
-         setError(err.response.data.error || 'An error occurred');
-         setLoading(false);
-       }
-     };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(
+          'http://18.171.180.225/api/auth/centers/me',
+          {
+            headers: {
+              'x-auth-token': token,
+            },
+          }
+        );
+        setData(res.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.response.data.error || 'An error occurred');
+        setLoading(false);
+      }
+    };
 
-     fetchData();
-   }, []);
+    fetchData();
+  }, []);
 
   const goToViewKits = () => {
     navigate('/view-kits');
@@ -46,13 +46,13 @@ const CenterDashboard = () => {
     navigate('/center/view-instructors', { state: { ceneterId: data?._id } });
   };
 
-   if (loading) {
-     return <div>Loading...</div>;
-   }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-   if (error) {
-     return <div>{error}</div>;
-   }
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className='container-fluid'>
@@ -65,7 +65,11 @@ const CenterDashboard = () => {
                 <button
                   className='btn btn-primary w-100'
                   // onClick={() => alert(JSON.stringify(data, null, 2))}
-                  onClick={()=>navigate('/center/view-profile',{state:{isCenter:true}})}
+                  onClick={() =>
+                    navigate('/center/view-profile', {
+                      state: { isCenter: true },
+                    })
+                  }
                 >
                   Anagrafica
                 </button>
@@ -168,13 +172,13 @@ const CenterDashboard = () => {
                   Lista Corso
                 </button>
               </li>
-              
+
               <li className='nav-item mb-2'>
                 <button
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/unactive-corso')}
                 >
-                 Unactive Lista Corso
+                  Unactive Lista Corso
                 </button>
               </li>
               <li className='nav-item mb-2'>
@@ -190,7 +194,7 @@ const CenterDashboard = () => {
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/unactive-refresh-corso')}
                 >
-                 Unactive Lista Refresh Corso
+                  Unactive Lista Refresh Corso
                 </button>
               </li>
               <li className='nav-item mb-2'>
@@ -198,7 +202,7 @@ const CenterDashboard = () => {
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/finish-corso')}
                 >
-                 Finish Course
+                  Finish Course
                 </button>
               </li>
               <li className='nav-item mb-2'>
@@ -206,7 +210,7 @@ const CenterDashboard = () => {
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/complete-corso')}
                 >
-                 complete Course
+                  complete Course
                 </button>
               </li>
             </ul>

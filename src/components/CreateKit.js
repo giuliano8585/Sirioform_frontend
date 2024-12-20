@@ -6,8 +6,8 @@ const CreateKit = () => {
   const [kitData, setKitData] = useState({
     code: '',
     type: '',
-    isRefreshKit:false,
-    isForInstructor:false,
+    isRefreshKit: false,
+    isForInstructor: false,
     description: '',
     cost1: '',
     cost2: '',
@@ -48,7 +48,7 @@ const CreateKit = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/kits/create', formData, {
+      await axios.post('http://18.171.180.225/api/kits/create', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'x-auth-token': localStorage.getItem('token'),
@@ -73,7 +73,7 @@ const CreateKit = () => {
     <div className='container mt-5'>
       <h1 className='mb-4'>Crea Kit</h1>
       <form encType='multipart/form-data'>
-      <div className='form-group mb-3 d-flex gap-4 align-items-center'>
+        <div className='form-group mb-3 d-flex gap-4 align-items-center'>
           <label>Is Refresh Kit?</label>
           <div>
             <input

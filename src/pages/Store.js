@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 
 function Store() {
   const token = localStorage.getItem('token');
-    const decodedToken = jwtDecode(token);
+  const decodedToken = jwtDecode(token);
   const [prodotti, setProdotti] = useState([]);
   const navigate = useNavigate();
 
@@ -13,9 +13,12 @@ function Store() {
     // Recupera i prodotti acquistati dall'utente per popolare lo store
     const fetchProdottiAcquistati = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/orders/acquistati', {
-          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-        });
+        const res = await axios.get(
+          'http://18.171.180.225/api/orders/acquistati',
+          {
+            headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+          }
+        );
         setProdotti(res.data);
       } catch (err) {
         console.error(err);
@@ -25,17 +28,17 @@ function Store() {
     fetchProdottiAcquistati();
   }, []);
 
-  const handleViewDetails = (productId,data) => {
-    navigate(`/store/${productId}`,{state:{data:data}});
+  const handleViewDetails = (productId, data) => {
+    navigate(`/store/${productId}`, { state: { data: data } });
   };
 
   return (
-    <div className="container mt-4">
+    <div className='container mt-4'>
       <h2>Il mio Store</h2>
       {prodotti.length === 0 ? (
         <p>Non hai ancora acquistato alcun kit.</p>
       ) : (
-        <table className="table">
+        <table className='table'>
           <thead>
             <tr>
               <th>Prodotto</th>
@@ -51,11 +54,13 @@ function Store() {
                 <td>{prodotto.title}</td>
                 <td>{prodotto.totalQuantity}</td>
                 <td>{prodotto.quantity}</td>
-                <td>{Number(prodotto.totalQuantity) - Number(prodotto.quantity)}</td>
+                <td>
+                  {Number(prodotto.totalQuantity) - Number(prodotto.quantity)}
+                </td>
                 <td>
                   <button
-                    className="btn btn-info"
-                    onClick={() => handleViewDetails(prodotto._id,prodotto)}
+                    className='btn btn-info'
+                    onClick={() => handleViewDetails(prodotto._id, prodotto)}
                   >
                     Dettagli
                   </button>
@@ -66,8 +71,16 @@ function Store() {
         </table>
       )}
       <button
-        className="btn btn-secondary mt-3"
-        onClick={() => navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard')}
+        className='btn btn-secondary mt-3'
+        onClick={() =>
+          navigate(
+            decodedToken.user.role == 'admin'
+              ? '/admin-dashboard'
+              : decodedToken.user.role == 'center'
+              ? '/center-dashboard'
+              : '/instructor-dashboard'
+          )
+        }
       >
         Torna alla Dashboard
       </button>

@@ -67,7 +67,7 @@ const CenterList = () => {
   useEffect(() => {
     const fetchCenters = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/centers');
+        const res = await axios.get('http://18.171.180.225/api/centers');
         setCenters(res.data);
         setFilteredCenters(res.data);
       } catch (err) {
@@ -81,7 +81,7 @@ const CenterList = () => {
     const fetchCenters = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/centers/${selectedCenter}`
+          `http://18.171.180.225/api/centers/${selectedCenter}`
         );
         setSelectedCenterData(res.data);
       } catch (err) {
@@ -96,7 +96,7 @@ const CenterList = () => {
   const handleAssignSanitario = async (centerId) => {
     setSelectedCenter(centerId);
     try {
-      const res = await axios.get('http://localhost:5000/api/sanitarios');
+      const res = await axios.get('http://18.171.180.225/api/sanitarios');
       setAllSanitarios(res.data);
       setShowSanitarioModal(true);
     } catch (err) {
@@ -115,7 +115,7 @@ const CenterList = () => {
       if (result.isConfirmed) {
         axios
           .post(
-            'http://localhost:5000/api/centers/assign-sanitario',
+            'http://18.171.180.225/api/centers/assign-sanitario',
             {
               centerId: selectedCenter,
               sanitarioId: sanitarioId,
@@ -146,7 +146,7 @@ const CenterList = () => {
     setSelectedCenter(centerId);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/centers/${centerId}/sanitarios`
+        `http://18.171.180.225/api/centers/${centerId}/sanitarios`
       );
       setSanitarios(res.data);
       setShowAssignedSanitariosModal(true);
@@ -164,7 +164,7 @@ const CenterList = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:5000/api/centers/${centerId}`, {
+          .delete(`http://18.171.180.225/api/centers/${centerId}`, {
             headers: {
               'x-auth-token': localStorage.getItem('token'),
             },
@@ -195,7 +195,7 @@ const CenterList = () => {
       if (result.isConfirmed) {
         axios
           .post(
-            'http://localhost:5000/api/centers/remove-sanitario',
+            'http://18.171.180.225/api/centers/remove-sanitario',
             {
               centerId: selectedCenter,
               sanitarioId,
@@ -223,7 +223,7 @@ const CenterList = () => {
   const handleAssignInstructor = async (centerId) => {
     setSelectedCenter(centerId);
     try {
-      const res = await axios.get('http://localhost:5000/api/instructors');
+      const res = await axios.get('http://18.171.180.225/api/instructors');
       setAllInstructors(res.data);
       setShowInstructorModal(true);
     } catch (err) {
@@ -241,7 +241,7 @@ const CenterList = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post('http://localhost:5000/api/centers/assign-instructor', {
+          .post('http://18.171.180.225/api/centers/assign-instructor', {
             centerId: selectedCenter,
             instructorId: instructorId,
           })
@@ -265,7 +265,7 @@ const CenterList = () => {
     setSelectedCenter(centerId);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/centers/${centerId}/instructors`
+        `http://18.171.180.225/api/centers/${centerId}/instructors`
       );
       setInstructors(res.data);
       setShowAssignedInstructorsModal(true);
@@ -284,7 +284,7 @@ const CenterList = () => {
       if (result.isConfirmed) {
         axios
           .post(
-            'http://localhost:5000/api/centers/remove-instructor',
+            'http://18.171.180.225/api/centers/remove-instructor',
             {
               centerId: selectedCenter,
               instructorId,

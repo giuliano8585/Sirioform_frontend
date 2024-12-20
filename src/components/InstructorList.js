@@ -50,7 +50,7 @@ const InstructorList = () => {
   useEffect(() => {
     const fetchInstructors = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/instructors');
+        const res = await axios.get('http://18.171.180.225/api/instructors');
         setInstructors(res.data);
         setFilteredInstructors(res?.data);
       } catch (err) {
@@ -65,7 +65,7 @@ const InstructorList = () => {
     const fetchCenters = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/instructors/${selectedInstructor}`
+          `http://18.171.180.225/api/instructors/${selectedInstructor}`
         );
         setSelectedInstructorData(res.data);
       } catch (err) {
@@ -80,7 +80,7 @@ const InstructorList = () => {
   const handleAssignSanitario = async (instructorId) => {
     setSelectedInstructor(instructorId);
     try {
-      const res = await axios.get('http://localhost:5000/api/sanitarios');
+      const res = await axios.get('http://18.171.180.225/api/sanitarios');
       setAllSanitarios(res.data);
       setAssigningSanitarios(true);
     } catch (err) {
@@ -98,7 +98,7 @@ const InstructorList = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post('http://localhost:5000/api/instructors/assign-sanitario', {
+          .post('http://18.171.180.225/api/instructors/assign-sanitario', {
             instructorId: selectedInstructor,
             sanitarioId: sanitarioId,
           })
@@ -122,7 +122,7 @@ const InstructorList = () => {
     setSelectedInstructor(instructorId);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/instructors/${instructorId}/sanitarios`
+        `http://18.171.180.225/api/instructors/${instructorId}/sanitarios`
       );
       setSanitarios(res.data);
       setViewingSanitarios(true); // Stato per visualizzare i sanitari associati
@@ -140,7 +140,7 @@ const InstructorList = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post('http://localhost:5000/api/instructors/remove-sanitario', {
+          .post('http://18.171.180.225/api/instructors/remove-sanitario', {
             instructorId: selectedInstructor,
             sanitarioId,
           })
@@ -169,7 +169,7 @@ const InstructorList = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:5000/api/instructors/${id}`, {
+          .delete(`http://18.171.180.225/api/instructors/${id}`, {
             headers: {
               'x-auth-token': localStorage.getItem('token'),
             },

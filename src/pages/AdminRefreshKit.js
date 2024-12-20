@@ -23,7 +23,7 @@ function AdminRefreshKit() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/kits', {
+        const res = await axios.get('http://18.171.180.225/api/kits', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setProducts(res.data);
@@ -133,7 +133,7 @@ function AdminRefreshKit() {
 
     try {
       const res = await axios.patch(
-        `http://localhost:5000/api/kits/${selectedProduct._id}`,
+        `http://18.171.180.225/api/kits/${selectedProduct._id}`,
         formData,
         {
           headers: {
@@ -161,7 +161,7 @@ function AdminRefreshKit() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/kits/${selectedProduct._id}`,
+        `http://18.171.180.225/api/kits/${selectedProduct._id}`,
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }
@@ -192,7 +192,7 @@ function AdminRefreshKit() {
                 <div className='card h-100'>
                   <div className='card-body d-flex flex-column'>
                     <img
-                      src={`http://localhost:5000/${product?.profileImage}`}
+                      src={`http://18.171.180.225/${product?.profileImage}`}
                       alt={product.type}
                       className='img-fluid mb-3'
                     />

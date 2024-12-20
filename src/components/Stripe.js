@@ -7,20 +7,20 @@ const stripePromise = loadStripe(
   'pk_test_51Pv1mPP9Idf6ukG6NA9Rg7vu859L39i6ndnarIV33AI21xAyu2rkARBjBCkzbMuBN3h8F7gzf02muEJIvMN5JY7G00pyGjmQLX'
 );
 
-export default function Strip({ productId, quantity,fromCart }) {
+export default function Strip({ productId, quantity, fromCart }) {
   console.log('quantity strip: ', quantity);
   const [clientSecret, setClientSecret] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/payment/checkout', {
+    fetch('http://18.171.180.225/api/payment/checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-auth-token': `${localStorage.getItem('token')}`,
       },
       body: JSON.stringify({
-        productIds: Array.isArray(productId)?productId:[productId],
-        quantities: Array.isArray(quantity)?quantity:[quantity],
+        productIds: Array.isArray(productId) ? productId : [productId],
+        quantities: Array.isArray(quantity) ? quantity : [quantity],
       }),
     })
       .then((res) => res.json())
@@ -39,12 +39,16 @@ export default function Strip({ productId, quantity,fromCart }) {
   return (
     clientSecret && (
       <Elements stripe={stripePromise} options={options}>
-        <CheckoutForm productId={productId} quantity={quantity} onOrderSuccess={handleOrderSuccess} fromCart={fromCart}/>
+        <CheckoutForm
+          productId={productId}
+          quantity={quantity}
+          onOrderSuccess={handleOrderSuccess}
+          fromCart={fromCart}
+        />
       </Elements>
     )
   );
 }
-
 
 // import {Elements} from '@stripe/react-stripe-js';
 // import {loadStripe} from '@stripe/stripe-js';

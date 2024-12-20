@@ -11,7 +11,7 @@ function ListaDiscentiPage() {
   useEffect(() => {
     const fetchDiscenti = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/discenti', {
+        const res = await axios.get('http://18.171.180.225/api/discenti', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setDiscenti(res.data);
@@ -59,7 +59,7 @@ function ListaDiscentiPage() {
                 <td>{discente?.email}</td>
                 <td>{discente?.telefono}</td>
                 <td>
-                {discente?.patentNumber !== null ||
+                  {discente?.patentNumber !== null ||
                   discente?.patentNumber !== ''
                     ? discente?.patentNumber[0]
                     : discente?.patentNumber[1]}
@@ -88,7 +88,10 @@ function ListaDiscentiPage() {
       <button className='btn btn-secondary mt-4' onClick={() => navigate(-1)}>
         Torna alla Dashboard
       </button>
-      <button className='btn btn-primary mt-4 mx-2' onClick={() => navigate('/create-discente')}>
+      <button
+        className='btn btn-primary mt-4 mx-2'
+        onClick={() => navigate('/create-discente')}
+      >
         create Discente
       </button>
       {completeCourseModal && (
@@ -110,7 +113,7 @@ const CompleteCourseModal = ({ discenteId, handleCompleteCourses }) => {
     const handleCompleteCourse = async (courseId) => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/corsi/discente-courses/${discenteId}`,
+          `http://18.171.180.225/api/corsi/discente-courses/${discenteId}`,
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }

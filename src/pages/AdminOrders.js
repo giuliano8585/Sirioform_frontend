@@ -14,7 +14,7 @@ function AdminOrders() {
   const [showModal, setShowModal] = useState(false);
   const [kits, setKits] = useState([]);
 
-    const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState({
     startDate: '',
     endDate: '',
   });
@@ -33,7 +33,7 @@ function AdminOrders() {
     const fetchOrders = async () => {
       try {
         const res = await axios.get(
-          'http://localhost:5000/api/orders/admin/orders',
+          'http://18.171.180.225/api/orders/admin/orders',
           {
             headers: { 'x-auth-token': `${token}` },
           }
@@ -52,7 +52,9 @@ function AdminOrders() {
   useEffect(() => {
     const fetchKits = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/kits',{headers:{'x-auth-token': `${token}`}});
+        const res = await axios.get('http://18.171.180.225/api/kits', {
+          headers: { 'x-auth-token': `${token}` },
+        });
         setKits(res.data);
       } catch (err) {
         console.error(err);
@@ -105,7 +107,9 @@ function AdminOrders() {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     const filtered = orders.filter((order) => {
-      const fullName = `${order.userId?.firstName || ''} ${order.userId?.lastName || ''}`.toLowerCase();
+      const fullName = `${order.userId?.firstName || ''} ${
+        order.userId?.lastName || ''
+      }`.toLowerCase();
       const centerName = order.userId?.name?.toLowerCase() || '';
       const searchValue = e.target.value.toLowerCase();
 
@@ -124,15 +128,12 @@ function AdminOrders() {
     if (filters.startDate) {
       filtered = filtered.filter(
         (c) =>
-          new Date(c?.createdAt?.split('T')[0]) >=
-          new Date(filters.startDate)
+          new Date(c?.createdAt?.split('T')[0]) >= new Date(filters.startDate)
       );
     }
     if (filters.endDate) {
       filtered = filtered.filter(
-        (c) =>
-          new Date(c.createdAt?.split('T')[0]) <=
-          new Date(filters.endDate)
+        (c) => new Date(c.createdAt?.split('T')[0]) <= new Date(filters.endDate)
       );
     }
     setFilteredOrders(filtered);
@@ -152,21 +153,21 @@ function AdminOrders() {
         </Link>
         <div className='filters'>
           <div className='d-flex'>
-          <input
-            type='date'
-            name='startDate'
-            value={filters.startDate}
-            onChange={handleFilterChange}
-            placeholder='Start Date'
-          />
-          <input
-            type='date'
-            name='endDate'
-            value={filters.endDate}
-            onChange={handleFilterChange}
-            placeholder='End Date'
-          />
-          <input
+            <input
+              type='date'
+              name='startDate'
+              value={filters.startDate}
+              onChange={handleFilterChange}
+              placeholder='Start Date'
+            />
+            <input
+              type='date'
+              name='endDate'
+              value={filters.endDate}
+              onChange={handleFilterChange}
+              placeholder='End Date'
+            />
+            <input
               type='text'
               className='form-control me-2'
               placeholder='Search by User Name'

@@ -8,19 +8,21 @@ const CenterSanitarios = () => {
   const decodedToken = jwtDecode(token);
   const [sanitarios, setSanitarios] = useState([]);
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
   console.log('location: ', location);
-
 
   useEffect(() => {
     const fetchSanitarios = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get(`http://localhost:5000/api/centers/${location?.state?.ceneterId}/sanitarios`, {
-          headers: {
-            'x-auth-token': token
+        const res = await axios.get(
+          `http://18.171.180.225/api/centers/${location?.state?.ceneterId}/sanitarios`,
+          {
+            headers: {
+              'x-auth-token': token,
+            },
           }
-        });
+        );
         setSanitarios(res.data);
       } catch (err) {
         console.error('Errore nel recupero dei sanitari associati', err);
@@ -31,12 +33,18 @@ const CenterSanitarios = () => {
   }, []);
 
   const goBack = () => {
-    navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard');
+    navigate(
+      decodedToken.user.role == 'admin'
+        ? '/admin-dashboard'
+        : decodedToken.user.role == 'center'
+        ? '/center-dashboard'
+        : '/instructor-dashboard'
+    );
   };
 
   return (
-    <div className="container mt-4">
-      <h1 className="mb-4">Sanitari Associati</h1>
+    <div className='container mt-4'>
+      <h1 className='mb-4'>Sanitari Associati</h1>
       {/* <ul className="list-group">
         {sanitarios.map(sanitario => (
           <li key={sanitario._id} className="list-group-item">
@@ -51,9 +59,9 @@ const CenterSanitarios = () => {
           </li>
         ))}
       </ul> */}
-              <div className="table-responsive">
-        <table className="table table-striped table-bordered">
-          <thead className="thead-dark">
+      <div className='table-responsive'>
+        <table className='table table-striped table-bordered'>
+          <thead className='thead-dark'>
             <tr>
               {/* <th>Numero Brevetto</th> */}
               <th>Nome</th>
@@ -82,7 +90,9 @@ const CenterSanitarios = () => {
           </tbody>
         </table>
       </div>
-      <button className="btn btn-secondary mt-4" onClick={goBack}>Indietro</button>
+      <button className='btn btn-secondary mt-4' onClick={goBack}>
+        Indietro
+      </button>
     </div>
   );
 };

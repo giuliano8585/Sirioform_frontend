@@ -31,28 +31,28 @@ const RegisterInstructor = () => {
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{12,}$/;
 
-    const regionOptions = [
-      'ABRUZZO',
-      'BASILICATA',
-      'CALABRIA',
-      'CAMPANIA',
-      'EMILIA-ROMAGNA',
-      'FRIULI-VENEZIA GIULIA',
-      'LAZIO',
-      'LIGURIA',
-      'LOMBARDIA',
-      'MARCHE',
-      'MOLISE',
-      'PIEMONTE',
-      'PUGLIA',
-      'SARDEGNA',
-      'SICILIA',
-      'TOSCANA',
-      'TRENTINO-ALTO ADIGE',
-      'UMBRIA',
-      'VALLE D\'AOSTA',
-      'VENETO',
-    ];
+  const regionOptions = [
+    'ABRUZZO',
+    'BASILICATA',
+    'CALABRIA',
+    'CAMPANIA',
+    'EMILIA-ROMAGNA',
+    'FRIULI-VENEZIA GIULIA',
+    'LAZIO',
+    'LIGURIA',
+    'LOMBARDIA',
+    'MARCHE',
+    'MOLISE',
+    'PIEMONTE',
+    'PUGLIA',
+    'SARDEGNA',
+    'SICILIA',
+    'TOSCANA',
+    'TRENTINO-ALTO ADIGE',
+    'UMBRIA',
+    "VALLE D'AOSTA",
+    'VENETO',
+  ];
 
   const validateForm = () => {
     const newErrors = {};
@@ -102,7 +102,7 @@ const RegisterInstructor = () => {
   };
   const qualificationOptions = ['BLSK', 'BLS', 'BLSD'];
 
-    const handleQualificationChange = (index, e) => {
+  const handleQualificationChange = (index, e) => {
     const newQualifications = [...formData.qualifications];
     newQualifications[index][e.target.name] = e.target.value;
     setFormData({ ...formData, qualifications: newQualifications });
@@ -119,7 +119,7 @@ const RegisterInstructor = () => {
     setFormData({ ...formData, qualifications: updatedQualifications });
   };
 
-    const addQualification = () => {
+  const addQualification = () => {
     setFormData({
       ...formData,
       qualifications: [
@@ -129,7 +129,7 @@ const RegisterInstructor = () => {
     });
   };
 
-  const selectedQualifications = formData.qualifications.map(q => q.name);
+  const selectedQualifications = formData.qualifications.map((q) => q.name);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -142,7 +142,7 @@ const RegisterInstructor = () => {
 
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/instructors/register',
+        'http://18.171.180.225/api/instructors/register',
         {
           ...formData,
           recaptchaToken,
@@ -221,28 +221,28 @@ const RegisterInstructor = () => {
                   <select
                     id={key}
                     name={key}
-                    className="form-select"
+                    className='form-select'
                     value={value}
                     onChange={(e) => handleChange(e)}
                   >
-                    <option value="">Select Region</option>
+                    <option value=''>Select Region</option>
                     {regionOptions.map((region) => (
                       <option key={region} value={region}>
                         {region}
                       </option>
                     ))}
                   </select>
-                ) :(
+                ) : (
                   <input
-                  type={key === 'email' ? 'email' : 'text'}
-                  className='form-control'
-                  id={key}
-                  name={key}
-                  value={value}
-                  onChange={handleChange}
-                  placeholder={key}
-                />
-              )}
+                    type={key === 'email' ? 'email' : 'text'}
+                    className='form-control'
+                    id={key}
+                    name={key}
+                    value={value}
+                    onChange={handleChange}
+                    placeholder={key}
+                  />
+                )}
                 {errors[key] && (
                   <div className='text-danger'>{errors[key]}</div>
                 )}
@@ -274,76 +274,76 @@ const RegisterInstructor = () => {
           {/* Qualifications */}
           <div className='col-12 mb-3'>
             <h5>Qualifications</h5>
-                      {formData.qualifications.map((qualification, index) => {
-            const availableOptions = qualificationOptions.filter(
-              (option) =>
-                !selectedQualifications.includes(option) ||
-                option === qualification.name
-            );
-            return (
-              <>
-                <div key={index} className='col-md-12 mb-3'>
-                  <div className='row'>
-                    <div className='col-md-5'>
-                      <label
-                        htmlFor={`qualification-name-${index}`}
-                        className='form-label'
-                      >
-                        Qualification
-                      </label>
-                      <select
-                        class='form-select'
-                        aria-label='Default select example'
-                        id={`qualification-name-${index}`}
-                        name='name'
-                        value={qualification.name}
-                        onChange={(e) => handleQualificationChange(index, e)}
-                        placeholder='Qualification'
-                      >
-                        <option selected>Select Qualification</option>
-                        {availableOptions.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
+            {formData.qualifications.map((qualification, index) => {
+              const availableOptions = qualificationOptions.filter(
+                (option) =>
+                  !selectedQualifications.includes(option) ||
+                  option === qualification.name
+              );
+              return (
+                <>
+                  <div key={index} className='col-md-12 mb-3'>
+                    <div className='row'>
+                      <div className='col-md-5'>
+                        <label
+                          htmlFor={`qualification-name-${index}`}
+                          className='form-label'
+                        >
+                          Qualification
+                        </label>
+                        <select
+                          class='form-select'
+                          aria-label='Default select example'
+                          id={`qualification-name-${index}`}
+                          name='name'
+                          value={qualification.name}
+                          onChange={(e) => handleQualificationChange(index, e)}
+                          placeholder='Qualification'
+                        >
+                          <option selected>Select Qualification</option>
+                          {availableOptions.map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className='col-md-5'>
+                        <label
+                          htmlFor={`expirationDate-${index}`}
+                          className='form-label'
+                        >
+                          Expiration Date
+                        </label>
+                        <input
+                          type='date'
+                          className='form-control'
+                          id={`expirationDate-${index}`}
+                          name='expirationDate'
+                          value={qualification.expirationDate}
+                          onChange={(e) => handleQualificationChange(index, e)}
+                          required
+                        />
+                      </div>
+                      <div className='col-md-2 d-flex align-items-end'>
+                        <button
+                          type='button'
+                          className='btn btn-danger'
+                          onClick={() => handleRemoveQualification(index)}
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
-                    <div className='col-md-5'>
-                      <label
-                        htmlFor={`expirationDate-${index}`}
-                        className='form-label'
-                      >
-                        Expiration Date
-                      </label>
-                      <input
-                        type='date'
-                        className='form-control'
-                        id={`expirationDate-${index}`}
-                        name='expirationDate'
-                        value={qualification.expirationDate}
-                        onChange={(e) => handleQualificationChange(index, e)}
-                        required
-                      />
-                    </div>
-                    <div className='col-md-2 d-flex align-items-end'>
-                      <button
-                        type='button'
-                        className='btn btn-danger'
-                        onClick={() => handleRemoveQualification(index)}
-                      >
-                        Remove
-                      </button>
-                    </div>
+                    {errors[`qualifications-${index}`] && (
+                      <div className='text-danger'>
+                        {errors[`qualifications-${index}`]}
+                      </div>
+                    )}
                   </div>
-                  {errors[`qualifications-${index}`] && (
-                  <div className='text-danger'>
-                    {errors[`qualifications-${index}`]}
-                  </div>
-                )}
-                </div>
-              </>
-            );
-          })}
+                </>
+              );
+            })}
             <button
               type='button'
               className='btn btn-secondary'
@@ -453,7 +453,7 @@ export default RegisterInstructor;
 
 //     try {
 //       const res = await axios.post(
-//         'http://localhost:5000/api/instructors/register',
+//         'http://18.171.180.225/api/instructors/register',
 //         {
 //           ...formData,
 //           recaptchaToken,

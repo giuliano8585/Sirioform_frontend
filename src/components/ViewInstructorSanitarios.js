@@ -13,11 +13,14 @@ const ViewInstructorSanitarios = () => {
       try {
         const token = localStorage.getItem('token');
         console.log('Using token:', token); // Log del token
-        const res = await axios.get('http://localhost:5000/api/instructors/me/sanitarios', {
-          headers: {
-            'x-auth-token': token
+        const res = await axios.get(
+          'http://18.171.180.225/api/instructors/me/sanitarios',
+          {
+            headers: {
+              'x-auth-token': token,
+            },
           }
-        });
+        );
         setSanitarios(res.data);
         setLoading(false);
       } catch (err) {
@@ -39,20 +42,23 @@ const ViewInstructorSanitarios = () => {
   }
 
   return (
-    <div className="container mt-4">
-      <h1 className="mb-4">Lista Sanitari Associati</h1>
-      <ul className="list-group">
+    <div className='container mt-4'>
+      <h1 className='mb-4'>Lista Sanitari Associati</h1>
+      <ul className='list-group'>
         {sanitarios.map((sanitario) => (
-          <li key={sanitario._id} className="list-group-item">
+          <li key={sanitario._id} className='list-group-item'>
             {sanitario.firstName} {sanitario.lastName}
           </li>
         ))}
       </ul>
-      <button className="btn btn-secondary mt-4" onClick={() => navigate('/instructor-dashboard')}>Indietro</button>
+      <button
+        className='btn btn-secondary mt-4'
+        onClick={() => navigate('/instructor-dashboard')}
+      >
+        Indietro
+      </button>
     </div>
   );
 };
 
 export default ViewInstructorSanitarios;
-
-

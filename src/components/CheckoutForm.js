@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
-const CheckoutForm = ({ productId, quantity, onOrderSuccess,fromCart }) => {
+const CheckoutForm = ({ productId, quantity, onOrderSuccess, fromCart }) => {
   const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
@@ -40,7 +40,7 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess,fromCart }) => {
       result.paymentIntent.status === 'succeeded'
     ) {
       setMessage('Payment successful!');
-      handlePurchase(productId, quantity,fromCart);
+      handlePurchase(productId, quantity, fromCart);
     } else {
       setMessage(`Payment status: ${result.paymentIntent.status}`);
     }
@@ -48,15 +48,15 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess,fromCart }) => {
     setIsProcessing(false);
   };
 
-  const handlePurchase = async (productId, quantity,fromCart) => {
+  const handlePurchase = async (productId, quantity, fromCart) => {
     const token = localStorage.getItem('token');
     const decodedToken = jwtDecode(token);
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/orders',
+        'http://18.171.180.225/api/orders',
         {
-          productIds: Array.isArray(productId)?productId:[productId],
-          quantities: Array.isArray(quantity)?quantity:[quantity],
+          productIds: Array.isArray(productId) ? productId : [productId],
+          quantities: Array.isArray(quantity) ? quantity : [quantity],
           fromCart,
         },
         {
@@ -72,7 +72,7 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess,fromCart }) => {
           ? '/center-dashboard'
           : '/instructor-dashboard'
       );
-      setShowApproveConfirmModal(false)
+      setShowApproveConfirmModal(false);
     } catch (err) {
       console.log('err: ', err);
       alert('Error placing the order');
@@ -80,13 +80,13 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess,fromCart }) => {
   };
 
   return (
-    <form >
+    <form>
       <PaymentElement />
       <button
         disabled={!stripe || isProcessing}
         className='btn btn-primary w-100 my-2'
         type='button'
-        onClick={()=>setShowApproveConfirmModal(true)}
+        onClick={() => setShowApproveConfirmModal(true)}
       >
         {isProcessing ? 'Processing...' : 'Submit Payment'}
       </button>
@@ -107,9 +107,7 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess,fromCart }) => {
               </div>
               <div className='modal-body'>
                 <div className='table-responsive'>
-                  <p className='text-center'>
-                    are you sure want to Buy
-                  </p>
+                  <p className='text-center'>are you sure want to Buy</p>
                   <div className='d-flex align-items-center justify-content-center gap-4'>
                     <button
                       onClick={() => setShowApproveConfirmModal(false)}

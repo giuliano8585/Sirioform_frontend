@@ -9,7 +9,7 @@ const ViewKits = () => {
   useEffect(() => {
     const fetchKits = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/kits/all');
+        const res = await axios.get('http://18.171.180.225/api/kits/all');
         setKits(res.data);
       } catch (err) {
         console.error(err);
@@ -30,7 +30,8 @@ const ViewKits = () => {
       <ul>
         {kits.map((kit) => (
           <li key={kit._id}>
-            {kit.code} - {kit.type} - {kit.description} - {kit.cost1} - {kit.cost2} - {kit.cost3}
+            {kit.code} - {kit.type} - {kit.description} - {kit.cost1} -{' '}
+            {kit.cost2} - {kit.cost3}
           </li>
         ))}
       </ul>
