@@ -28,7 +28,7 @@ const UpdateInstructor = () => {
     const fetchInstructor = async () => {
       try {
         const res = await axios.get(
-          `http://18.171.180.225/api/instructors/${instructorId}`
+          `http://172.232.209.245/api/instructors/${instructorId}`
         );
         setFormData(res.data);
       } catch (err) {
@@ -79,7 +79,7 @@ const UpdateInstructor = () => {
     e.preventDefault();
     try {
       const res = await axios.patch(
-        `http://18.171.180.225/api/instructors/update/${instructorId}`,
+        `http://172.232.209.245/api/instructors/update/${instructorId}`,
         formData
       );
       setMessage('Instructor updated successfully!');

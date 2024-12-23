@@ -23,7 +23,7 @@ const Login = () => {
     setLoading(true); // Imposta lo stato di caricamento
     try {
       const res = await axios.post(
-        'http://18.171.180.225/api/auth/login',
+        'http://172.232.209.245/api/auth/login',
         formData
       );
       localStorage.setItem('token', res.data.token);

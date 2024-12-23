@@ -68,7 +68,7 @@ const RegisterCenter = () => {
 
     try {
       const res = await axios.post(
-        'http://18.171.180.225/api/centers/register',
+        'http://172.232.209.245/api/centers/register',
         {
           ...formData,
           recaptchaToken,
@@ -286,7 +286,7 @@ export default RegisterCenter;
 
 //     try {
 //       const res = await axios.post(
-//         'http://18.171.180.225/api/centers/register',
+//         'http://172.232.209.245/api/centers/register',
 //         {
 //           ...formData,
 //           recaptchaToken,

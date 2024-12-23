@@ -23,7 +23,7 @@ const UpdateCenter = () => {
     const fetchCenterData = async () => {
       try {
         const res = await axios.get(
-          `http://18.171.180.225/api/centers/${centerId}`
+          `http://172.232.209.245/api/centers/${centerId}`
         );
         setFormData({
           piva: res.data.piva,
@@ -50,7 +50,7 @@ const UpdateCenter = () => {
     e.preventDefault();
     try {
       const res = await axios.patch(
-        `http://18.171.180.225/api/centers/update/${centerId}`,
+        `http://172.232.209.245/api/centers/update/${centerId}`,
         formData
       );
       console.log(res.data);

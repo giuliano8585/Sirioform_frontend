@@ -10,7 +10,7 @@ const CartPage = () => {
   useEffect(() => {
     const handleAddToCart = async () => {
       try {
-        const res = await axios.get('http://18.171.180.225/api/cart/', {
+        const res = await axios.get('http://172.232.209.245/api/cart/', {
           headers: {
             'x-auth-token': localStorage.getItem('token'),
           },
@@ -43,7 +43,7 @@ const CartPage = () => {
 
   const handleRemove = async (itemId) => {
     try {
-      await axios.delete(`http://18.171.180.225/api/cart/${itemId}`, {
+      await axios.delete(`http://172.232.209.245/api/cart/${itemId}`, {
         headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
       });
       setCartData(cartData?.filter((a) => a?._id !== itemId));
@@ -55,7 +55,7 @@ const CartPage = () => {
   const handleAddToCart = async (itemId, quantity) => {
     try {
       const res = await axios.post(
-        'http://18.171.180.225/api/cart/',
+        'http://172.232.209.245/api/cart/',
         { itemId, quantity },
         {
           headers: {

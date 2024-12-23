@@ -15,7 +15,7 @@ function StoreDetails() {
   //   // Recupera i dettagli degli ordini per il prodotto selezionato
   //   const fetchOrderDetails = async () => {
   //     try {
-  //       const res = await axios.get('http://18.171.180.225/api/orders/acquistati', {
+  //       const res = await axios.get('http://172.232.209.245/api/orders/acquistati', {
   //         headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
   //       });
   //       // Trova il prodotto con l'ID selezionato

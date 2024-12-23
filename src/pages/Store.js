@@ -14,7 +14,7 @@ function Store() {
     const fetchProdottiAcquistati = async () => {
       try {
         const res = await axios.get(
-          'http://18.171.180.225/api/orders/acquistati',
+          'http://172.232.209.245/api/orders/acquistati',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }

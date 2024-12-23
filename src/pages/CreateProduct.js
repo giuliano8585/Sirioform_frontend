@@ -15,7 +15,7 @@ function CreateProduct() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'http://18.171.180.225/api/products',
+        'http://172.232.209.245/api/products',
         product,
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },

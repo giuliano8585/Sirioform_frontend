@@ -27,7 +27,7 @@ const CreateSanitario = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'http://18.171.180.225/api/sanitarios/create',
+        'http://172.232.209.245/api/sanitarios/create',
         formData
       );
       setMessage('Sanitario creato con successo!');

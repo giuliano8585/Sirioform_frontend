@@ -9,7 +9,7 @@ const ViewKits = () => {
   useEffect(() => {
     const fetchKits = async () => {
       try {
-        const res = await axios.get('http://18.171.180.225/api/kits/all');
+        const res = await axios.get('http://172.232.209.245/api/kits/all');
         setKits(res.data);
       } catch (err) {
         console.error(err);

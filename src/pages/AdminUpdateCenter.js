@@ -24,7 +24,7 @@ const AdminUpdateCenter = () => {
     const fetchCenterData = async () => {
       try {
         const res = await axios.get(
-          `http://18.171.180.225/api/centers/${centerId}`
+          `http://172.232.209.245/api/centers/${centerId}`
         );
         setFormData(res.data); // Assuming the API returns an object with all the fields
       } catch (err) {
@@ -45,7 +45,7 @@ const AdminUpdateCenter = () => {
     e.preventDefault();
     try {
       const res = await axios.patch(
-        `http://18.171.180.225/api/centers/${centerId}`,
+        `http://172.232.209.245/api/centers/${centerId}`,
         formData
       );
       console.log(res.data);

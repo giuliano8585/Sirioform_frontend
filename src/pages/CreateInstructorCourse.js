@@ -35,7 +35,7 @@ function CreateInstructorCourse() {
       try {
         const token = localStorage.getItem('token');
         const res = await axios.get(
-          'http://18.171.180.225/api/auth/centers/me',
+          'http://172.232.209.245/api/auth/centers/me',
           {
             headers: {
               'x-auth-token': token,
@@ -58,7 +58,7 @@ function CreateInstructorCourse() {
     const fetchProdottiAcquistati = async () => {
       try {
         const res = await axios.get(
-          'http://18.171.180.225/api/orders/acquistati',
+          'http://172.232.209.245/api/orders/acquistati',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -193,7 +193,7 @@ function CreateInstructorCourse() {
       if (result.isConfirmed) {
         axios
           .post(
-            'http://18.171.180.225/api/corsi',
+            'http://172.232.209.245/api/corsi',
             {
               ...corso,
               giornate,

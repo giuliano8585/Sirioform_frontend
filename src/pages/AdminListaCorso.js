@@ -31,7 +31,7 @@ function AdminListaCorso() {
   useEffect(() => {
     const fetchCorso = async () => {
       try {
-        const res = await axios.get('http://18.171.180.225/api/corsi/', {
+        const res = await axios.get('http://172.232.209.245/api/corsi/', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setCorso(res.data);
@@ -506,7 +506,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
       if (result.isConfirmed) {
         axios
           .patch(
-            `http://18.171.180.225/api/corsi/courses/${courseId}/status`,
+            `http://172.232.209.245/api/corsi/courses/${courseId}/status`,
             {
               status: status,
             },

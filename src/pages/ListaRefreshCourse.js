@@ -25,7 +25,7 @@ function ListaRefreshCourse() {
     const fetchCorso = async () => {
       try {
         const res = await axios.get(
-          'http://18.171.180.225/api/corsi/user-courses',
+          'http://172.232.209.245/api/corsi/user-courses',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -43,7 +43,7 @@ function ListaRefreshCourse() {
     const fetchSelectedCorsoData = async () => {
       try {
         const res = await axios.get(
-          `http://18.171.180.225/api/corsi/user-course/${selectedCourse}`,
+          `http://172.232.209.245/api/corsi/user-course/${selectedCourse}`,
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -61,7 +61,7 @@ function ListaRefreshCourse() {
     setSelectedCourse(courseId);
     try {
       const res = await axios.get(
-        `http://18.171.180.225/api/corsi/user-course/${courseId}`,
+        `http://172.232.209.245/api/corsi/user-course/${courseId}`,
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }
@@ -76,7 +76,7 @@ function ListaRefreshCourse() {
   const handleAllDiscente = async (courseId) => {
     setSelectedCourse(courseId);
     try {
-      const res = await axios.get('http://18.171.180.225/api/discenti/', {
+      const res = await axios.get('http://172.232.209.245/api/discenti/', {
         headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
       });
       setAllDiscente(res.data);
@@ -369,7 +369,7 @@ const DiscenteModal = ({
       if (result.isConfirmed) {
         axios
           .patch(
-            'http://18.171.180.225/api/corsi/assign-discente',
+            'http://172.232.209.245/api/corsi/assign-discente',
             {
               courseId: selectedCourse,
               discenteId: discenteId,
@@ -480,7 +480,7 @@ const CourseDiscenteModal = ({
       if (result.isConfirmed) {
         axios
           .patch(
-            'http://18.171.180.225/api/corsi/remove-discente',
+            'http://172.232.209.245/api/corsi/remove-discente',
             {
               courseId: selectedCourse,
               discenteId: discenteId,

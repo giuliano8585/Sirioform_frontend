@@ -16,7 +16,7 @@ const CenterSanitarios = () => {
       try {
         const token = localStorage.getItem('token');
         const res = await axios.get(
-          `http://18.171.180.225/api/centers/${location?.state?.ceneterId}/sanitarios`,
+          `http://172.232.209.245/api/centers/${location?.state?.ceneterId}/sanitarios`,
           {
             headers: {
               'x-auth-token': token,

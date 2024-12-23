@@ -23,7 +23,7 @@ function UpdateDiscente() {
     const fetchDiscente = async () => {
       try {
         const res = await axios.get(
-          `http://18.171.180.225/api/discenti/${id}`,
+          `http://172.232.209.245/api/discenti/${id}`,
           { headers: { 'x-auth-token': `${localStorage.getItem('token')}` } }
         );
         setDiscente(res?.data);
@@ -43,7 +43,7 @@ function UpdateDiscente() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(`http://18.171.180.225/api/discenti/${id}`, discente, {
+      await axios.patch(`http://172.232.209.245/api/discenti/${id}`, discente, {
         headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
       });
       alert('Discente aggiornato correttamente!');

@@ -53,7 +53,7 @@ const CheckoutForm = ({ productId, quantity, onOrderSuccess, fromCart }) => {
     const decodedToken = jwtDecode(token);
     try {
       const res = await axios.post(
-        'http://18.171.180.225/api/orders',
+        'http://172.232.209.245/api/orders',
         {
           productIds: Array.isArray(productId) ? productId : [productId],
           quantities: Array.isArray(quantity) ? quantity : [quantity],

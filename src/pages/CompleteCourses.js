@@ -20,7 +20,7 @@ function CompleteCourses() {
     const fetchCorso = async () => {
       try {
         const res = await axios.get(
-          'http://18.171.180.225/api/corsi/user-courses',
+          'http://172.232.209.245/api/corsi/user-courses',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -349,7 +349,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
     const handleData = async () => {
       try {
         const res = await axios.get(
-          `http://18.171.180.225/api/corsi/user-course/${courseId}/`,
+          `http://172.232.209.245/api/corsi/user-course/${courseId}/`,
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -395,7 +395,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
       };
 
       const res = await axios.post(
-        `http://18.171.180.225/api/corsi/courses/${courseId}/send-email`,
+        `http://172.232.209.245/api/corsi/courses/${courseId}/send-email`,
         payload,
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },

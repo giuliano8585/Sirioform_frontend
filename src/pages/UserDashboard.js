@@ -17,7 +17,7 @@ const UserDashboard = () => {
         }
 
         const res = await axios.get(
-          'http://18.171.180.225/api/secure-endpoint',
+          'http://172.232.209.245/api/secure-endpoint',
           {
             headers: { 'x-auth-token': token },
           }

@@ -18,7 +18,7 @@ const ViewSanitarios = () => {
         const token = localStorage.getItem('token');
         console.log('Using token:', token); // Verifica il token nel client
         const res = await axios.get(
-          `http://18.171.180.225/api/instructors/${location?.state?.instructorId}/sanitarios`,
+          `http://172.232.209.245/api/instructors/${location?.state?.instructorId}/sanitarios`,
           {
             headers: {
               'x-auth-token': token,

@@ -12,7 +12,7 @@ function ProductsPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get('http://18.171.180.225/api/kits', {
+        const res = await axios.get('http://172.232.209.245/api/kits', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setProducts(res.data);
@@ -69,7 +69,7 @@ function ProductsPage() {
     console.log('quantity handle add: ', quantity);
     try {
       const res = await axios.post(
-        'http://18.171.180.225/api/cart/',
+        'http://172.232.209.245/api/cart/',
         { itemId, quantity },
         {
           headers: {
@@ -99,7 +99,7 @@ function ProductsPage() {
                 <div className='card h-100'>
                   <div className='card-body d-flex flex-column'>
                     <img
-                      src={`http://18.171.180.225/${product?.profileImage}`}
+                      src={`http://172.232.209.245/${product?.profileImage}`}
                       alt=''
                     />
                     <h5 className='card-title'>{product.code}</h5>

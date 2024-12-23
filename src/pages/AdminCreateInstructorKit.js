@@ -48,7 +48,7 @@ const AdminCreateInstructorKit = () => {
     }
 
     try {
-      await axios.post('http://18.171.180.225/api/kits/create', formData, {
+      await axios.post('http://172.232.209.245/api/kits/create', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'x-auth-token': localStorage.getItem('token'),

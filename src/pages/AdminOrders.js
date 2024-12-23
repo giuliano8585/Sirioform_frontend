@@ -33,7 +33,7 @@ function AdminOrders() {
     const fetchOrders = async () => {
       try {
         const res = await axios.get(
-          'http://18.171.180.225/api/orders/admin/orders',
+          'http://172.232.209.245/api/orders/admin/orders',
           {
             headers: { 'x-auth-token': `${token}` },
           }
@@ -52,7 +52,7 @@ function AdminOrders() {
   useEffect(() => {
     const fetchKits = async () => {
       try {
-        const res = await axios.get('http://18.171.180.225/api/kits', {
+        const res = await axios.get('http://172.232.209.245/api/kits', {
           headers: { 'x-auth-token': `${token}` },
         });
         setKits(res.data);

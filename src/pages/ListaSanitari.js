@@ -16,7 +16,7 @@ const ListaSanitari = () => {
   useEffect(() => {
     const fetchSanitarios = async () => {
       try {
-        const res = await axios.get('http://18.171.180.225/api/sanitarios');
+        const res = await axios.get('http://172.232.209.245/api/sanitarios');
         setSanitarios(res.data);
       } catch (err) {
         console.error('Errore nel recupero dei sanitari', err);
@@ -35,7 +35,7 @@ const ListaSanitari = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://18.171.180.225/api/sanitarios/${id}`)
+          .delete(`http://172.232.209.245/api/sanitarios/${id}`)
           .then((res) => {
             if (res?.status === 200) {
               Swal.fire('Deleted!', '', 'success');

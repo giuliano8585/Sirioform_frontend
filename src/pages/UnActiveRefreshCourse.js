@@ -17,7 +17,7 @@ function UnActiveRefreshCourse() {
     const fetchCorso = async () => {
       try {
         const res = await axios.get(
-          'http://18.171.180.225/api/corsi/user-courses',
+          'http://172.232.209.245/api/corsi/user-courses',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }

@@ -36,7 +36,7 @@ const AdminUpdateInstructor = () => {
     const fetchInstructorDetails = async () => {
       try {
         const res = await axios.get(
-          `http://18.171.180.225/api/instructors/${id}`,
+          `http://172.232.209.245/api/instructors/${id}`,
           { headers: { 'x-auth-token': `${localStorage.getItem('token')}` } }
         );
         setFormData(res.data); // Assume the API returns instructor details in the same structure
@@ -90,7 +90,7 @@ const AdminUpdateInstructor = () => {
 
     try {
       const res = await axios.patch(
-        `http://18.171.180.225/api/instructors/update/${id}`, // Use appropriate update endpoint
+        `http://172.232.209.245/api/instructors/update/${id}`, // Use appropriate update endpoint
         formData,
         { headers: { 'x-auth-token': `${localStorage.getItem('token')}` } }
       );

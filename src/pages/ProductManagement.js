@@ -16,7 +16,7 @@ function ProductManagement() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get('http://18.171.180.225/api/products', {
+        const res = await axios.get('http://172.232.209.245/api/products', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setProducts(res.data);
@@ -31,7 +31,7 @@ function ProductManagement() {
   const handleCreateProduct = async () => {
     try {
       const res = await axios.post(
-        'http://18.171.180.225/api/products',
+        'http://172.232.209.245/api/products',
         newProduct,
         {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },

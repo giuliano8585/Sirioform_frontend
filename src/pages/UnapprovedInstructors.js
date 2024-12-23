@@ -15,7 +15,7 @@ const UnapprovedInstructors = () => {
     const fetchUnapprovedInstructors = async () => {
       try {
         const res = await axios.get(
-          'http://18.171.180.225/api/instructors/unapproved'
+          'http://172.232.209.245/api/instructors/unapproved'
         );
         setInstructors(res.data.filter((item) => item?.role == 'instructor'));
       } catch (err) {
@@ -35,7 +35,7 @@ const UnapprovedInstructors = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .put(`http://18.171.180.225/api/instructors/approve/${id}`)
+          .put(`http://172.232.209.245/api/instructors/approve/${id}`)
           .then((res) => {
             if (res?.status === 200) {
               Swal.fire('Saved!', '', 'success');

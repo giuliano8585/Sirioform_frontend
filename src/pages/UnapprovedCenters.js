@@ -14,7 +14,7 @@ const UnapprovedCenters = () => {
     const fetchUnapprovedCenters = async () => {
       try {
         const res = await axios.get(
-          'http://18.171.180.225/api/centers/unapproved',
+          'http://172.232.209.245/api/centers/unapproved',
           {
             headers: {
               'x-auth-token': token,
@@ -40,7 +40,7 @@ const UnapprovedCenters = () => {
       if (result.isConfirmed) {
         axios
           .put(
-            `http://18.171.180.225/api/centers/approve/${id}`,
+            `http://172.232.209.245/api/centers/approve/${id}`,
             {},
             {
               headers: {

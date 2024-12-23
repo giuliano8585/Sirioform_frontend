@@ -8,7 +8,7 @@ function OrderManagement() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get('http://18.171.180.225/api/admin/orders', {
+        const res = await axios.get('http://172.232.209.245/api/admin/orders', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setOrders(res.data);

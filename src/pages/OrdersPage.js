@@ -36,7 +36,7 @@ function OrdersPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get('http://18.171.180.225/api/orders', {
+        const res = await axios.get('http://172.232.209.245/api/orders', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setOrders(res.data);
@@ -79,7 +79,7 @@ function OrdersPage() {
   useEffect(() => {
     const fetchKits = async () => {
       try {
-        const res = await axios.get('http://18.171.180.225/api/kits', {
+        const res = await axios.get('http://172.232.209.245/api/kits', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setKits(res.data);
