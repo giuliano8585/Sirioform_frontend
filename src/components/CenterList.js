@@ -521,6 +521,7 @@ const CenterList = () => {
                         <th>Nome</th>
                         <th>Cognome</th>
                         <th>E-Mail</th>
+                        <th>brevetNumber</th>
                         <th>Indirizzo</th>
                         <th></th>
                       </tr>
@@ -538,6 +539,7 @@ const CenterList = () => {
                             <td>{instructor.firstName}</td>
                             <td>{instructor.lastName}</td>
                             <td>{instructor.email}</td>
+                            <td>{instructor.brevetNumber}</td>
                             <td>
                               {instructor.address}, {instructor.city},{' '}
                               {instructor.region}

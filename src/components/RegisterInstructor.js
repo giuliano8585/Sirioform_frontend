@@ -322,6 +322,7 @@ const RegisterInstructor = () => {
                           name='expirationDate'
                           value={qualification.expirationDate}
                           onChange={(e) => handleQualificationChange(index, e)}
+                          min={new Date().toISOString().split('T')[0]}
                           required
                         />
                       </div>

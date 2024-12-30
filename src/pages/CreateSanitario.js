@@ -1,4 +1,3 @@
-// src/pages/CreateSanitario.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -15,16 +14,49 @@ const CreateSanitario = () => {
     email: '',
     phone: '',
   });
+  const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
-  const [showApproveConfirmModal, setShowApproveConfirmModal] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' }); // Clear specific error
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Field validation
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key]) {
+        newErrors[key] = 'This field is required';
+      }
+    });
+
+    // Email validation
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    // Phone number validation
+    if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = 'Phone number must be 10 digits';
+    }
+
+    // Fiscal code validation (example format: alphanumeric, 16 characters)
+    if (formData.fiscalCode && !/^[A-Za-z0-9]{16}$/.test(formData.fiscalCode)) {
+      newErrors.fiscalCode = 'Fiscal Code must be 16 alphanumeric characters';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
+
     try {
       const res = await axios.post(
         'http://172.232.209.245/api/sanitarios/create',
@@ -41,11 +73,10 @@ const CreateSanitario = () => {
         email: '',
         phone: '',
       });
-      setShowApproveConfirmModal(false);
       navigate('/admin-dashboard');
     } catch (err) {
       setMessage('Errore nella creazione del sanitario.');
-      console.error('Error response:', err.response.data);
+      console.error('Error response:', err.response?.data);
     }
   };
 
@@ -55,106 +86,58 @@ const CreateSanitario = () => {
 
   return (
     <div className='container mt-5'>
-      <h2 className='mb-4'>Inserisci Sanitario</h2>
-      {message && <div className='alert alert-info'>{message}</div>}
-      <form>
-        <div className='mb-3'>
-          <label htmlFor='firstName' className='form-label'>
-            Nome
-          </label>
-          <input
-            type='text'
-            className='form-control'
-            id='firstName'
-            name='firstName'
-            value={formData.firstName}
-            onChange={handleChange}
-            placeholder='Nome'
-            required
-          />
+      <h2 className='mb-4'>Create Sanitario</h2>
+      {message && (
+        <div
+          className={`alert ${
+            message.includes('successo') ? 'alert-success' : 'alert-danger'
+          }`}
+          role='alert'
+        >
+          {message}
         </div>
-        <div className='mb-3'>
-          <label htmlFor='lastName' className='form-label'>
-            Cognome
-          </label>
-          <input
-            type='text'
-            className='form-control'
-            id='lastName'
-            name='lastName'
-            value={formData.lastName}
-            onChange={handleChange}
-            placeholder='Cognome'
-            required
-          />
-        </div>
-        <div className='mb-3'>
-          <label htmlFor='fiscalCode' className='form-label'>
-            Codice Fiscale
-          </label>
-          <input
-            type='text'
-            className='form-control'
-            id='fiscalCode'
-            name='fiscalCode'
-            value={formData.fiscalCode}
-            onChange={handleChange}
-            placeholder='Codice Fiscale'
-            required
-          />
-        </div>
-        <div className='mb-3'>
-          <label htmlFor='address' className='form-label'>
-            Indirizzo
-          </label>
-          <input
-            type='text'
-            className='form-control'
-            id='address'
-            name='address'
-            value={formData.address}
-            onChange={handleChange}
-            placeholder='Indirizzo'
-            required
-          />
-        </div>
-        <div className='mb-3'>
-          <label htmlFor='city' className='form-label'>
-            Città
-          </label>
-          <input
-            type='text'
-            className='form-control'
-            id='city'
-            name='city'
-            value={formData.city}
-            onChange={handleChange}
-            placeholder='Città'
-            required
-          />
-        </div>
+      )}
+      <form onSubmit={handleSubmit}>
+        {[
+          { label: 'First Name', name: 'firstName', type: 'text' },
+          { label: 'Last Name', name: 'lastName', type: 'text' },
+          { label: 'Fiscal Code', name: 'fiscalCode', type: 'text' },
+          { label: 'Address', name: 'address', type: 'text' },
+          { label: 'City', name: 'city', type: 'text' },
+          { label: 'Email', name: 'email', type: 'email' },
+          { label: 'Phone', name: 'phone', type: 'text' },
+        ].map(({ label, name, type }) => (
+          <div className='mb-3' key={name}>
+            <label htmlFor={name} className='form-label'>
+              {label}
+            </label>
+            <input
+              type={type}
+              className={`form-control ${errors[name] ? 'is-invalid' : ''}`}
+              id={name}
+              name={name}
+              value={formData[name]}
+              onChange={handleChange}
+              placeholder={label}
+            />
+            {errors[name] && (
+              <div className='invalid-feedback'>{errors[name]}</div>
+            )}
+          </div>
+        ))}
+
         <div className='mb-3'>
           <label htmlFor='region' className='form-label'>
-            Regione
+            Region
           </label>
-          {/* <input
-            type='text'
-            className='form-control'
-            id='region'
-            name='region'
-            value={formData.region}
-            onChange={handleChange}
-            placeholder='Regione'
-            required
-          /> */}
           <select
-            className={`form-select`}
+            className={`form-select ${errors.region ? 'is-invalid' : ''}`}
             id='region'
             name='region'
             value={formData.region}
             onChange={handleChange}
           >
-            <option selected>Select</option>
+            <option value=''>Select</option>
             <option value='ABRUZZO'>ABRUZZO</option>
             <option value='BASILICATA'>BASILICATA</option>
             <option value='CALABRIA'>CALABRIA</option>
@@ -176,91 +159,22 @@ const CreateSanitario = () => {
             <option value="VALLE D'AOSTA">VALLE D'AOSTA</option>
             <option value='VENETO'>VENETO</option>
           </select>
+          {errors.region && (
+            <div className='invalid-feedback'>{errors.region}</div>
+          )}
         </div>
-        <div className='mb-3'>
-          <label htmlFor='email' className='form-label'>
-            E-mail
-          </label>
-          <input
-            type='email'
-            className='form-control'
-            id='email'
-            name='email'
-            value={formData.email}
-            onChange={handleChange}
-            placeholder='E-mail'
-            required
-          />
-        </div>
-        <div className='mb-3'>
-          <label htmlFor='phone' className='form-label'>
-            Telefono
-          </label>
-          <input
-            type='text'
-            className='form-control'
-            id='phone'
-            name='phone'
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder='Telefono'
-            required
-          />
-        </div>
-        <button
-          type='button'
-          onClick={() => setShowApproveConfirmModal(true)}
-          className='btn btn-primary'
-        >
-          Salva
+
+        <button type='submit' className='btn btn-primary'>
+          Create Sanitario
         </button>
         <button
           type='button'
-          className='btn btn-secondary ml-3'
+          className='btn btn-secondary ms-3'
           onClick={goBack}
         >
-          Indietro
+          Back
         </button>
       </form>
-      {showApproveConfirmModal && (
-        <div className='modal modal-xl show d-block' tabIndex='-1'>
-          <div className='modal-dialog'>
-            <div className='modal-content'>
-              <div className='modal-header'>
-                <h5 className='modal-title'>Confirm</h5>
-                <button
-                  type='button'
-                  className='close'
-                  onClick={() => setShowApproveConfirmModal(false)}
-                >
-                  <span>&times;</span>
-                </button>
-              </div>
-              <div className='modal-body'>
-                <div className='table-responsive'>
-                  <p className='text-center'>
-                    are you sure want to Approve center
-                  </p>
-                  <div className='d-flex align-items-center justify-content-center gap-4'>
-                    <button
-                      onClick={() => setShowApproveConfirmModal(false)}
-                      className='btn btn-info btn-sm'
-                    >
-                      No
-                    </button>
-                    <button
-                      onClick={handleSubmit}
-                      className='btn btn-primary btn-sm'
-                    >
-                      Yes
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

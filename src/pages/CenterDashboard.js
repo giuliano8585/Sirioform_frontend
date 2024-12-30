@@ -213,6 +213,22 @@ const CenterDashboard = () => {
                   complete Course
                 </button>
               </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/communication')}
+                >
+                  Communication
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/document')}
+                >
+                  Document
+                </button>
+              </li>
             </ul>
           </div>
         </nav>
@@ -220,7 +236,17 @@ const CenterDashboard = () => {
           <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom'>
             <h1 className='h2'>Center Dashboard</h1>
           </div>
-          <div>{/* Add content here */}</div>
+          <div>
+            {/* Add content here */}
+            <div className='p-5'>
+              <button
+                className='btn btn-primary '
+                onClick={() => navigate('/communication')}
+              >
+                Last Communication
+              </button>
+            </div>
+          </div>
         </main>
       </div>
     </div>
