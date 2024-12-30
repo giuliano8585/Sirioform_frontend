@@ -12,11 +12,14 @@ const InstructorDashboard = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/api/auth/instructors/me', {
-          headers: {
-            'x-auth-token': token
+        const res = await axios.get(
+          'http://172.232.209.245/api/auth/instructors/me',
+          {
+            headers: {
+              'x-auth-token': token,
+            },
           }
-        });
+        );
         setData(res.data);
         setLoading(false);
       } catch (err) {
@@ -181,7 +184,7 @@ const InstructorDashboard = () => {
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/unactive-refresh-corso')}
                 >
-                 Unactive Lista Refresh Corso
+                  Unactive Lista Refresh Corso
                 </button>
               </li>
               <li className='nav-item mb-2'>
@@ -189,7 +192,7 @@ const InstructorDashboard = () => {
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/finish-corso')}
                 >
-                 Finish Course
+                  Finish Course
                 </button>
               </li>
               <li className='nav-item mb-2'>
@@ -197,7 +200,23 @@ const InstructorDashboard = () => {
                   className='btn btn-primary w-100'
                   onClick={() => navigate('/complete-corso')}
                 >
-                 complete Course
+                  complete Course
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/communication')}
+                >
+                  Communication
+                </button>
+              </li>
+              <li className='nav-item mb-2'>
+                <button
+                  className='btn btn-primary w-100'
+                  onClick={() => navigate('/document')}
+                >
+                  Document
                 </button>
               </li>
             </ul>
@@ -206,6 +225,14 @@ const InstructorDashboard = () => {
         <main role='main' className='col-md-9 ml-sm-auto col-lg-10 px-4'>
           <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-5 pb-2 mb-3 border-bottom'>
             <h1 className='h2'>Instructor Dashboard</h1>
+          </div>
+          <div className='p-5'>
+            <button
+              className='btn btn-primary'
+              onClick={() => navigate('/communication')}
+            >
+              Last Communication
+            </button>
           </div>
         </main>
       </div>

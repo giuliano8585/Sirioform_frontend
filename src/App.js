@@ -72,6 +72,10 @@ import CreateInstructorRefreshCourse from './pages/CreateInstructorRefreshCourse
 import ListaInstructorCourses from './pages/ListaInstructorCourses';
 import ListaInstructorRefreshCourses from './pages/ListaInstructorRefreshCourses';
 import CartPage from './pages/CartPage';
+import AdminCommunication from './pages/AdminCommunication';
+import AdminDocument from './pages/AdminDocument';
+import Document from './pages/Document';
+import Communication from './pages/Communication';
 
 const App = () => {
   return (
@@ -117,8 +121,24 @@ const App = () => {
           <Route
             path='/cart'
             element={
-              <ProtectedRoute allowedRoles={['admin','instructor','center']}>
+              <ProtectedRoute allowedRoles={['admin', 'instructor', 'center']}>
                 <CartPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/document'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'instructor', 'center']}>
+                <Document />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/communication'
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'instructor', 'center']}>
+                <Communication />
               </ProtectedRoute>
             }
           />
@@ -262,6 +282,22 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={['admin', 'center', 'instructor']}>
                 <Checkout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/communication'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminCommunication />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/document'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminDocument />
               </ProtectedRoute>
             }
           />

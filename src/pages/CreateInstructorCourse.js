@@ -19,14 +19,14 @@ function CreateInstructorCourse() {
     tipologia: '',
     città: '',
     via: '',
-    presso:'',
+    presso: '',
     numeroDiscenti: '',
     istruttori: [],
     direttoriCorso: [],
-    isRefreshCourse:false,
+    isRefreshCourse: false,
   });
 
-  const [availableKits, setAvailableKits] = useState(0); 
+  const [availableKits, setAvailableKits] = useState(0);
 
   const navigate = useNavigate();
 
@@ -35,7 +35,7 @@ function CreateInstructorCourse() {
       try {
         const token = localStorage.getItem('token');
         const res = await axios.get(
-          'http://localhost:5000/api/auth/centers/me',
+          'http://172.232.209.245/api/auth/centers/me',
           {
             headers: {
               'x-auth-token': token,
@@ -58,7 +58,7 @@ function CreateInstructorCourse() {
     const fetchProdottiAcquistati = async () => {
       try {
         const res = await axios.get(
-          'http://localhost:5000/api/orders/acquistati',
+          'http://172.232.209.245/api/orders/acquistati',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -191,20 +191,27 @@ function CreateInstructorCourse() {
       denyButtonText: `Don't save`,
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.post(
-          'http://localhost:5000/api/corsi',
-          {
-            ...corso,
-            giornate,
-          },
-          {
-            headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-          }
-        )
+        axios
+          .post(
+            'http://172.232.209.245/api/corsi',
+            {
+              ...corso,
+              giornate,
+            },
+            {
+              headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+            }
+          )
           .then((res) => {
-            if (res?.status === 200||201) {
+            if (res?.status === 200 || 201) {
               Swal.fire('Saved!', '', 'success');
-              navigate(decodedToken.user.role=='admin'?"/admin-dashboard":decodedToken.user.role=='center'?'/center-dashboard':'/instructor-dashboard');
+              navigate(
+                decodedToken.user.role == 'admin'
+                  ? '/admin-dashboard'
+                  : decodedToken.user.role == 'center'
+                  ? '/center-dashboard'
+                  : '/instructor-dashboard'
+              );
             } else {
               Swal.fire('Something went wrong', '', 'info');
             }
@@ -240,11 +247,18 @@ function CreateInstructorCourse() {
               required
             >
               <option value=''>Seleziona una tipologia</option>
-              {tipologiaProdotti?.filter((items)=>items?.isRefreshKit!==true&&items?.quantity!==0&&items?.isForInstructor==true).map((prodotto) => (
-                <option key={prodotto._id} value={prodotto._id}>
-                  {prodotto.title} (Disponibili: {prodotto.quantity})
-                </option>
-              ))}
+              {tipologiaProdotti
+                ?.filter(
+                  (items) =>
+                    items?.isRefreshKit !== true &&
+                    items?.quantity !== 0 &&
+                    items?.isForInstructor == true
+                )
+                .map((prodotto) => (
+                  <option key={prodotto._id} value={prodotto._id}>
+                    {prodotto.title} (Disponibili: {prodotto.quantity})
+                  </option>
+                ))}
             </select>
           </div>
           <div className='col-md-6 mb-3'>
@@ -300,17 +314,17 @@ function CreateInstructorCourse() {
                 onChange={handleIstruttoreChange}
               >
                 <option value=''>Seleziona un Istruttore</option>
-                {data?.role == 'center' ? (data?.instructors?.map((instructor) => (
-                  <option key={instructor._id} value={instructor._id}>
-                  {instructor?.firstName + ' ' + instructor?.lastName}
-                  </option>
-                ))):(
+                {data?.role == 'center' ? (
+                  data?.instructors?.map((instructor) => (
+                    <option key={instructor._id} value={instructor._id}>
+                      {instructor?.firstName + ' ' + instructor?.lastName}
+                    </option>
+                  ))
+                ) : (
                   <option value={data?._id}>
                     {data?.firstName + ' ' + data?.lastName}
                   </option>
-                )
-                
-              }
+                )}
               </select>
               <ul>
                 {data?.role == 'center' &&

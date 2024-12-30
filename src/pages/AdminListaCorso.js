@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import jsPDF from 'jspdf'; 
+import jsPDF from 'jspdf';
 
 function AdminListaCorso() {
   const [render, setRender] = useState(false);
@@ -31,7 +31,7 @@ function AdminListaCorso() {
   useEffect(() => {
     const fetchCorso = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/corsi/', {
+        const res = await axios.get('http://172.232.209.245/api/corsi/', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setCorso(res.data);
@@ -104,7 +104,6 @@ function AdminListaCorso() {
     setFilters({ ...filters, [name]: value });
   };
 
-
   const handleDownloadPdf = (corsoItem) => {
     console.log('corsoItem: ', corsoItem);
     const doc = new jsPDF();
@@ -153,9 +152,15 @@ function AdminListaCorso() {
       130
     );
     doc.text(`progressiveNumber: ${corsoItem?.progressiveNumber}`, 10, 140);
-    
-      doc.text(`discente details: ${corsoItem?.discente?.map((items)=>('discente :'+ items?.nome + items?.cognome + items?.email))}`, 10, 150);
-    
+
+    doc.text(
+      `discente details: ${corsoItem?.discente?.map(
+        (items) => 'discente :' + items?.nome + items?.cognome + items?.email
+      )}`,
+      10,
+      150
+    );
+
     doc.save(`${corsoItem.città}_course_details.pdf`);
   };
 
@@ -217,61 +222,70 @@ function AdminListaCorso() {
           </tr>
         </thead>
         <tbody>
-          {filteredCorso?.filter((item)=>item?.status=='active'&&item?.isRefreshCourse!==true)?.length > 0 ? (
-            filteredCorso?.filter((item)=>item?.status=='active'&&item?.isRefreshCourse!==true).map((corsoItem) => (
-              <tr key={corsoItem._id}>
-                <td>{corsoItem.città}</td>
-                <td>{corsoItem.via}</td>
-                <td>{corsoItem.progressiveNumber}</td>
-                <td>
-                  {corsoItem.userId?.role == 'center'
-                    ? corsoItem.userId?.name
-                    : corsoItem.userId?.firstName +
-                      ' ' +
-                      corsoItem.userId?.lastName}
-                </td>
-                <td>{corsoItem?.tipologia?.type}</td>
-                <td>{corsoItem.status}</td>
-                <td>{corsoItem.numeroDiscenti}</td>
-                <td>
+          {filteredCorso?.filter(
+            (item) => item?.status == 'active' && item?.isRefreshCourse !== true
+          )?.length > 0 ? (
+            filteredCorso
+              ?.filter(
+                (item) =>
+                  item?.status == 'active' && item?.isRefreshCourse !== true
+              )
+              .map((corsoItem) => (
+                <tr key={corsoItem._id}>
+                  <td>{corsoItem.città}</td>
+                  <td>{corsoItem.via}</td>
+                  <td>{corsoItem.progressiveNumber}</td>
+                  <td>
+                    {corsoItem.userId?.role == 'center'
+                      ? corsoItem.userId?.name
+                      : corsoItem.userId?.firstName +
+                        ' ' +
+                        corsoItem.userId?.lastName}
+                  </td>
+                  <td>{corsoItem?.tipologia?.type}</td>
+                  <td>{corsoItem.status}</td>
+                  <td>{corsoItem.numeroDiscenti}</td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleOpenModal(corsoItem.direttoreCorso)}
+                    >
+                      direttore Details
+                    </button>
+                  </td>
+                  <td>
+                    {' '}
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() =>
+                        handleOpenInstructorModal(corsoItem.istruttore)
+                      }
+                    >
+                      instruttore Details
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() =>
+                        handleOpenGiornateModal(corsoItem.giornate)
+                      }
+                    >
+                      Giornate Details
+                    </button>
+                  </td>
                   <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenModal(corsoItem.direttoreCorso)}
-                  >
-                    direttore Details
-                  </button>
-                </td>
-                <td>
-                  {' '}
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() =>
-                      handleOpenInstructorModal(corsoItem.istruttore)
-                    }
-                  >
-                    instruttore Details
-                  </button>
-                </td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenGiornateModal(corsoItem.giornate)}
-                  >
-                    Giornate Details
-                  </button>
-                </td>
-                <button
                     type='button'
                     className='btn btn-secondary ml-2'
                     onClick={() => handleDownloadPdf(corsoItem)}
                   >
                     Download PDF
                   </button>
-              </tr>
-            ))
+                </tr>
+              ))
           ) : (
             <tr>
               <td colSpan='8' className='text-muted'>
@@ -492,7 +506,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
       if (result.isConfirmed) {
         axios
           .patch(
-            `http://localhost:5000/api/corsi/courses/${courseId}/status`,
+            `http://172.232.209.245/api/corsi/courses/${courseId}/status`,
             {
               status: status,
             },
@@ -542,10 +556,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
                 <option value='active'>Active</option>
                 <option value='unActive'>Un Active</option>
               </select>
-              <button
-                type='submit'
-                className='btn btn-primary'
-              >
+              <button type='submit' className='btn btn-primary'>
                 Change Status
               </button>
             </form>

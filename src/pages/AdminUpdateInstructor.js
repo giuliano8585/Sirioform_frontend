@@ -5,12 +5,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const AdminUpdateInstructor = () => {
   const navigate = useNavigate();
-  const location = useLocation()
-  const id = location?.state?.instructorId
-  const [showModal, setShowModal] = useState(false)
+  const location = useLocation();
+  const id = location?.state?.instructorId;
+  const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
-      firstName: '',
-      lastName: '',
+    firstName: '',
+    lastName: '',
     fiscalCode: '',
     brevetNumber: '',
     qualifications: [{ name: '', expirationDate: '' }],
@@ -35,7 +35,10 @@ const AdminUpdateInstructor = () => {
     // Fetch existing instructor details
     const fetchInstructorDetails = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/instructors/${id}`,{headers: { 'x-auth-token': `${localStorage.getItem('token')}` }});
+        const res = await axios.get(
+          `http://172.232.209.245/api/instructors/${id}`,
+          { headers: { 'x-auth-token': `${localStorage.getItem('token')}` } }
+        );
         setFormData(res.data); // Assume the API returns instructor details in the same structure
       } catch (err) {
         console.error(err);
@@ -84,15 +87,15 @@ const AdminUpdateInstructor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const res = await axios.patch(
-        `http://localhost:5000/api/instructors/update/${id}`, // Use appropriate update endpoint
+        `http://172.232.209.245/api/instructors/update/${id}`, // Use appropriate update endpoint
         formData,
-        {headers: { 'x-auth-token': `${localStorage.getItem('token')}` }}
+        { headers: { 'x-auth-token': `${localStorage.getItem('token')}` } }
       );
-      alert('Instructor update successfully')
-      setShowModal(false)
+      alert('Instructor update successfully');
+      setShowModal(false);
 
       // Redirect or perform any other action on success
     } catch (err) {
@@ -135,7 +138,7 @@ const AdminUpdateInstructor = () => {
           </div>
         </div>
       )}
-      <form >
+      <form>
         <div className='row'>
           <div className='col-md-6 mb-3'>
             <label htmlFor='firstName' className='form-label'>
@@ -217,7 +220,9 @@ const AdminUpdateInstructor = () => {
                     defaultValue={qualification.name}
                     onChange={(e) => handleQualificationChange(index, e)}
                   >
-                    <option value={qualification.name}>{qualification.name}</option>
+                    <option value={qualification.name}>
+                      {qualification.name}
+                    </option>
                     <option value='blsk'>BLSK</option>
                     <option value='bls'>BLS</option>
                     <option value='blsd'>BLSD</option>
@@ -384,13 +389,20 @@ const AdminUpdateInstructor = () => {
           </div>
         </div>
 
-        <button type='button' onClick={()=>setShowModal(true)} className='btn btn-primary'>
+        <button
+          type='button'
+          onClick={() => setShowModal(true)}
+          className='btn btn-primary'
+        >
           Update Instructor
         </button>
-        <button type='button' onClick={()=>navigate('/admin-dashboard')} className='btn btn-info'>
+        <button
+          type='button'
+          onClick={() => navigate('/admin-dashboard')}
+          className='btn btn-info'
+        >
           Back
         </button>
-
       </form>
     </div>
   );

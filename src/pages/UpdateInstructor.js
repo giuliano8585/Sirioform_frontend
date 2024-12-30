@@ -4,9 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const UpdateInstructor = () => {
-    const navigate = useNavigate()
-    const location = useLocation()
-    const instructorId =  location?.state?.id
+  const navigate = useNavigate();
+  const location = useLocation();
+  const instructorId = location?.state?.id;
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -19,7 +19,7 @@ const UpdateInstructor = () => {
     region: '',
     email: '',
     phone: '',
-    username: ''
+    username: '',
   });
   const [message, setMessage] = useState('');
 
@@ -27,7 +27,9 @@ const UpdateInstructor = () => {
     // Fetch instructor data to populate the form
     const fetchInstructor = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/instructors/${instructorId}`);
+        const res = await axios.get(
+          `http://172.232.209.245/api/instructors/${instructorId}`
+        );
         setFormData(res.data);
       } catch (err) {
         console.error(err);
@@ -67,14 +69,19 @@ const UpdateInstructor = () => {
   };
 
   const handleRemoveQualification = (index) => {
-    const newQualifications = formData.qualifications.filter((_, i) => i !== index);
+    const newQualifications = formData.qualifications.filter(
+      (_, i) => i !== index
+    );
     setFormData({ ...formData, qualifications: newQualifications });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.patch(`http://localhost:5000/api/instructors/update/${instructorId}`, formData);
+      const res = await axios.patch(
+        `http://172.232.209.245/api/instructors/update/${instructorId}`,
+        formData
+      );
       setMessage('Instructor updated successfully!');
     } catch (err) {
       console.error(err);
@@ -229,11 +236,15 @@ const UpdateInstructor = () => {
               onChange={handleChange}
               required
             />
-          </div>          
+          </div>
           <button type='submit' className='btn btn-primary mt-4'>
             Update Instructor
           </button>
-          <button type='buttom' className='btn btn-primary mt-4' onClick={()=>navigate('/instructor/view-profile')}>
+          <button
+            type='buttom'
+            className='btn btn-primary mt-4'
+            onClick={() => navigate('/instructor/view-profile')}
+          >
             Go Back
           </button>
         </div>

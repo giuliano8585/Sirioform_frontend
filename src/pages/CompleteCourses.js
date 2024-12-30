@@ -14,14 +14,13 @@ function CompleteCourses() {
   const [selectedGiornate, setSelecteGiornate] = useState([]);
   const [courseId, setCourseId] = useState();
 
-
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCorso = async () => {
       try {
         const res = await axios.get(
-          'http://localhost:5000/api/corsi/user-courses',
+          'http://172.232.209.245/api/corsi/user-courses',
           {
             headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
@@ -70,15 +69,9 @@ function CompleteCourses() {
           </tr>
         </thead>
         <tbody>
-          {corso?.filter(
-            (item) =>
-              item?.status == 'complete'
-          ).length > 0 ? (
+          {corso?.filter((item) => item?.status == 'complete').length > 0 ? (
             corso
-              ?.filter(
-                (item) =>
-                  item?.status == 'complete'
-              )
+              ?.filter((item) => item?.status == 'complete')
               .map((corsoItem) => (
                 <tr key={corsoItem._id}>
                   <td>{corsoItem.città}</td>
@@ -135,7 +128,9 @@ function CompleteCourses() {
                         type='button'
                         className='btn btn-primary'
                         onClick={() =>
-                          navigate('/update-course',{state:{id:corsoItem._id,data:corsoItem}})
+                          navigate('/update-course', {
+                            state: { id: corsoItem._id, data: corsoItem },
+                          })
                         }
                       >
                         Edit
@@ -354,19 +349,19 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
     const handleData = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/corsi/user-course/${courseId}/`,
+          `http://172.232.209.245/api/corsi/user-course/${courseId}/`,
           {
-            headers: { "x-auth-token": `${localStorage.getItem("token")}` },
+            headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
           }
         );
         if (res?.status === 200) {
           setData(res?.data?.course?.discente || []);
         } else {
-          Swal.fire("Something went wrong", "", "info");
+          Swal.fire('Something went wrong', '', 'info');
         }
       } catch (err) {
-        console.error("Error fetching data:", err);
-        Swal.fire("Something went wrong", "", "info");
+        console.error('Error fetching data:', err);
+        Swal.fire('Something went wrong', '', 'info');
       }
     };
     handleData();
@@ -396,50 +391,50 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
     try {
       const payload = {
         courseId,
-        recipients: isForAll ? "all" : selectedUsers,
+        recipients: isForAll ? 'all' : selectedUsers,
       };
 
       const res = await axios.post(
-        `http://localhost:5000/api/corsi/courses/${courseId}/send-email`,
+        `http://172.232.209.245/api/corsi/courses/${courseId}/send-email`,
         payload,
         {
-          headers: { "x-auth-token": `${localStorage.getItem("token")}` },
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         }
       );
 
       if (res.status === 200) {
-        Swal.fire("Certificates Sent!", res.data.message, "success");
+        Swal.fire('Certificates Sent!', res.data.message, 'success');
         setSelectedUsers([]);
         setSelectAll(false);
       }
     } catch (err) {
-      console.error("Error sending certificates:", err);
-      Swal.fire("Error", "Unable to send certificates", "error");
+      console.error('Error sending certificates:', err);
+      Swal.fire('Error', 'Unable to send certificates', 'error');
     }
   };
 
   return (
-    <div className="modal modal-xl show d-block" tabIndex="-1">
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">Discente</h5>
+    <div className='modal modal-xl show d-block' tabIndex='-1'>
+      <div className='modal-dialog'>
+        <div className='modal-content'>
+          <div className='modal-header'>
+            <h5 className='modal-title'>Discente</h5>
             <button
-              type="button"
-              className="close"
+              type='button'
+              className='close'
               onClick={() => setShowStatusModal(false)}
             >
               <span>&times;</span>
             </button>
           </div>
-          <div className="modal-body">
-            <div className="table-responsive">
-              <table className="table table-striped table-bordered">
-                <thead className="thead-dark">
+          <div className='modal-body'>
+            <div className='table-responsive'>
+              <table className='table table-striped table-bordered'>
+                <thead className='thead-dark'>
                   <tr>
                     <th>
                       <input
-                        type="checkbox"
+                        type='checkbox'
                         checked={selectAll}
                         onChange={handleSelectAll}
                       />
@@ -457,7 +452,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
                       <tr key={index}>
                         <td>
                           <input
-                            type="checkbox"
+                            type='checkbox'
                             checked={selectedUsers.includes(user._id)}
                             onChange={() => handleCheckboxChange(user._id)}
                           />
@@ -467,7 +462,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
                         <td>{user?.email}</td>
                         <td>{user?.telefono}</td>
                         <td>
-                          {user?.patentNumber[0] === ""
+                          {user?.patentNumber[0] === ''
                             ? user?.patentNumber[1]
                             : user?.patentNumber[0]}
                         </td>
@@ -475,22 +470,22 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6">No Direttore Corso found</td>
+                      <td colSpan='6'>No Direttore Corso found</td>
                     </tr>
                   )}
                 </tbody>
               </table>
             </div>
-            <div className="mt-3 d-flex justify-content-end">
+            <div className='mt-3 d-flex justify-content-end'>
               <button
-                className="btn btn-primary mr-2"
+                className='btn btn-primary mr-2'
                 onClick={() => sendCertificates(false)}
                 disabled={selectedUsers.length === 0}
               >
                 Send to Selected
               </button>
               <button
-                className="btn btn-success"
+                className='btn btn-success'
                 onClick={() => sendCertificates(true)}
               >
                 Send to All

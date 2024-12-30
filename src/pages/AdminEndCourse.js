@@ -1,12 +1,10 @@
-
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
 
-    const AdminEndCourse = () => {
+const AdminEndCourse = () => {
   const [render, setRender] = useState(false);
   const [corso, setCorso] = useState([]);
   const [showSanitariosModal, setShowSanitariosModal] = useState(false);
@@ -33,11 +31,11 @@ import jsPDF from 'jspdf';
   useEffect(() => {
     const fetchCorso = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/corsi/', {
+        const res = await axios.get('http://172.232.209.245/api/corsi/', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setCorso(res.data);
-    } catch (err) {
+      } catch (err) {
         console.error(err);
       }
     };
@@ -60,11 +58,11 @@ import jsPDF from 'jspdf';
   const handleOpenCourseModal = (courseId) => {
     setCourseId(courseId);
     setShowStatusModal(true);
-};
+  };
   const handleOpenDiscenteModal = (courseId) => {
     setCourseId(courseId);
     setShowDiscenteModal(true);
-};
+  };
 
   useEffect(() => {
     let filtered = [...corso];
@@ -90,8 +88,8 @@ import jsPDF from 'jspdf';
       );
     }
     if (filters.centerName) {
-        filtered = filtered.filter((c) =>
-            c.userId?.name?.toLowerCase().includes(filters.centerName.toLowerCase())
+      filtered = filtered.filter((c) =>
+        c.userId?.name?.toLowerCase().includes(filters.centerName.toLowerCase())
       );
     }
     if (filters.instructorName) {
@@ -110,7 +108,6 @@ import jsPDF from 'jspdf';
     setFilters({ ...filters, [name]: value });
   };
 
-
   const handleDeleteCourse = async (id) => {
     Swal.fire({
       title: 'Are you sure want to Delete the Course?',
@@ -120,12 +117,9 @@ import jsPDF from 'jspdf';
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(
-            `http://localhost:5000/api/corsi/courses/${id}`,
-            {
-              headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-            }
-          )
+          .delete(`http://172.232.209.245/api/corsi/courses/${id}`, {
+            headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+          })
           .then((res) => {
             if (res?.status === 200) {
               Swal.fire('Saved!', '', 'success');
@@ -190,12 +184,18 @@ import jsPDF from 'jspdf';
       130
     );
     doc.text(`progressiveNumber: ${corsoItem?.progressiveNumber}`, 10, 140);
-    
-      doc.text(`discente details: ${corsoItem?.discente?.map((items)=>('discente :'+ items?.nome + items?.cognome + items?.email))}`, 10, 150);
-    
+
+    doc.text(
+      `discente details: ${corsoItem?.discente?.map(
+        (items) => 'discente :' + items?.nome + items?.cognome + items?.email
+      )}`,
+      10,
+      150
+    );
+
     doc.save(`${corsoItem.città}_course_details.pdf`);
   };
-  
+
   return (
     <div className='container mt-4'>
       <div className='d-flex align-items-center justify-content-between'>
@@ -254,90 +254,102 @@ import jsPDF from 'jspdf';
           </tr>
         </thead>
         <tbody>
-          {filteredCorso?.filter((items)=>(items?.status=='end'||items?.status=='finalUpdate')&&items?.isRefreshCourse!==true)?.length > 0 ? (
-            filteredCorso?.filter((items)=>(items?.status=='end'||items?.status=='finalUpdate')&&items?.isRefreshCourse!==true)?.map((corsoItem) => (
-              <tr key={corsoItem._id}>
-                <td>{corsoItem.città}</td>
-                <td>{corsoItem.via}</td>
-                <td>{corsoItem.progressiveNumber}</td>
-                <td>
-                  {corsoItem.userId?.role == 'center'
-                    ? corsoItem.userId?.name
-                    : corsoItem.userId?.firstName +
-                      ' ' +
-                      corsoItem.userId?.lastName}
-                </td>
-                <td>{corsoItem?.tipologia?.type}</td>
-                <td>{corsoItem.status}</td>
-                <td>{corsoItem.numeroDiscenti}</td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenModal(corsoItem.direttoreCorso)}
-                  >
-                    direttore Details
-                  </button>
-                </td>
-                <td>
-                  {' '}
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() =>
-                      handleOpenInstructorModal(corsoItem.istruttore)
-                    }
-                  >
-                    instruttore Details
-                  </button>
-                </td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenGiornateModal(corsoItem.giornate)}
-                  >
-                    Giornate Details
-                  </button>
-                </td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenCourseModal(corsoItem?._id)}
-                  >
-                    Change Status
-                  </button>
-                </td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenDiscenteModal(corsoItem?._id)}
-                  >
-                    All Discente
-                  </button>
-                </td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-danger'
-                    onClick={() => handleDeleteCourse(corsoItem?._id)}
-                  >
-                    Delete Course
-                  </button>
-                </td>
-                <td>
-                <button
-                    type='button'
-                    className='btn btn-secondary ml-2'
-                    onClick={() => handleDownloadPdf(corsoItem)}
-                  >
-                    Download PDF
-                  </button>
-                </td>
-              </tr>
-            ))
+          {filteredCorso?.filter(
+            (items) =>
+              (items?.status == 'end' || items?.status == 'finalUpdate') &&
+              items?.isRefreshCourse !== true
+          )?.length > 0 ? (
+            filteredCorso
+              ?.filter(
+                (items) =>
+                  (items?.status == 'end' || items?.status == 'finalUpdate') &&
+                  items?.isRefreshCourse !== true
+              )
+              ?.map((corsoItem) => (
+                <tr key={corsoItem._id}>
+                  <td>{corsoItem.città}</td>
+                  <td>{corsoItem.via}</td>
+                  <td>{corsoItem.progressiveNumber}</td>
+                  <td>
+                    {corsoItem.userId?.role == 'center'
+                      ? corsoItem.userId?.name
+                      : corsoItem.userId?.firstName +
+                        ' ' +
+                        corsoItem.userId?.lastName}
+                  </td>
+                  <td>{corsoItem?.tipologia?.type}</td>
+                  <td>{corsoItem.status}</td>
+                  <td>{corsoItem.numeroDiscenti}</td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleOpenModal(corsoItem.direttoreCorso)}
+                    >
+                      direttore Details
+                    </button>
+                  </td>
+                  <td>
+                    {' '}
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() =>
+                        handleOpenInstructorModal(corsoItem.istruttore)
+                      }
+                    >
+                      instruttore Details
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() =>
+                        handleOpenGiornateModal(corsoItem.giornate)
+                      }
+                    >
+                      Giornate Details
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleOpenCourseModal(corsoItem?._id)}
+                    >
+                      Change Status
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleOpenDiscenteModal(corsoItem?._id)}
+                    >
+                      All Discente
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-danger'
+                      onClick={() => handleDeleteCourse(corsoItem?._id)}
+                    >
+                      Delete Course
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-secondary ml-2'
+                      onClick={() => handleDownloadPdf(corsoItem)}
+                    >
+                      Download PDF
+                    </button>
+                  </td>
+                </tr>
+              ))
           ) : (
             <tr>
               <td colSpan='8' className='text-muted'>
@@ -388,9 +400,9 @@ import jsPDF from 'jspdf';
       )}
     </div>
   );
-}
+};
 
-export default AdminEndCourse
+export default AdminEndCourse;
 
 const SanitariosModal = ({ setShowSanitariosModal, direttoreCorso }) => {
   return (
@@ -564,7 +576,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
       if (result.isConfirmed) {
         axios
           .patch(
-            `http://localhost:5000/api/corsi/courses/${courseId}/status`,
+            `http://172.232.209.245/api/corsi/courses/${courseId}/status`,
             {
               status: status,
             },
@@ -614,10 +626,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
                 <option value='complete'>Complete</option>
                 <option value='finalUpdate'>Update</option>
               </select>
-              <button
-                type='submit'
-                className='btn btn-primary'
-              >
+              <button type='submit' className='btn btn-primary'>
                 Change Status
               </button>
             </form>
@@ -628,32 +637,34 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
   );
 };
 
-
-const DiscenteModal = ({ setShowDiscenteModal, courseId, setRender, render }) => {
+const DiscenteModal = ({
+  setShowDiscenteModal,
+  courseId,
+  setRender,
+  render,
+}) => {
   const [data, setData] = useState();
 
-  useEffect(()=>{
+  useEffect(() => {
     const handleData = async (e) => {
-      axios.get(
-        `http://localhost:5000/api/corsi/user-course/${courseId}/`,
-        {
+      axios
+        .get(`http://172.232.209.245/api/corsi/user-course/${courseId}/`, {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
-        }
-      )
-      .then((res) => {
-        if (res?.status === 200) {
-          setData(res?.data?.course?.discente)
-        } else {
+        })
+        .then((res) => {
+          if (res?.status === 200) {
+            setData(res?.data?.course?.discente);
+          } else {
+            Swal.fire('Something went wrong', '', 'info');
+          }
+        })
+        .catch((err) => {
+          console.error('Error assigning sanitario:', err);
           Swal.fire('Something went wrong', '', 'info');
-        }
-      })
-      .catch((err) => {
-        console.error('Error assigning sanitario:', err);
-        Swal.fire('Something went wrong', '', 'info');
-      });
+        });
     };
-    handleData()
-  },[courseId])
+    handleData();
+  }, [courseId]);
 
   return (
     <div className='modal modal-xl show d-block' tabIndex='-1'>
@@ -670,7 +681,7 @@ const DiscenteModal = ({ setShowDiscenteModal, courseId, setRender, render }) =>
             </button>
           </div>
           <div className='modal-body'>
-          <div className='table-responsive'>
+            <div className='table-responsive'>
               <table className='table table-striped table-bordered'>
                 <thead className='thead-dark'>
                   <tr>
@@ -685,13 +696,15 @@ const DiscenteModal = ({ setShowDiscenteModal, courseId, setRender, render }) =>
                   {data?.length > 0 ? (
                     data.map((data, index) => (
                       <tr key={index}>
-                        <td>
-                          {data?.nome}
-                        </td>
+                        <td>{data?.nome}</td>
                         <td>{data?.cognome}</td>
                         <td>{data?.email}</td>
                         <td>{data?.telefono}</td>
-                        <td>{data?.patentNumber[0]==''?data?.patentNumber[1]:data?.patentNumber[0]}</td>
+                        <td>
+                          {data?.patentNumber[0] == ''
+                            ? data?.patentNumber[1]
+                            : data?.patentNumber[0]}
+                        </td>
                       </tr>
                     ))
                   ) : (

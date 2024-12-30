@@ -36,7 +36,7 @@ function OrdersPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/orders', {
+        const res = await axios.get('http://172.232.209.245/api/orders', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setOrders(res.data);
@@ -79,7 +79,9 @@ function OrdersPage() {
   useEffect(() => {
     const fetchKits = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/kits',{headers: { 'x-auth-token': `${localStorage.getItem('token')}` }});
+        const res = await axios.get('http://172.232.209.245/api/kits', {
+          headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
+        });
         setKits(res.data);
       } catch (err) {
         console.error(err);
@@ -95,15 +97,12 @@ function OrdersPage() {
     if (filter.startDate) {
       filtered = filtered.filter(
         (c) =>
-          new Date(c?.createdAt?.split('T')[0]) >=
-          new Date(filter.startDate)
+          new Date(c?.createdAt?.split('T')[0]) >= new Date(filter.startDate)
       );
     }
     if (filter.endDate) {
       filtered = filtered.filter(
-        (c) =>
-          new Date(c.createdAt?.split('T')[0]) <=
-          new Date(filter.endDate)
+        (c) => new Date(c.createdAt?.split('T')[0]) <= new Date(filter.endDate)
       );
     }
     setFilteredOrders(filtered);
@@ -126,7 +125,7 @@ function OrdersPage() {
       <div className='d-flex align-items-center justify-content-between'>
         <h2>I miei ordini</h2>
         <div>
-        <input
+          <input
             type='date'
             name='startDate'
             value={filter.startDate}

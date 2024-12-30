@@ -10,7 +10,7 @@ const CartPage = () => {
   useEffect(() => {
     const handleAddToCart = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/cart/', {
+        const res = await axios.get('http://172.232.209.245/api/cart/', {
           headers: {
             'x-auth-token': localStorage.getItem('token'),
           },
@@ -43,7 +43,7 @@ const CartPage = () => {
 
   const handleRemove = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/cart/${itemId}`, {
+      await axios.delete(`http://172.232.209.245/api/cart/${itemId}`, {
         headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
       });
       setCartData(cartData?.filter((a) => a?._id !== itemId));
@@ -52,10 +52,10 @@ const CartPage = () => {
     }
   };
 
-  const handleAddToCart = async (itemId,quantity) => {
+  const handleAddToCart = async (itemId, quantity) => {
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/cart/',
+        'http://172.232.209.245/api/cart/',
         { itemId, quantity },
         {
           headers: {
@@ -64,7 +64,7 @@ const CartPage = () => {
         }
       );
       Swal.fire(`Add the Changes`, '', 'success');
-      setRender(!render)
+      setRender(!render);
     } catch (err) {
       console.log('err: ', err);
     }
@@ -89,7 +89,22 @@ const CartPage = () => {
                 <td>{corsoItem?.item?.type}</td>
                 <td>{corsoItem?.item?.code}</td>
                 <td>{corsoItem.item.isRefreshKit ? 'True' : 'False'}</td>
-                <td><button disabled={corsoItem?.quantity <= 6} onClick={()=>handleAddToCart(corsoItem?.item?._id,-6)} className='btn btn-primary'>-</button> {corsoItem?.quantity} <button onClick={()=>handleAddToCart(corsoItem?.item?._id,6)} className='btn btn-primary'>+</button></td>
+                <td>
+                  <button
+                    disabled={corsoItem?.quantity <= 6}
+                    onClick={() => handleAddToCart(corsoItem?.item?._id, -6)}
+                    className='btn btn-primary'
+                  >
+                    -
+                  </button>{' '}
+                  {corsoItem?.quantity}{' '}
+                  <button
+                    onClick={() => handleAddToCart(corsoItem?.item?._id, 6)}
+                    className='btn btn-primary'
+                  >
+                    +
+                  </button>
+                </td>
                 <td>
                   <button onClick={() => handleRemove(corsoItem?._id)}>
                     <svg
@@ -157,12 +172,9 @@ const CartPage = () => {
           )}
         </tbody>
       </table>
-      <button
-          className='btn btn-info mt-4'
-          onClick={()=>navigate(-1)}
-        >
-          back
-        </button>
+      <button className='btn btn-info mt-4' onClick={() => navigate(-1)}>
+        back
+      </button>
       {cartData?.length > 0 && (
         <button
           className='btn btn-primary mt-4'
@@ -171,7 +183,6 @@ const CartPage = () => {
           Proceed to Payment
         </button>
       )}
-
     </div>
   );
 };

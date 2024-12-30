@@ -31,7 +31,7 @@ const ViewInstructors = () => {
 
         console.log('Invio richiesta API...');
         const res = await axios.get(
-          `http://localhost:5000/api/centers/${location?.state?.ceneterId}/instructors`,
+          `http://172.232.209.245/api/centers/${location?.state?.ceneterId}/instructors`,
           {
             headers: {
               'x-auth-token': token,

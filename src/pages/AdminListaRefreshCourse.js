@@ -30,7 +30,7 @@ function AdminListaRefreshCourse() {
   useEffect(() => {
     const fetchCorso = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/corsi/', {
+        const res = await axios.get('http://172.232.209.245/api/corsi/', {
           headers: { 'x-auth-token': `${localStorage.getItem('token')}` },
         });
         setCorso(res.data);
@@ -110,23 +110,50 @@ function AdminListaRefreshCourse() {
     doc.text(`Città: ${corsoItem.città}`, 10, 20);
     doc.text(`Via: ${corsoItem.via}`, 10, 30);
     doc.text(
-      `Created By: ${corsoItem.userId?.role === 'center' ? corsoItem.userId?.name : corsoItem.userId?.firstName + ' ' + corsoItem.userId?.lastName}`,
-      10, 40
+      `Created By: ${
+        corsoItem.userId?.role === 'center'
+          ? corsoItem.userId?.name
+          : corsoItem.userId?.firstName + ' ' + corsoItem.userId?.lastName
+      }`,
+      10,
+      40
     );
     doc.text(`Course Type: ${corsoItem?.tipologia?.type}`, 10, 50);
     doc.text(`Status: ${corsoItem?.status}`, 10, 60);
     doc.text(`Numero Discenti: ${corsoItem?.numeroDiscenti}`, 10, 70);
-    doc.text(`dataFine: ${corsoItem?.giornate[0]?.dataFine?.split('T')[0]}`, 10, 80);
-    doc.text(`dataInizio: ${corsoItem?.giornate[0]?.dataInizio?.split('T')[0]}`, 10, 90);
+    doc.text(
+      `dataFine: ${corsoItem?.giornate[0]?.dataFine?.split('T')[0]}`,
+      10,
+      80
+    );
+    doc.text(
+      `dataInizio: ${corsoItem?.giornate[0]?.dataInizio?.split('T')[0]}`,
+      10,
+      90
+    );
     doc.text(`oraFine: ${corsoItem?.giornate[0]?.oraFine}`, 10, 100);
     doc.text(`oraInizio: ${corsoItem?.giornate[0]?.oraInizio}`, 10, 110);
-    doc.text(`istruttore: ${corsoItem?.istruttore?.map((items)=> `instructor Name : ${items?.firstName +" "+items?.lastName} `)}`, 10, 120);
-    doc.text(`direttoreCorso: ${corsoItem?.direttoreCorso?.map((items)=> `director Name : ${items?.firstName +" "+items?.lastName} `)}`, 10, 130);
+    doc.text(
+      `istruttore: ${corsoItem?.istruttore?.map(
+        (items) =>
+          `instructor Name : ${items?.firstName + ' ' + items?.lastName} `
+      )}`,
+      10,
+      120
+    );
+    doc.text(
+      `direttoreCorso: ${corsoItem?.direttoreCorso?.map(
+        (items) =>
+          `director Name : ${items?.firstName + ' ' + items?.lastName} `
+      )}`,
+      10,
+      130
+    );
     doc.text(`progressiveNumber: ${corsoItem?.progressiveNumber}`, 10, 140);
 
     // Save the PDF
     doc.save(`${corsoItem.città}_course_details.pdf`);
-  }
+  };
 
   return (
     <div className='container mt-4'>
@@ -186,63 +213,72 @@ function AdminListaRefreshCourse() {
           </tr>
         </thead>
         <tbody>
-          {filteredCorso?.filter((item)=>item?.status=='active'&&item?.isRefreshCourse==true)?.length > 0 ? (
-            filteredCorso?.filter((item)=>item?.status=='active'&&item?.isRefreshCourse==true)?.map((corsoItem) => (
-              <tr key={corsoItem._id}>
-                <td>{corsoItem.città}</td>
-                <td>{corsoItem.via}</td>
-                <td>{corsoItem.progressiveNumber}</td>
-                <td>
-                  {corsoItem.userId?.role == 'center'
-                    ? corsoItem.userId?.name
-                    : corsoItem.userId?.firstName +
-                      ' ' +
-                      corsoItem.userId?.lastName}
-                </td>
-                <td>{corsoItem?.tipologia?.type}</td>
-                <td>{corsoItem.status}</td>
-                <td>{corsoItem.numeroDiscenti}</td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenModal(corsoItem.direttoreCorso)}
-                  >
-                    direttore Details
-                  </button>
-                </td>
-                <td>
-                  {' '}
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() =>
-                      handleOpenInstructorModal(corsoItem.istruttore)
-                    }
-                  >
-                    instruttore Details
-                  </button>
-                </td>
-                <td>
-                  <button
-                    type='button'
-                    className='btn btn-primary'
-                    onClick={() => handleOpenGiornateModal(corsoItem.giornate)}
-                  >
-                    Giornate Details
-                  </button>
-                </td>
-                <td>
-                <button
-                    type='button'
-                    className='btn btn-secondary ml-2'
-                    onClick={() => handleDownloadPdf(corsoItem)}
-                  >
-                    Download PDF
-                  </button>
-                </td>
-              </tr>
-            ))
+          {filteredCorso?.filter(
+            (item) => item?.status == 'active' && item?.isRefreshCourse == true
+          )?.length > 0 ? (
+            filteredCorso
+              ?.filter(
+                (item) =>
+                  item?.status == 'active' && item?.isRefreshCourse == true
+              )
+              ?.map((corsoItem) => (
+                <tr key={corsoItem._id}>
+                  <td>{corsoItem.città}</td>
+                  <td>{corsoItem.via}</td>
+                  <td>{corsoItem.progressiveNumber}</td>
+                  <td>
+                    {corsoItem.userId?.role == 'center'
+                      ? corsoItem.userId?.name
+                      : corsoItem.userId?.firstName +
+                        ' ' +
+                        corsoItem.userId?.lastName}
+                  </td>
+                  <td>{corsoItem?.tipologia?.type}</td>
+                  <td>{corsoItem.status}</td>
+                  <td>{corsoItem.numeroDiscenti}</td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() => handleOpenModal(corsoItem.direttoreCorso)}
+                    >
+                      direttore Details
+                    </button>
+                  </td>
+                  <td>
+                    {' '}
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() =>
+                        handleOpenInstructorModal(corsoItem.istruttore)
+                      }
+                    >
+                      instruttore Details
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-primary'
+                      onClick={() =>
+                        handleOpenGiornateModal(corsoItem.giornate)
+                      }
+                    >
+                      Giornate Details
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type='button'
+                      className='btn btn-secondary ml-2'
+                      onClick={() => handleDownloadPdf(corsoItem)}
+                    >
+                      Download PDF
+                    </button>
+                  </td>
+                </tr>
+              ))
           ) : (
             <tr>
               <td colSpan='8' className='text-muted'>
@@ -463,7 +499,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
       if (result.isConfirmed) {
         axios
           .patch(
-            `http://localhost:5000/api/corsi/courses/${courseId}/status`,
+            `http://172.232.209.245/api/corsi/courses/${courseId}/status`,
             {
               status: status,
             },
@@ -513,10 +549,7 @@ const StatusModal = ({ setShowStatusModal, courseId, setRender, render }) => {
                 <option value='active'>Active</option>
                 <option value='unActive'>Un Active</option>
               </select>
-              <button
-                type='submit'
-                className='btn btn-primary'
-              >
+              <button type='submit' className='btn btn-primary'>
                 Change Status
               </button>
             </form>

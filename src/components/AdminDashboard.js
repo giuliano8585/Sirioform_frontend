@@ -122,6 +122,16 @@ const AdminDashboard = () => {
                   Complete Courses
                 </Link>
               </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/communication" className=" btn btn-primary w-100 btn-lg">
+                  Communication
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
+                <Link to="/admin/document" className=" btn btn-primary w-100 btn-lg">
+                  Document
+                </Link>
+              </li>
             </ul>
           </div>
         </nav>
